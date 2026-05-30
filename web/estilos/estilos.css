@@ -120,6 +120,23 @@ input {
     outline: none;
 }
 
+.link-vet-card{
+    color: #CC4607 !important; 
+    text-decoration: none; 
+    font-weight: bold;
+}
+.link-vet-card:hover{
+    color: #e6510a !important; 
+}
+.link-vet-card2{
+    color: #6c757d !important; 
+    text-decoration: none; 
+    font-weight: inherit; 
+    font-size: 12px;
+}
+.link-vet-card2:hover{
+    color: #000000 !important; 
+}
 .form-check-input:checked {
     background-color: #09752F;
     border-color: #09752F;

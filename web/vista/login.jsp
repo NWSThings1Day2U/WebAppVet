@@ -4,9 +4,11 @@
         <img src="recursos/gaa.jpg" class="img-fluid rounded-start h-100" alt="gallitoingreso" style="object-fit: cover; object-position: left; width: 100%;">
     </div>
     <div class="col-md-7">
-        <div class="card-body p-4">
-            <h5 class="card-title" style="text-align: center; margin: 30px; color: #09752F; font-weight: 600; font-size: 1.8rem;">Iniciar sesión</h5>
-            <div class="card-text">
+        <div class="card-body p-6">
+            <h2 class="card-title" style="text-align: center; margin: 30px; color: #09752F; font-weight: 600; font-size: 1.8rem;">
+                Iniciar sesión
+            </h2>
+            <div class="card-text p-6">
                 <div class="container-fluid px-4">
                     <form action="controladorusuario" id="formLogin" method="POST" class="needs-validation" novalidate>
                         <input type="hidden" name="accion" value="login">
@@ -24,10 +26,10 @@
                         %>
 
                         <div class="mb-4"> 
-                            <label class="form-label">Nombre de Usuario:</label>
+                            <label class="form-label" for="nombredeusuario">Nombre de Usuario:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                <input type="text" class="form-control" name="usuario"   value="<%= userCookie %>"  required 
+                                <input id="nombredeusuario" type="text" class="form-control" name="usuario"   value="<%= userCookie %>"  required 
                                        minlength="4" maxlength="20" pattern="^[a-zA-Z0-9_]+$" 
                                        placeholder="Ingresa tu nombre de usuario">
                                 <div class="invalid-feedback">
@@ -37,7 +39,17 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label">Contraseña:</label>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div >
+                                   <label class="form-label" for="contrasena">Contraseña:</label>
+
+                                </div>
+                                <div >
+                                    <p class="text-end "> <a href="index.jsp?modo=olvido" class="link-vet-card2"  >¿Has olvidado tu contraseña?</a>
+                            </p>
+
+                                </div>
+                               </div>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                                 <input type="password" class="form-control" name="contrasena" id="contrasena" 
@@ -48,7 +60,10 @@
                                 <div class="invalid-feedback">
                                     La contraseña debe tener al menos 6 caracteres.
                                 </div>
+                                
                             </div>
+                            
+
                         </div>
 
                         <div class="mb-4 form-check">
@@ -60,8 +75,8 @@
                     </form>
                 </div>                            
             </div>
-            <p class="card-text text-center mt-3">
-                <small class="text-body-secondary">¿No tienes cuenta? <a href="index.jsp?modo=registro" style="color: #CC4607; text-decoration: none; font-weight: bold;">Regístrate</a></small>
+            <p class="card-text text-center mt-3 mb-3">
+                <small class="text-body-secondary ">¿No tienes cuenta? <a href="index.jsp?modo=registro" class="link-vet-card" >Regístrate</a></small>
             </p>
         </div>
     </div>

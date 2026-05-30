@@ -3,9 +3,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
         
         <title>Login</title>
         <!-- Bootstrap -->
@@ -31,6 +31,7 @@
         <!-- header -->
         <jsp:include page="componentes/encabezado.jsp" />
         <main class="contenedor-principal-login">
+            
             <div class="card shadow-lg login-card">
                 <%
                     String modo = request.getParameter("modo");
@@ -39,9 +40,15 @@
                 <jsp:include page="vista/registro.jsp" />
                 <%
                     } else {
+                        if (modo != null && modo.equals("login")){
                 %>
-                <jsp:include page="vista/login.jsp" />
+                           <jsp:include page="vista/login.jsp" />
                 <%
+                        } else{
+                %>
+                            <jsp:include page="vista/olvido.jsp" />
+                <%
+                        }
                     }
                 %>
             </div>

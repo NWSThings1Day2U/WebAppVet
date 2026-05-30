@@ -15,7 +15,7 @@
                             <i class="fa-solid fa-bars custom-toggler-orange"></i> 
                         </button>
                         <a class="navbar-brand d-flex align-items-center me-2" href="controladorseccion?seccion=inicio">
-                            <img src="${pageContext.request.contextPath}/recursos/logoveet.png" alt="logovet" class="logo-animado" style="width: 50px;">
+                            <img src="${pageContext.request.contextPath}/recursos/logoveet.png" alt="Logodelaclinica" class="logo-animado" style="width: 50px;">
 
                         </a>
                         <div class="admin-welcome-text" >
@@ -200,7 +200,7 @@
             <nav class="navbar fixed-top nav-veterinaria">
                 <div class="container-fluid d-flex justify-content-center">
                     <a class="navbar-brand brand-centrado" href="controladorpagina?pagina=login">
-                        <img src="recursos/logoveet.png" alt="Logo" class="logo-animado" style="width: 70px;">
+                        <img src="recursos/logoveet.png" alt="LogodeClinica" class="logo-animado" style="width: 70px;">
                         <h1 class="titulo-moderno">
                             <span class="txt-verde">Sistema Web de Clínica Veterinaria</span>
                             <span class="txt-destello">“GALLITO DE LAS ROCAS”</span>

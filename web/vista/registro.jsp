@@ -6,31 +6,31 @@
              style="object-fit: cover; object-position: center; width: 100%;">
     </div>
     <div class="col-md-7">
-        <div class="card-body p-4">
-            <h5 class="card-title" style="text-align: center; margin: 30px; color: #09752F; font-weight: 600; font-size: 1.8rem;">
+        <div class="card-body p-6">
+            <h2 class="card-title" style="text-align: center; margin: 30px; color: #09752F; font-weight: 600; font-size: 1.8rem;">
                 Registrar Cuenta
-            </h5>
-            <div class="card-text">
+            </h2>
+            <div class="card-text p-6">
                 <div class="container-fluid px-4">
                     <form action="controladorusuario" id="formRegistro" method="POST" class="needs-validation" novalidate>
                         <input type="hidden" name="accion" value="registro">
 
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label class="form-label">Nombre Completo: </label>
+                                <label class="form-label" for="nombrecompleto">Nombre Completo: </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-                                    <input type="text" class="form-control" name="nombre" required 
-                                           pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" placeholder="Ingresa tu nombre...">
+                                    <input type="text" class="form-control" name="nombre" required id="nombrecompleto"
+                                           pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" placeholder="Ingresa tu nombre completo">
                                     <div class="invalid-feedback">Solo letras.</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Dni: </label>
+                                <label class="form-label" for="documentodeidentidad">Dni: </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-id-badge"></i></span>
-                                    <input type="text" class="form-control val-numero" name="dni" required 
-                                           maxlength="8" pattern="\d{8}" placeholder="Ingresa Dni (Ej. 913191312)">
+                                    <input type="text" class="form-control val-numero" name="dni" required  id="documentodeidentidad"
+                                           maxlength="8" pattern="\d{8}" placeholder="Ingresa tu Dni">
                                     <div class="invalid-feedback">Deben ser 8 dígitos.</div>
                                 </div>
                             </div>
@@ -38,20 +38,20 @@
 
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label class="form-label">Correo electrónico: </label>
+                                <label class="form-label" for="correo">Correo electrónico: </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
-                                    <input type="email" class="form-control" name="correo" required 
-                                           placeholder="Ingresa correo (Ej.usuario@gmail.com)">
+                                    <input type="email" class="form-control" name="correo" required id="correo"
+                                           placeholder="Ingrese tu correo">
                                     <div class="invalid-feedback">Correo no válido.</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Teléfono: </label>
+                                <label class="form-label" for="nrotelefono">Teléfono: </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-phone"></i></span>
-                                    <input type="text" class="form-control val-numero" name="telefono" required 
-                                           maxlength="9" pattern="9\d{8}" placeholder="Ingresa nro telefonico (Ej.91319391)">
+                                    <input type="text" class="form-control val-numero" name="telefono" required  id="nrotelefono"
+                                           maxlength="9" pattern="9\d{8}" placeholder="Ingresa tu nro telefonico">
                                     <div class="invalid-feedback">Debe empezar con 9 y tener 9 dígitos.</div>
                                 </div>
                             </div>
@@ -59,20 +59,21 @@
 
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label class="form-label">Contraseña: </label>
+                                <label class="form-label" for="reg_pass">Contraseña: </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                                     <input type="password" class="form-control" name="contrasena" id="reg_pass" 
-                                           required minlength="6" placeholder="**********">
+                                           required minlength="6" placeholder="Ingresa tu contraseña">
                                     <div class="invalid-feedback">Mínimo 6 caracteres.</div>
+                                    
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Confirmar Contraseña: </label>
+                                <label class="form-label" for="reg_pass_conf">Confirmar Contraseña: </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                                     <input type="password" class="form-control" name="confirmar_contrasena" id="reg_pass_conf" 
-                                           required placeholder="**********">
+                                           required placeholder="Ingresa nuevamente tu contraseña">
                                     <div class="invalid-feedback" id="pass_match_error">Las contraseñas no coinciden.</div>
                                 </div>
                             </div>
@@ -82,9 +83,9 @@
                     </form>
                 </div>                            
             </div>
-            <p class="card-text text-center mt-3">
+            <p class="card-text text-center mt-3 mb-3">
                 <small class="text-body-secondary">¿Ya tienes cuenta? 
-                    <a href="index.jsp?modo=login" style="color: #CC4607; text-decoration: none; font-weight: bold;">Inicia Sesión</a>
+                    <a href="index.jsp?modo=login" class="link-vet-card">Inicia Sesión</a>
                 </small>
             </p>
         </div>
