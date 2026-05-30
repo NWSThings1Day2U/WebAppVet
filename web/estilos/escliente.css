@@ -1,0 +1,212 @@
+body {
+  font-family: "Vollkorn", serif;
+  font-style: normal;
+  background-color: #F8FFFA;
+  margin-top: 150px;
+}
+
+.nav-cliente-custom {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: none !important; 
+    padding: 15px 0 !important; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+}
+
+.nav-cliente-custom .txt-verde {
+    color: black !important;
+    font-size: 13px !important; 
+    display: block !important;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+}
+
+.nav-cliente-custom .txt-destello {
+    font-size: 18px !important;
+    font-family: 'Arial Black', Gadget, sans-serif;
+    background: linear-gradient(to right, #e65100 20%, #ffb74d 40%, #ffb74d 60%, #e65100 80%) !important;
+    background-size: 200% auto !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    animation: brilloOro 3s linear infinite !important;
+    display: inline-block !important;
+}
+
+.nav-link-veterinaria {
+    color: #000000 !important; 
+    font-weight: 400 !important; 
+    transition: all 0.3s ease;
+    padding: 8px 15px !important;
+}
+
+.nav-link-veterinaria:hover {
+    color: #669900  !important;
+}
+
+.nav-link-veterinaria.active {
+    font-weight: 800 !important; 
+    color: #336600 !important; 
+    border-bottom: 3px solid #336600; 
+
+}
+
+.btn-perfil.active, 
+.btn-perfil.active:hover, 
+.btn-perfil.active:focus {
+    background-color: #336600 !important;
+    color: #ffffff !important; 
+    border-color: #336600 !important;
+}
+
+.btn-perfil.active i,
+.btn-perfil.active:hover i {
+    color: #ffffff !important;
+}
+.nav-link-veterinaria.active::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 15%;
+    width: 70%;
+    height: 3px;
+    border-radius: 10px;
+}
+
+.btn-notificaciones i {
+    color: #ffb100 !important; 
+    font-size: 1.8rem !important;
+}
+
+.btn-salir-limpio i {
+    color: #dc3545 !important; 
+    font-size: 1.8rem !important;
+}
+
+.logo-animado {
+    width: 50px !important;
+}
+
+
+.btn-salir-limpio {
+    background: none;
+    border: none;
+    padding: 0 10px;
+    cursor: pointer;
+}
+
+.btn-salir-limpio i {
+    color: #dc3545 !important;
+    font-size: 1.8rem !important;
+    transition: all 0.3s ease;
+}
+
+.btn-notificaciones:hover i, .btn-salir-limpio:hover i {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+.offcanvas-notificaciones {
+    background-color: #F8FFFA !important;
+    border-right: 5px solid #CC4607;
+}
+.offcanvas-title{
+    color:#336600;
+}
+
+/*Modal*/
+
+.custom-modal-vet .modal-header {
+    background-color: #336600 !important; 
+    color: white !important;
+}
+
+.custom-modal-vet .avatar-circle-formal {
+    width: 80px;
+    height: 80px;
+    border: 3px solid #E65100;
+    background-color: #F8FFFA; 
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+}
+
+.custom-modal-vet .user-badge {
+    color: #cc6600 !important;
+    font-weight: 700;
+}
+
+.btn-vet-principal {
+    background-color: #CC4607 !important;
+    color: white !important;
+    border: none !important;
+    transition: all 0.3s ease;
+}
+
+.btn-vet-principal:hover {
+    background-color: #e6510a !important; 
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(51, 102, 0, 0.3);
+}
+
+.btn-vet-secundario {
+    border: 1px solid #ced4da !important;
+    color: #6c757d !important;
+    background: white !important;
+}
+
+.custom-modal-vet .form-check-input:checked {
+    background-color: #CC4607 !important;
+    border-color: #CC4607 !important;
+}
+
+
+.car-vet {
+    background-color: #F8FFFA !important; 
+    border: 1px solid #C3E2BC !important; 
+    border-radius: 8px !important;        
+    overflow: hidden;                       
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.car-vet:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(51, 102, 0, 0.08);
+}
+.titulo-vet{
+    font-weight: bold;
+    margin-bottom: 50px;
+    
+}
+.subtitulo-vet{
+    color: #09752F;
+    font-weight: bold;
+    font-size: 24px;
+}
+.sub1-vet {
+    background-color: #f0fff4 !important; 
+    border-bottom: 2px solid #C3E2BC !important;
+    color: #336600;
+    font-weight: 800;
+    font-size: 18px;
+}
+.sub2-vet{
+    color: #669900;
+    font-weight: 800;
+    font-size: 16px;
+}
+.text-vet{
+    color: #6c757d;
+    font-weight: inherit;
+    font-size: 12px;
+}
+
+.icon-perfil-vet{
+    background-color: #E2F0D9;
+    color: #086d3e;
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+}
