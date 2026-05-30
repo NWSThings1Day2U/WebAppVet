@@ -40,13 +40,13 @@
                 <jsp:include page="vista/registro.jsp" />
                 <%
                     } else {
-                        if (modo != null && modo.equals("login")){
+                        if (modo != null && modo.equals("olvido")){
                 %>
-                           <jsp:include page="vista/login.jsp" />
+                          <jsp:include page="vista/olvido.jsp" />
                 <%
                         } else{
                 %>
-                            <jsp:include page="vista/olvido.jsp" />
+                            <jsp:include page="vista/login.jsp" />
                 <%
                         }
                     }
