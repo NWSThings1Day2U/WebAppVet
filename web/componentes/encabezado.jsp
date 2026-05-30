@@ -14,7 +14,7 @@
                         <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
                             <i class="fa-solid fa-bars custom-toggler-orange"></i> 
                         </button>
-                        <a class="navbar-brand d-flex align-items-center me-1" href="controladorseccion?seccion=inicio">
+                        <a class="navbar-brand d-flex align-items-center me-2" href="controladorseccion?seccion=inicio">
                             <img src="${pageContext.request.contextPath}/recursos/logoveet.png" alt="logovet" class="logo-animado" style="width: 50px;">
 
                         </a>
