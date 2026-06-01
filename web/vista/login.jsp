@@ -6,7 +6,7 @@
     <div class="col-md-7">
         <div class="card-body p-6">
             <h2 class="card-title" style="text-align: center; margin: 30px; color: #09752F; font-weight: 600; font-size: 1.8rem;">
-                Iniciar sesión
+                Iniciar Sesión
             </h2>
             <div class="card-text p-6">
                 <div class="container-fluid px-4">
@@ -45,8 +45,9 @@
 
                                 </div>
                                 <div >
-                                    <p class="text-end "> <a href="index.jsp?modo=olvido" class="link-vet-card2"  >¿Has olvidado tu contraseña?</a>
-                            </p>
+                                    <p class="text-end "> <a href="index.jsp?modo=olvido" class="link-vet-card2"  >
+                                            ¿Has olvidado tu contraseña?</a>
+                                    </p>
 
                                 </div>
                                </div>

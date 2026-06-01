@@ -6,8 +6,25 @@
 <html lang="es">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" >
-        
-        <title>Login</title>
+        <%
+            String titulo;
+            String modo = request.getParameter("modo");
+            switch (modo) {
+            case "registro":
+                titulo ="Registrar Cuenta";
+                break;
+            case "login":
+                titulo ="Inicio de Sesión";
+                break;
+            case "olvido":
+                titulo ="Recuperar Contraseña";
+                break;
+            
+            default:
+                throw new AssertionError();
+            }
+        %>
+        <title><%=titulo%></title>
         <!-- Bootstrap -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Font de google -->
@@ -34,7 +51,6 @@
             
             <div class="card shadow-lg login-card">
                 <%
-                    String modo = request.getParameter("modo");
                     if (modo != null && modo.equals("registro")) {
                 %>
                 <jsp:include page="vista/registro.jsp" />

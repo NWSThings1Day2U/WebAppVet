@@ -101,14 +101,24 @@
                                 <div id="seccionPassword" style="display: ${not empty sessionScope.error ? 'block' : 'none'};">
                                     <div class="row mb-4">
                                         <div class="col-md-6">
-                                            <label class="form-label">Nueva Contraseña: </label>
-                                            <input type="password" class="form-control editable" name="contrasena" 
+                                            <label class="form-label" for="reg_pass">Nueva Contraseña: </label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control editable" name="contrasena"  id="reg_pass" 
                                                    minlength="6"  ${not empty sessionScope.error ? '' : 'disabled'}>
+                                                <span class="input-group-text" id="togglePassword1" style="border-left: none; cursor: pointer;">
+                                                    <i class="fa-regular fa-eye" id="eyeIcon1"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label">Confirmar Contraseña: </label>
-                                            <input type="password" class="form-control editable" name="confirmar_contrasena" 
-                                                   minlength="6"  ${not empty sessionScope.error ? '' : 'disabled'}>
+                                            <label class="form-label" for="reg_pass_conf" >Confirmar Contraseña: </label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control editable" name="confirmar_contrasena"  id="reg_pass_conf" 
+                                                       minlength="6"  ${not empty sessionScope.error ? '' : 'disabled'}>
+                                                <span class="input-group-text" id="togglePassword2" style="border-left: none; cursor: pointer;">
+                                                    <i class="fa-regular fa-eye" id="eyeIcon2"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -134,6 +144,31 @@
                                     this.style.display = 'none';
                                     document.getElementById('btnGuardar').style.display = 'block';
                                 });
+                                
+                                function setupPasswordToggle(buttonId, inputId, iconId) {
+                                    const btn = document.getElementById(buttonId);
+                                    const input = document.getElementById(inputId);
+                                    const icon = document.getElementById(iconId);
+
+                                    if (btn && input && icon) {
+                                        btn.addEventListener('click', function () {
+                                            if (input.type === "password") {
+                                                input.type = "text";
+                                                icon.classList.replace('fa-eye', 'fa-eye-slash');
+                                            } else {
+                                                input.type = "password";
+                                                icon.classList.replace('fa-eye-slash', 'fa-eye');
+                                            }
+                                            this.classList.toggle('active');
+                                            input.classList.toggle('is-visible');
+                                        });
+                                    }
+                                }
+
+                                setupPasswordToggle('togglePassword1', 'reg_pass', 'eyeIcon1');
+                                setupPasswordToggle('togglePassword2', 'reg_pass_conf', 'eyeIcon2');
+
+
                             </script>
                         </div>
                     </div>

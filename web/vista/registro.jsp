@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <div class="row g-0 h-100">
     <div class="col-md-5 d-none d-md-block">
         <img src="recursos/gaa2.jpg" class="img-fluid rounded-start h-100" 
@@ -38,11 +39,11 @@
 
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label class="form-label" for="correo">Correo electrónico: </label>
+                                <label class="form-label" for="correo">Correo Electrónico: </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-envelope"></i></span>
                                     <input type="email" class="form-control" name="correo" required id="correo"
-                                           placeholder="Ingrese tu correo">
+                                           placeholder="Ingresa tu correo">
                                     <div class="invalid-feedback">Correo no válido.</div>
                                 </div>
                             </div>
@@ -64,6 +65,10 @@
                                     <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
                                     <input type="password" class="form-control" name="contrasena" id="reg_pass" 
                                            required minlength="6" placeholder="Ingresa tu contraseña">
+                                    
+                                    <span class="input-group-text" id="togglePassword1" style="border-left: none; cursor: pointer;">
+                                        <i class="fa-regular fa-eye" id="eyeIcon1"></i>
+                                    </span>
                                     <div class="invalid-feedback">Mínimo 6 caracteres.</div>
                                     
                                 </div>
@@ -72,8 +77,11 @@
                                 <label class="form-label" for="reg_pass_conf">Confirmar Contraseña: </label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                                    <input type="password" class="form-control" name="confirmar_contrasena" id="reg_pass_conf" 
+                                    <input type="password" class="form-control" name="confirmar_contrasena" id="reg_pass_conf" minlength="6"
                                            required placeholder="Ingresa nuevamente tu contraseña">
+                                    <span class="input-group-text" id="togglePassword2" style="border-left: none; cursor: pointer;">
+                                        <i class="fa-regular fa-eye" id="eyeIcon2"></i>
+                                    </span>
                                     <div class="invalid-feedback" id="pass_match_error">Las contraseñas no coinciden.</div>
                                 </div>
                             </div>
@@ -121,4 +129,29 @@
             });
         });
     })();
+    
+    function setupPasswordToggle(buttonId, inputId, iconId) {
+        const btn = document.getElementById(buttonId);
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+
+        if (btn && input && icon) {
+            btn.addEventListener('click', function () {
+                if (input.type === "password") {
+                    input.type = "text";
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    input.type = "password";
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+                this.classList.toggle('active');
+                input.classList.toggle('is-visible');
+            });
+        }
+    }
+
+    setupPasswordToggle('togglePassword1', 'reg_pass', 'eyeIcon1');
+    setupPasswordToggle('togglePassword2', 'reg_pass_conf', 'eyeIcon2');
+
+
 </script>
