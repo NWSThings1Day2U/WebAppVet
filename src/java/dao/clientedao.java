@@ -31,34 +31,58 @@ public class clientedao {
                 c.setCorreo(rs.getString("correo"));
                 c.setTelefono(rs.getString("telefono"));
                 c.setEstado(rs.getInt("estado")); 
+                c.setFechaRegistro(rs.getDate("fecha_registro"));
 
+                c.setIdClienteResponsable(
+                        rs.getInt("id_cliente_responsable")
+                );
+
+                c.setNombreResponsable(
+                        rs.getString("nombre_responsable")
+                );
                 lista.add(c);
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            try { if (rs != null) rs.close(); if (cs != null) cs.close(); } catch (Exception e) {}
+            closeResources();
         }
         return lista;
     }
 
     // 2. METODO CREAR CLIENTE
     public boolean crearCliente(clientes c) {
-        String sql = "{call sp_crear_cliente(?, ?, ?, ?)}";
+
+        String sql = "{call sp_crear_cliente(?, ?, ?, ?, ?)}";
+
         try {
+
             cn = conexionvet_bd.probarConexion();
             cs = cn.prepareCall(sql);
-            cs.setString(1, c.getNombreCompleto());
-            cs.setString(2, c.getDni());
-            cs.setString(3, c.getCorreo());
-            cs.setString(4, c.getTelefono());
-            
-            return cs.executeUpdate() > 0; 
+
+
+            if(c.getIdClienteResponsable() == 0){
+                cs.setNull(1, Types.INTEGER);
+            }else{
+                cs.setInt(1, c.getIdClienteResponsable());
+            }
+
+            cs.setString(2, c.getNombreCompleto());
+            cs.setString(3, c.getDni());
+            cs.setString(4, c.getCorreo());
+            cs.setString(5, c.getTelefono());
+
+            return cs.executeUpdate() > 0;
+
         } catch (Exception e) {
+
             e.printStackTrace();
             return false;
+
         } finally {
-            try { if (cs != null) cs.close(); } catch (Exception e) {}
+
+            closeResources();
+
         }
     }
 
@@ -80,7 +104,7 @@ public class clientedao {
             e.printStackTrace();
             return false;
         } finally {
-            try { if (cs != null) cs.close(); } catch (Exception e) {}
+            closeResources();
         }
     }
 
@@ -97,7 +121,54 @@ public class clientedao {
             System.out.println("Error al eliminar cliente (posiblemente tiene mascotas/citas asociadas): " + e.getMessage());
             return false;
         } finally {
-            try { if (cs != null) cs.close(); } catch (Exception e) {}
+            closeResources();
+        }
+    }
+    
+    // 5. Metodo listar clientes principales
+    public List<clientes> listarPrincipales() {
+
+        List<clientes> lista = new ArrayList<>();
+
+        String sql = "{call sp_listar_clientes_principales()}";
+
+        try {
+
+            cn = conexionvet_bd.probarConexion();
+            cs = cn.prepareCall(sql);
+            rs = cs.executeQuery();
+
+            while(rs.next()){
+
+                clientes c = new clientes();
+
+                c.setIdCliente(rs.getInt("id_cliente"));
+                c.setNombreCompleto(rs.getString("nombre_completo"));
+                c.setDni(rs.getString("dni"));
+
+                lista.add(c);
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            closeResources();
+
+        }
+
+        return lista;
+    }
+    
+    private void closeResources() {
+        try {
+            if (rs != null) rs.close();
+            if (cs != null) cs.close(); 
+            if (cn != null) cn.close();
+        } catch (Exception e) {
+            System.out.println("Error al cerrar recursos: " + e.getMessage());
         }
     }
 }

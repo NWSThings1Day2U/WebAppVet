@@ -67,7 +67,7 @@ public class controladorusuario extends HttpServlet {
             sesion.setAttribute("success", "Bienvenido " + usu.getNombreusuario());
             sesion.setAttribute("fecha", usu.getFechaRegistro());
             if ("admin".equals(usu.getRol())) {
-                response.sendRedirect("vista/paneladmin.jsp");
+                response.sendRedirect("controladorseccion?seccion=inicio");
             } else {
                 response.sendRedirect("controladorpagina?pagina=inicio");
             }

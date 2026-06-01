@@ -44,21 +44,35 @@ public class controladorcliente extends HttpServlet {
     }
 
     private void listar(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
+
         List<clientes> lista = dao.listarClientes();
+        List<clientes> listaResponsables = dao.listarPrincipales();
+
         request.setAttribute("listaClientes", lista);
+        request.setAttribute("listaResponsables", listaResponsables);
+
         request.setAttribute("paginaActual", "clientes");
+
         request.getRequestDispatcher(pagClientes).forward(request, response);
     }
 
     private void guardar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         String nombre = request.getParameter("txtNombre");
         String dni = request.getParameter("txtDni");
         String correo = request.getParameter("txtCorreo");
         String telefono = request.getParameter("txtTelefono");
 
         clientes c = new clientes();
+        String responsable = request.getParameter("idClienteResponsable");
+
+        if(responsable != null && !responsable.isEmpty()){
+            c.setIdClienteResponsable(
+                Integer.parseInt(responsable)
+            );
+        }
         c.setNombreCompleto(nombre);
         c.setDni(dni);
         c.setCorreo(correo);
