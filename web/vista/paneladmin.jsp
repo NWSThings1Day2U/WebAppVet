@@ -37,18 +37,19 @@
                 <div class="row align-items-center">
                     <div class="col-lg-8">
                         <h2 class="fw-bold">
-                            Bienvenido,
-                            <span class="text-success">
-                                ${sessionScope.usuario}!
-                            </span>
+                            Panel Administrativo
+                            
                         </h2>
                         <p class="text-muted mb-0">
-                            ¿Qué desea hacer hoy?
+                            ¡Hola,
+                            <span class="text-success fw-bold">
+                                ${sessionScope.usuario}!
+                            </span>¿Qué deseas hacer hoy?
                         </p>
                     </div>
                     <div class="col-lg-4 text-lg-end mt-3 mt-lg-0 mb-4">
                         <div class="fecha-box">
-                            <i class="fa-solid fa-calendar-days"></i>
+                            <i class="fa-solid fa-chart-bar"></i>
                             <span id="fechaHora"></span>
                         </div>
                     </div>

@@ -9,6 +9,9 @@
         <%
             String titulo;
             String modo = request.getParameter("modo");
+            if (modo == null) {
+                modo = "login"; 
+            }
             switch (modo) {
             case "registro":
                 titulo ="Registrar Cuenta";
@@ -21,7 +24,7 @@
                 break;
             
             default:
-                throw new AssertionError();
+                titulo = "Inicio de Sesión";
             }
         %>
         <title><%=titulo%></title>

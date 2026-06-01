@@ -87,7 +87,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 mb-2"> Registrarse   <span style="margin-left: 5px"><i class="fa-solid fa-user-plus"></i></span></button>
+                        <button type="submit" class="btn btn-primary w-100 mt-3 mb-2"> Registrarse   <span style="margin-left: 5px"><i class="fa-solid fa-user-plus"></i></span></button>
                     </form>
                 </div>                            
             </div>

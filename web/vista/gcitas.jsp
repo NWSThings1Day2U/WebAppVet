@@ -64,7 +64,7 @@
                         <div class="col-lg-8">
                             <h1 class="fw-bold mb-2">
                                 Gestión de
-                                <span class="text-success">Citas Veterinarias</span>
+                                <span class="text-success">Citas</span>
                             </h1>
                             <p class="text-muted mb-0">Administra la reservación de citas médicas.</p>
                         </div>

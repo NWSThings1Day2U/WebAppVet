@@ -14,7 +14,7 @@
                         <button class="navbar-toggler custom-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar">
                             <i class="fa-solid fa-bars custom-toggler-orange"></i> 
                         </button>
-                        <a class="navbar-brand d-flex align-items-center me-1" href="controladorseccion?seccion=inicio">
+                        <a class="navbar-brand d-flex align-items-center me-1" href="${pageContext.request.contextPath}/controladorseccion?seccion=inicio">
                             <img src="${pageContext.request.contextPath}/recursos/logoveet.png" alt="Logodelaclinica" class="logo-animado" style="width: 50px;">
 
                         </a>
@@ -43,13 +43,13 @@
                                     </div>
                                     <div class="col-7 d-flex flex-column justify-content-center ps-2">
                                         <h5 class="card-title-admin m-0">${sessionScope.usuario} <i class="fa-solid fa-user-check"></i></h5>
-                                        <p class="card-email-admin m-0">${sessionScope.correo != null ? sessionScope.correo : 'Sin correo'}</p>                                    </div>
+                                        <p class="card-email-admin m-0">${sessionScope.correo != null ? sessionScope.correo : 'Sin correo'}</p>                                    
+                                    </div>
                                 </div>
                             </div>
                         </a>
 
-                        <a href="${pageContext.request.contextPath}/controladorsalida" class="btn btn-danger d-flex align-items-center gap-2 shadow-sm">
-                            <span>Salir</span>
+                        <a href="${pageContext.request.contextPath}/controladorsalida" class="btn btn-salir-limpio">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>
                         </a>
                     </div>
@@ -62,7 +62,7 @@
 
                 </div>
                 <div class="offcanvas-body">
-                    <a class="navbar-brand logo ms-1 me-2" href="controladorseccion?seccion=inicio">
+                    <a class="navbar-brand logo ms-1 me-2" href="${pageContext.request.contextPath}/controladorseccion?seccion=inicio">
                         <img src="${pageContext.request.contextPath}/recursos/logoveet.png" style="margin: 10px;" alt="logovet">                    
                         <h5 class="offcanvas-title" id="offcanvasNavbarLabel"> Clinica Veterinaria <br>
                             “Gallito de las Rocas”</h5>

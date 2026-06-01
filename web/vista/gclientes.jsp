@@ -9,9 +9,12 @@
 <%@page import="modelo.clientes"%>
 
 <%
-    List<clientes> lista = (List<clientes>) request.getAttribute("listaClientes");
-%>
+    List<clientes> lista =
+            (List<clientes>) request.getAttribute("listaClientes");
 
+    List<clientes> listaResponsables =
+            (List<clientes>) request.getAttribute("listaResponsables");
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -117,6 +120,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nombre Completo</th>
+                                    <th>Responsable</th>
                                     <th>DNI</th>
                                     <th>Correo</th>
                                     <th>Teléfono</th>
@@ -132,6 +136,12 @@
                                 <tr>
                                     <td>#<%= c.getIdCliente()%></td>
                                     <td><strong><%= c.getNombreCompleto()%></strong></td>
+                                    <td>
+                                        <%= c.getNombreResponsable() != null
+                                                ? c.getNombreResponsable()
+                                                : "Cliente Principal" %>
+                                    </td>
+
                                     <td><%= c.getDni()%></td>
                                     <td><%= c.getCorreo()%></td>
                                     <td><%= c.getTelefono()%></td>
@@ -259,7 +269,31 @@
                                         <label class="form-label fw-semibold">DNI</label>
                                         <input type="text" name="txtDni" class="form-control" placeholder="Ingrese número de documento" required>
                                     </div>
-                                </div>
+                                </div> 
+                                <div class="row"><div class="col-md-12 mb-3">
+
+                                        <label class="form-label fw-semibold">
+                                            Cliente Responsable
+                                        </label>
+
+                                        <select name="idClienteResponsable" class="form-select">
+
+                                            <option value="">
+                                                Cliente Principal
+                                            </option>
+
+                                            <% if(listaResponsables != null){
+                                                for(clientes cli : listaResponsables){ %>
+
+                                            <option value="<%= cli.getIdCliente() %>">
+                                                <%= cli.getNombreCompleto() %> - DNI: <%= cli.getDni() %>
+                                            </option>
+
+                                            <% }} %>
+
+                                        </select>
+
+                                    </div></div>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold">Correo Electrónico</label>

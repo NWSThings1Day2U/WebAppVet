@@ -214,3 +214,80 @@ input {
     }
 }
 
+/* --- Estilos para el Wizard (Pasos) --- */
+.step-container {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    max-width: 450px;
+    margin: 40px auto;
+}
+
+.step-line {
+    position: absolute;
+    top: 25px;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background-color: #e0e0e0;
+    z-index: 1;
+}
+
+.step-line-bar {
+    height: 100%;
+    width: 0%;
+    background-color: #2ecc71; /* Tu color verde */
+    transition: width 0.4s ease-in-out;
+}
+
+.step-item {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    width: 90px;
+}
+
+.step-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 1.15rem;
+    transition: all 0.4s ease;
+}
+
+.step-pending { background-color: #f5f5f5; color: #b0b0b0; border: 2px solid #dcdcdc; }
+.step-active { 
+    background-color: #09752F; /* Verde de tu marca */
+    color: #ffffff; 
+    border: 2px solid #09752F;
+    box-shadow: 0 4px 15px rgba(9, 117, 47, 0.35);
+    transform: scale(1.05);
+}
+.step-completed { background-color: #2ecc71; color: #ffffff; border: 2px solid #2ecc71; }
+
+.step-text { font-size: 0.85rem; margin-top: 8px; display: block; }
+
+/* --- Estilos para los campos OTP --- */
+.otp-input {
+    width: 45px;
+    height: 40px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+}
+.otp-input:focus {
+    border-color: #09752F;
+    box-shadow: 0 0 0 3px rgba(9, 117, 47, 0.15);
+}
+
+/* --- Ajuste para tu diseño de tarjeta --- */
+.form-control:focus {
+    border-color: #09752F;
+    box-shadow: 0 0 0 3px rgba(9, 117, 47, 0.15);
+}

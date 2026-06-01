@@ -1,7 +1,8 @@
 <%@page import="modelo.mascotas"%>
 <%@page import="modelo.clientes"%>
 <%@page import="java.util.List"%>
-
+<%@page import="java.time.*"%>
+<%@page import="java.time.format.*"%>
 <%
     List<mascotas> lista = (List<mascotas>) request.getAttribute("listaMascotas");
     List<clientes> listaClientes = (List<clientes>) request.getAttribute("listaClientes");
@@ -90,6 +91,9 @@
                                     <th>Dueño / Cliente</th>
                                     <th>Especie</th>
                                     <th>Raza</th>
+                                    <th>Sexo</th>
+                                    <th>Peso</th>
+                                    <th>Edad</th>
                                     <th>Estado</th>
                                     <th class="text-center">Acciones</th>
                                 </tr>
@@ -110,10 +114,54 @@
                                     <td><%= m.getEspecie()%></td>
                                     <td><%= m.getRaza()%></td>
                                     <td>
+                                        <% if ("M".equals(m.getSexo())) { %>        
+                                        <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">Macho</span>
+                                        <% } else { %>    
+                                        <span class="badge border" style="background-color: #fde8ef; color: #d63384; border-color: #fbc7d7 !important;"
+                                              ">Hembra</span>
+                                        <% } %>
+                                    </td>
+                                    <td><%=m.getPeso()%></td>
+                                    <td>
+                                        <%
+                                        String fechanam = m.getFechaNacimiento(); 
+                                        DateTimeFormatter formateador = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    
+                                        try {
+                                            LocalDate fechaNacimiento = LocalDate.parse(fechanam, formateador);
+                                            LocalDate fechaActual = LocalDate.now();
+        
+                                            Period periodo = Period.between(fechaNacimiento, fechaActual);
+                                            int anos = periodo.getYears();
+                                            int meses = periodo.getMonths();
+        
+                                        %>
+                                        <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                                            <%
+                                            if (anos > 0) {
+                                                out.print(anos + (anos == 1 ? " año" : " años"));
+                                            } else if (meses > 0) {
+                                                out.print(meses + (meses == 1 ? " mes" : " meses"));
+                                            } else {
+                                                int dias = periodo.getDays();
+                                                out.print(dias + (dias == 1 ? " día" : " días"));
+                                            }
+                                            %>
+                                        </span>
+                                        <%
+                                    } catch (DateTimeParseException e) {
+                                        %>
+                                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle">Error de fecha</span>
+                                        <%   
+                                    }
+                                        %>
+                                    </td>
+
+                                    <td>
                                         <% if("ACTIVO".equalsIgnoreCase(m.getEstado()) || "1".equals(m.getEstado()) || m.getEstado() == null) { %>
-                                            <span class="badge bg-success">Activa</span>
+                                            <span class="badge bg-success">Activo</span>
                                         <% } else if("INACTIVO".equalsIgnoreCase(m.getEstado())) { %>
-                                            <span class="badge bg-secondary">Inactiva</span>
+                                            <span class="badge bg-secondary">Inactivo</span>
                                         <% } else { %>
                                             <span class="badge bg-danger"><%= m.getEstado() %></span>
                                         <% } %>
