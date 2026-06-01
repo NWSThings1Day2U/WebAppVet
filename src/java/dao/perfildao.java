@@ -3,6 +3,7 @@ package dao;
 import conexion.conexionvet_bd;
 import modelo.usuarios;
 import java.sql.*;
+import modelo.encriptar;
 
 public class perfildao {
     private Connection cn;
@@ -46,7 +47,7 @@ public class perfildao {
             cs.setString(3, nombre);
             cs.setString(4, correo);
             cs.setString(5, tel);
-            cs.setString(6, (pass != null && !pass.trim().isEmpty()) ? pass : null);
+            cs.setString(6, (pass != null && !pass.trim().isEmpty()) ? encriptar.encriptar(pass) : null);
             cs.setString(7, imagen);
             return cs.executeUpdate() > 0;
         } catch (Exception e) {
