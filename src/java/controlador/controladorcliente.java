@@ -1,6 +1,7 @@
 package controlador;
 
 import dao.clientedao;
+import dao.mascotadao;
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -15,7 +16,7 @@ public class controladorcliente extends HttpServlet {
 
     private final clientedao dao = new clientedao();
     private final String pagClientes = "/vista/gclientes.jsp"; 
-
+    private final mascotadao mDao = new mascotadao();
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -51,7 +52,15 @@ public class controladorcliente extends HttpServlet {
 
         request.setAttribute("listaClientes", lista);
         request.setAttribute("listaResponsables", listaResponsables);
+        // DASHBOARD
+        request.setAttribute("totalClientes", lista.size());
+        request.setAttribute("listaClientes", lista);
 
+        request.setAttribute("clientesActivos", dao.contarClientesActivos());
+
+        request.setAttribute("clientesNuevos",dao.contarClientesNuevos());
+
+        request.setAttribute("mascotasRegistradas", mDao.contarMascotas());
         request.setAttribute("paginaActual", "clientes");
 
         request.getRequestDispatcher(pagClientes).forward(request, response);
@@ -80,7 +89,6 @@ public class controladorcliente extends HttpServlet {
 
         boolean insertado = dao.crearCliente(c);
         
-        // Redireccionamos mediante controladorseccion para limpiar la petición POST y refrescar la tabla limpia
         response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
     }
 

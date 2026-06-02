@@ -65,7 +65,7 @@
                             <div>
                                 <h5>Total Clientes</h5>
                                 <h1>
-                                    <%= (lista != null) ? lista.size() : 0 %>
+                                    ${totalClientes}
                                 </h1>
                             </div>
                             <i class="fa-solid fa-users text-primary icon-card"></i>
@@ -74,8 +74,8 @@
                     <div class="col-xl-3 col-md-6">
                         <div class="card-dashboard">
                             <div>
-                                <h5>Clientes Nuevos</h5>
-                                <h1>15</h1>
+                                <h5>C. Nuevos (7d)</h5>
+                                <h1>${clientesNuevos} </h1>
                             </div>
                             <i class="fa-solid fa-user-plus text-success icon-card"></i>
                         </div>
@@ -84,7 +84,7 @@
                         <div class="card-dashboard">
                             <div>
                                 <h5>Clientes Activos</h5>
-                                <h1>40</h1>
+                                <h1>${clientesActivos}</h1>
                             </div>
                             <i class="fa-solid fa-user-check text-warning icon-card"></i>
                         </div>
@@ -93,7 +93,7 @@
                         <div class="card-dashboard">
                             <div>
                                 <h5>Mascotas Registradas</h5>
-                                <h1>78</h1>
+                                <h1>${mascotasRegistradas}</h1>
                             </div>
                             <i class="fa-solid fa-paw text-danger icon-card"></i>
                         </div>

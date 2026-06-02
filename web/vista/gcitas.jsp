@@ -356,7 +356,7 @@
                                 <div class="row">
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Cliente</label>
-                                        <select name="txtIdCliente" class="form-select" required>
+                                        <select name="txtIdCliente" class="form-select" id="txtIdCliente" required>
                                             <option value="">Seleccione Cliente</option>
                                             <% if (listaClientes != null) { 
                                                 for(clientes cl : listaClientes) { %>
@@ -367,13 +367,19 @@
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Mascota</label>
-                                        <select name="txtIdMascota" class="form-select" required>
+                                        <select name="txtIdMascota" id="txtIdMascota" class="form-select" required disabled>
                                             <option value="">Seleccione Mascota</option>
-                                            <% if (listaMascotas != null) { 
+
+                                            <% if (listaMascotas != null) {
                                                 for(mascotas m : listaMascotas) { %>
-                                            <option value="<%= m.getIdMascota() %>"><%= m.getNombre() %> (Dueño: <%= m.getNombreCliente() %>)</option>
-                                            <%  } 
-                                            } %>
+
+                                            <option value="<%= m.getIdMascota() %>"
+                                                    data-cliente="<%= m.getIdCliente() %>">
+                                                <%= m.getNombre() %> (Dueño: <%= m.getNombreCliente() %>)
+                                            </option>
+
+                                            <% }
+                                             } %>
                                         </select>
                                     </div>
                                     <div class="col-md-4 mb-3">
@@ -445,5 +451,45 @@
                 request.getSession().removeAttribute("mensajeError");
             }
         %>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const clienteSelect = document.getElementById("txtIdCliente");
+                const mascotaSelect = document.getElementById("txtIdMascota");
+
+                const todasOpciones = Array.from(mascotaSelect.options);
+
+                clienteSelect.addEventListener("change", function () {
+
+                    const idCliente = this.value;
+
+                    mascotaSelect.innerHTML = "";
+
+                    const opcionInicial = document.createElement("option");
+                    opcionInicial.value = "";
+                    opcionInicial.textContent = "Seleccione Mascota";
+                    mascotaSelect.appendChild(opcionInicial);
+
+                    if (!idCliente) {
+                        mascotaSelect.disabled = true;
+                        return;
+                    }
+
+                    mascotaSelect.disabled = false;
+
+                    todasOpciones.forEach(op => {
+
+                        if (op.value === "") return;
+
+                        if (op.dataset.cliente === idCliente) {
+                            mascotaSelect.appendChild(op.cloneNode(true));
+                        }
+
+                    });
+
+                });
+
+            });
+            </script>
     </body>
 </html>" 

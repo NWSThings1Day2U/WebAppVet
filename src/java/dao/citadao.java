@@ -163,7 +163,32 @@ public class citadao {
             closeResources();
         }
     }
-    
+     //6. Validar mascota para seleccion
+    public boolean mascotaPerteneceCliente(int idMascota, int idCliente) {
+
+        try {
+
+            cn = conexionvet_bd.probarConexion();
+
+            cs = cn.prepareCall("{call sp_validar_mascota_cliente(?,?)}");
+
+            cs.setInt(1, idMascota);
+            cs.setInt(2, idCliente);
+
+            rs = cs.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("existe") > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+
+        return false;
+    }
     private void closeResources() {
         try {
             if (rs != null) rs.close();

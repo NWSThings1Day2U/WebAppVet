@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession; // Importante para manejar la sesión
+import jakarta.servlet.http.HttpSession;
 import modelo.citas;
 
 @WebServlet(name = "controladorcitas", urlPatterns = {"/controladorcitas"})
@@ -59,7 +59,7 @@ public class controladorcitas extends HttpServlet {
         processRequest(request, response);
     }
 
-    // 1. LISTAR CITAS (ADMINISTRADOR VE TODO / CLIENTE VE SOLO LAS SUYAS)
+    // 1. Listar clientes
     private void listar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException { 
         
@@ -70,10 +70,10 @@ public class controladorcitas extends HttpServlet {
 
         List<citas> listaCitas;
 
-        // VALIDACIÓN DE ROL
+        // Validar rol
         if (rol != null && rol.equalsIgnoreCase("CLIENTE")  && idUsuario != null) {
             listaCitas = dao.listarCitasPorCliente(idUsuario);
-            request.setAttribute("paginaActual", "miscitas"); // Flag útil para vistas
+            request.setAttribute("paginaActual", "miscitas"); 
         } else {
             listaCitas = dao.listarCitas();
             request.setAttribute("paginaActual", "citas");
@@ -97,15 +97,27 @@ public class controladorcitas extends HttpServlet {
             
             int idCliente;
             
-            // Si es cliente, asignamos su ID de sesión obligatoriamente para evitar fraudes
             if (rol != null && rol.equalsIgnoreCase("CLIENTE")) {
                 idCliente = (Integer) session.getAttribute("idUsuario");
             } else {
-                // Si es admin, lo lee del formulario/select donde eligió al cliente
                 idCliente = Integer.parseInt(request.getParameter("txtIdCliente"));
             }
             
             int idMascota = Integer.parseInt(request.getParameter("txtIdMascota"));
+
+            boolean pertenece = dao.mascotaPerteneceCliente(idMascota, idCliente);
+            
+            if (!pertenece) {
+                request.getSession().setAttribute(
+                    "mensajeError",
+                    "La mascota seleccionada no pertenece al cliente."
+                );
+
+                response.sendRedirect(
+                    request.getContextPath() + "/controladorcitas?accion=listar"
+                );
+                return;
+            }
             int idTipo = Integer.parseInt(request.getParameter("txtIdTipo"));
             String fecha = request.getParameter("txtFecha");
             String hora = request.getParameter("txtHora");

@@ -10,7 +10,7 @@ import java.util.List;
 public class clientedao {
 
     private Connection cn = null;
-    private CallableStatement cs = null; 
+    private CallableStatement cs = null;
     private ResultSet rs = null;
 
     // 1. METODO LISTAR CLIENTES
@@ -20,7 +20,7 @@ public class clientedao {
 
         try {
             cn = conexionvet_bd.probarConexion();
-            cs = cn.prepareCall(sql);        
+            cs = cn.prepareCall(sql);
             rs = cs.executeQuery();
 
             while (rs.next()) {
@@ -30,7 +30,7 @@ public class clientedao {
                 c.setDni(rs.getString("dni"));
                 c.setCorreo(rs.getString("correo"));
                 c.setTelefono(rs.getString("telefono"));
-                c.setEstado(rs.getInt("estado")); 
+                c.setEstado(rs.getInt("estado"));
                 c.setFechaRegistro(rs.getDate("fecha_registro"));
 
                 c.setIdClienteResponsable(
@@ -60,10 +60,9 @@ public class clientedao {
             cn = conexionvet_bd.probarConexion();
             cs = cn.prepareCall(sql);
 
-
-            if(c.getIdClienteResponsable() == 0){
+            if (c.getIdClienteResponsable() == 0) {
                 cs.setNull(1, Types.INTEGER);
-            }else{
+            } else {
                 cs.setInt(1, c.getIdClienteResponsable());
             }
 
@@ -98,7 +97,7 @@ public class clientedao {
             cs.setString(4, c.getCorreo());
             cs.setString(5, c.getTelefono());
             cs.setInt(6, c.getEstado());
-            
+
             return cs.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -115,7 +114,7 @@ public class clientedao {
             cn = conexionvet_bd.probarConexion();
             cs = cn.prepareCall(sql);
             cs.setInt(1, idCliente);
-            
+
             return cs.executeUpdate() > 0;
         } catch (Exception e) {
             System.out.println("Error al eliminar cliente (posiblemente tiene mascotas/citas asociadas): " + e.getMessage());
@@ -124,7 +123,7 @@ public class clientedao {
             closeResources();
         }
     }
-    
+
     // 5. Metodo listar clientes principales
     public List<clientes> listarPrincipales() {
 
@@ -138,7 +137,7 @@ public class clientedao {
             cs = cn.prepareCall(sql);
             rs = cs.executeQuery();
 
-            while(rs.next()){
+            while (rs.next()) {
 
                 clientes c = new clientes();
 
@@ -161,12 +160,62 @@ public class clientedao {
 
         return lista;
     }
-    
+
+    //6. contar clientes activos
+    public int contarClientesActivos() {
+        int total = 0;
+
+        try {
+            cn = conexionvet_bd.probarConexion();
+            cs = cn.prepareCall("{call sp_contar_clientes_activos()}");
+            rs = cs.executeQuery();
+
+            if (rs.next()) {
+                total = rs.getInt("total_activos");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+
+        return total;
+    }
+
+    //7. contar clientes nuevos
+    public int contarClientesNuevos() {
+        int total = 0;
+
+        try {
+            cn = conexionvet_bd.probarConexion();
+            cs = cn.prepareCall("{call sp_contar_clientes_nuevos()}");
+            rs = cs.executeQuery();
+
+            if (rs.next()) {
+                total = rs.getInt("total_nuevos");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+
+        return total;
+    }
+
     private void closeResources() {
         try {
-            if (rs != null) rs.close();
-            if (cs != null) cs.close(); 
-            if (cn != null) cn.close();
+            if (rs != null) {
+                rs.close();
+            }
+            if (cs != null) {
+                cs.close();
+            }
+            if (cn != null) {
+                cn.close();
+            }
         } catch (Exception e) {
             System.out.println("Error al cerrar recursos: " + e.getMessage());
         }
