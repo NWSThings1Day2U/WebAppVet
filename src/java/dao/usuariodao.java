@@ -10,7 +10,7 @@ import modelo.encriptar;
 public class usuariodao {
 
     private Connection cn = null;
-    private CallableStatement cs = null; 
+    private CallableStatement cs = null;
     private ResultSet rs = null;
 
     public usuarios validar(String user, String passEscrita) {
@@ -32,36 +32,37 @@ public class usuariodao {
                     us.setDni(rs.getString("dni"));
                     us.setNombrecompleto(rs.getString("nombre_completo"));
                     us.setTelefono(rs.getString("telefono"));
-                    
-                    us.setIdCliente(rs.getInt("id_cliente")); 
+
+                    us.setIdCliente(rs.getInt("id_cliente"));
                     us.setFechaRegistro(rs.getString("fecha_registro"));
                     us.setEstadoCliente(rs.getInt("estado_cliente"));
                 }
             }
-        } catch (Exception e) { 
-            e.printStackTrace(); 
-        } finally { 
-            closeResources(); 
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
         }
         return us;
     }
+
     //registrar los usuarios
     public boolean registrar(String user, String pass, String nombre, String dni, String correo, String telefono) {
         try {
             cn = conexionvet_bd.probarConexion();
             cs = cn.prepareCall("{call sp_registrar_cliente_web(?,?,?,?,?,?,?)}");
             cs.setString(1, user);
-            cs.setString(2, encriptar.encriptar(pass)); 
+            cs.setString(2, encriptar.encriptar(pass));
             cs.setString(3, nombre);
             cs.setString(4, dni);
             cs.setString(5, correo);
             cs.setString(6, telefono);
             cs.registerOutParameter(7, Types.INTEGER);
-            
+
             cs.executeUpdate();
-            
+
             return cs.getInt(7) == 1;
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -102,7 +103,7 @@ public class usuariodao {
     public boolean editarUsuarioCompleto(usuarios u, int nuevoIdRol) {
         try {
             cn = conexionvet_bd.probarConexion();
-            
+
             cs = cn.prepareCall("{call sp_admin_editar_usuario(?,?,?,?,?,?)}");
             cs.setInt(1, u.getIdUsuario());
             cs.setString(2, u.getNombreusuario());
@@ -143,11 +144,61 @@ public class usuariodao {
             closeResources();
         }
     }
+
+    //Recuperar contra
+    public int iniciarRecuperacion(String correo, String codigo) {
+        int idUsuario = 0;
+        try (Connection cn = conexionvet_bd.probarConexion(); CallableStatement cs = cn.prepareCall("{call sp_iniciar_recuperacion_universal(?, ?, ?)}")) {
+
+            cs.setString(1, correo);
+            cs.setString(2, codigo);
+            cs.registerOutParameter(3, java.sql.Types.INTEGER);
+            cs.execute();
+
+            idUsuario = cs.getInt(3);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return idUsuario; 
+    }
+
+    public boolean verificarYActualizar(int idUsuario, String codigo, String nuevaPass) {
+        boolean resultado = false;
+
+        try (Connection cn = conexionvet_bd.probarConexion(); CallableStatement cs = cn.prepareCall("{call sp_verificar_y_actualizar(?,?,?,?)}")) {
+
+            cs.setInt(1, idUsuario);
+            cs.setString(2, codigo);
+            cs.setString(3, encriptar.encriptar(nuevaPass));
+            cs.registerOutParameter(4, Types.INTEGER);
+
+            cs.execute();
+
+            resultado = cs.getInt(4) == 1;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+
+        return resultado;
+    }
+
     private void closeResources() {
         try {
-            if (rs != null) rs.close();
-            if (cs != null) cs.close();
-            if (cn != null) cn.close();
-        } catch (Exception e) {}
+            if (rs != null) {
+                rs.close();
+            }
+            if (cs != null) {
+                cs.close();
+            }
+            if (cn != null) {
+                cn.close();
+            }
+        } catch (Exception e) {
+        }
     }
 }
