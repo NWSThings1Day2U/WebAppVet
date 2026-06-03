@@ -177,7 +177,12 @@ body {
 }
 .titulo-vet{
     font-weight: bold;
+    
+    
+}
+.p-vet{
     margin-bottom: 50px;
+    font-weight: inherit;
     
 }
 .subtitulo-vet{

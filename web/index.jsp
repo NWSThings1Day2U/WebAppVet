@@ -42,7 +42,7 @@
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
 
         <!-- CSS -->
-        <link rel="stylesheet" href="estilos/estilos.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/estilos.css">
     </head>
     <body>
         <%
