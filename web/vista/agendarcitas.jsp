@@ -35,7 +35,7 @@
             <div class="container-fluid">
                 <div class="bien-mensaje-vet">
                     <h2 class="text-center titulo-vet">Agendar Nueva Cita</h2>
-                    <p class="text-center p-vet">Completa los datos del formulario para la reservación.</p>
+                    <p class="text-center p-vet">Completa los datos del formulario para la reservación..</p>
                 </div>
                 
             </div>
