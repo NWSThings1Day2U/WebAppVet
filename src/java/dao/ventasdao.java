@@ -124,7 +124,29 @@ public class ventasdao {
             closeResources();
         }
     }
-
+    //Calcular ventas
+    public double totalVentasHoy() {
+        double total = 0;
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT IFNULL(SUM(total),0) total "
+                    + "FROM ventas "
+                    + "WHERE DATE(fecha)=CURDATE()";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getDouble("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return total;
+    }
+    
     private void closeResources() {
         try { if (rs != null) rs.close(); } catch (Exception e) {}
         try { if (cs != null) cs.close(); } catch (Exception e) {}
