@@ -1,5 +1,6 @@
 package controlador;
 
+import com.google.gson.Gson;
 import dao.citadao;
 import java.io.IOException;
 import java.util.List;
@@ -9,6 +10,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.PrintWriter;
+import java.time.LocalDate;
 import modelo.citas;
 
 @WebServlet(name = "controladorcitas", urlPatterns = {"/controladorcitas"})
@@ -41,7 +44,12 @@ public class controladorcitas extends HttpServlet {
             case "eliminar":
                 eliminar(request, response);
                 break;
-            
+            case "horasDisponibles":
+                cargarHorasDisponibles(request, response);
+                break;
+            case "horasDisponiblesEditar":
+                cargarHorasDisponiblesEditar(request, response);
+                break;
             default:
                 listar(request, response);
         }
@@ -61,24 +69,24 @@ public class controladorcitas extends HttpServlet {
 
     // 1. Listar clientes
     private void listar(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException { 
-        
+            throws ServletException, IOException {
+
         HttpSession session = request.getSession();
-        
+
         String rol = (String) session.getAttribute("rol");
-        Integer idUsuario = (Integer) session.getAttribute("idUsuario"); 
+        Integer idUsuario = (Integer) session.getAttribute("idUsuario");
 
         List<citas> listaCitas;
 
         // Validar rol
-        if (rol != null && rol.equalsIgnoreCase("CLIENTE")  && idUsuario != null) {
+        if (rol != null && rol.equalsIgnoreCase("CLIENTE") && idUsuario != null) {
             listaCitas = dao.listarCitasPorCliente(idUsuario);
-            request.setAttribute("paginaActual", "miscitas"); 
+            request.setAttribute("paginaActual", "miscitas");
         } else {
             listaCitas = dao.listarCitas();
             request.setAttribute("paginaActual", "citas");
         }
-        
+
         request.setAttribute("listaCitas", listaCitas);
         dao.clientedao clienteDao = new dao.clientedao();
         dao.mascotadao mascotaDao = new dao.mascotadao();
@@ -89,38 +97,60 @@ public class controladorcitas extends HttpServlet {
     }
 
     // 2. REGISTRAR NUEVA CITA (ADMIN O CLIENTE)
-    private void guardar(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException { 
+    private void guardar(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
             HttpSession session = request.getSession();
             String rol = (String) session.getAttribute("rol");
-            
+
             int idCliente;
-            
+
             if (rol != null && rol.equalsIgnoreCase("CLIENTE")) {
                 idCliente = (Integer) session.getAttribute("idUsuario");
             } else {
                 idCliente = Integer.parseInt(request.getParameter("txtIdCliente"));
             }
-            
+
             int idMascota = Integer.parseInt(request.getParameter("txtIdMascota"));
 
             boolean pertenece = dao.mascotaPerteneceCliente(idMascota, idCliente);
-            
+
             if (!pertenece) {
-                request.getSession().setAttribute(
-                    "mensajeError",
-                    "La mascota seleccionada no pertenece al cliente."
-                );
+                request.getSession().setAttribute("mensajeError", "La mascota seleccionada no pertenece al cliente.");
 
                 response.sendRedirect(
-                    request.getContextPath() + "/controladorcitas?accion=listar"
+                        request.getContextPath() + "/controladorcitas?accion=listar"
                 );
                 return;
             }
             int idTipo = Integer.parseInt(request.getParameter("txtIdTipo"));
             String fecha = request.getParameter("txtFecha");
+            LocalDate fechaSeleccionada = LocalDate.parse(request.getParameter("txtFecha"));
+
+            if (fechaSeleccionada.isBefore(LocalDate.now())) {
+
+                request.getSession().setAttribute("mensajeError", "No puede registrar citas en fechas pasadas.");
+
+                response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
+
+                return;
+            }
             String hora = request.getParameter("txtHora");
+            if (fechaSeleccionada.equals(LocalDate.now())) {
+
+                java.time.LocalTime horaSeleccionada
+                        = java.time.LocalTime.parse(hora);
+
+                if (horaSeleccionada.isBefore(
+                        java.time.LocalTime.now())) {
+
+                    request.getSession().setAttribute("mensajeError", "No puede registrar una cita en una hora ya transcurrida.");
+
+                    response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
+
+                    return;
+                }
+            }
             String motivo = request.getParameter("txtMotivo");
 
             citas c = new citas();
@@ -130,7 +160,25 @@ public class controladorcitas extends HttpServlet {
             c.setFecha(fecha);
             c.setHora(hora);
             c.setMotivo(motivo);
+            boolean disponible = dao.horaDisponible(fecha, hora);
 
+            if (!disponible) {
+
+                request.getSession().setAttribute("mensajeError", "La hora ya fue reservada.");
+
+                response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
+
+                return;
+            }
+
+            if (dao.obtenerHorasDisponibles(fecha).isEmpty()) {
+
+                request.getSession().setAttribute("mensajeError", "No hay atención para esa fecha.");
+
+                response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
+
+                return;
+            }
             boolean exito = dao.insertarCita(c);
 
             if (exito) {
@@ -145,8 +193,8 @@ public class controladorcitas extends HttpServlet {
     }
 
     // 3. EDITAR / REPROGRAMAR CITA COMPLETA
-    private void editar(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException { 
+    private void editar(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
             int idCita = Integer.parseInt(request.getParameter("txtIdCita"));
             int idMascota = Integer.parseInt(request.getParameter("txtIdMascota"));
@@ -154,8 +202,46 @@ public class controladorcitas extends HttpServlet {
             String fecha = request.getParameter("txtFecha");
             String hora = request.getParameter("txtHora");
             String motivo = request.getParameter("txtMotivo");
-            String estado = request.getParameter("txtEstado"); 
+            String estado = request.getParameter("txtEstado");
+            LocalDate fechaSeleccionada
+                    = LocalDate.parse(fecha);
 
+            if (fechaSeleccionada.isBefore(LocalDate.now())) {
+
+                request.getSession().setAttribute("mensajeError", "No puede asignar fechas pasadas.");
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
+            if (fechaSeleccionada.equals(LocalDate.now())) {
+
+                java.time.LocalTime horaSeleccionada
+                        = java.time.LocalTime.parse(hora);
+
+                if (horaSeleccionada.isBefore(
+                        java.time.LocalTime.now())) {
+
+                    request.getSession().setAttribute("mensajeError", "No puede asignar una hora ya transcurrida.");
+
+                    response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
+
+                    return;
+                }
+            }
+            boolean disponible = dao.horaDisponibleEditar(idCita, fecha, hora);
+
+            if (!disponible) {
+
+                request.getSession().setAttribute("mensajeError", "La hora seleccionada ya se encuentra reservada.");
+
+                response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
+
+                return;
+            }
             citas c = new citas();
             c.setIdCita(idCita);
             c.setIdMascota(idMascota);
@@ -179,7 +265,7 @@ public class controladorcitas extends HttpServlet {
     }
 
     // 4. CAMBIAR EL ESTADO RÁPIDAMENTE
-    private void actualizarEstado(HttpServletRequest request, HttpServletResponse response) 
+    private void actualizarEstado(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
             int idCita = Integer.parseInt(request.getParameter("id"));
@@ -199,11 +285,11 @@ public class controladorcitas extends HttpServlet {
     }
 
     // 5. ELIMINAR CITA FISICAMENTE
-    private void eliminar(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException { 
+    private void eliminar(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         try {
             int idCita = Integer.parseInt(request.getParameter("id"));
-            
+
             boolean exito = dao.eliminarCita(idCita);
 
             if (exito) {
@@ -216,6 +302,67 @@ public class controladorcitas extends HttpServlet {
         }
         response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
     }
+
+    //Obtener horarios disponibles
+    private void cargarHorasDisponibles(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        try {
+
+            String fecha = request.getParameter("fecha");
+
+            System.out.println("Fecha recibida: " + fecha);
+
+            List<String> horas = dao.obtenerHorasDisponibles(fecha);
+
+            System.out.println("Horas encontradas: " + horas);
+
+            response.setContentType("application/json");
+
+            PrintWriter out = response.getWriter();
+
+            out.print(new Gson().toJson(horas));
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+    //obtener horarios disponibles para editar
+    private void cargarHorasDisponiblesEditar(
+        HttpServletRequest request,
+        HttpServletResponse response)
+        throws IOException {
+
+    System.out.println("ENTRO A EDITAR");
+
+    try {
+
+        String fecha = request.getParameter("fecha");
+
+        int idCita = Integer.parseInt(
+                request.getParameter("idCita"));
+
+        List<String> horas =
+                dao.obtenerHorasDisponiblesEditar(
+                        fecha,
+                        idCita);
+
+        response.setContentType("application/json");
+
+        PrintWriter out = response.getWriter();
+
+        out.print(new Gson().toJson(horas));
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+
+    }
+}
 
     @Override
     public String getServletInfo() {

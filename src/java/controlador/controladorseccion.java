@@ -51,6 +51,9 @@ public class controladorseccion extends HttpServlet {
             case "usuarios":
                 usuarios(request, response);
                 break;
+            case "horarios":
+                horarios(request,response);
+                break;
             case "perfil":
                 request.getRequestDispatcher("controladorperfil").forward(request, response);
                 break;
@@ -146,6 +149,9 @@ public class controladorseccion extends HttpServlet {
             throws ServletException, IOException {
         request.getRequestDispatcher("/controladorusuarios?accion=listar").forward(request, response);
     }
-
+    private void horarios(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/controladorhorario?accion=listar").forward(request, response);
+    }
 
 }

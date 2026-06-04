@@ -238,7 +238,11 @@
                                         <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
 
 
-                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarCita<%= c.getIdCita() %>">
+                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarCita<%= c.getIdCita() %>" onclick="cargarHorasEditar(
+                                                    <%= c.getIdCita() %>,
+                                                            document.getElementById('txtFechaEdit<%= c.getIdCita() %>').value,
+                                                            '<%= c.getHora() %>'
+                                                            )">
                                                 <i class="fa-solid fa-pencil"></i>
                                             </button>
 
@@ -300,11 +304,17 @@
                                                 <div class="row">
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">Fecha</label>
-                                                        <input type="date" name="txtFecha" class="form-control" value="<%= c.getFecha() %>" required>
+                                                        <input type="date"  name="txtFecha"  id="txtFechaEdit<%= c.getIdCita() %>"   class="form-control"  value="<%= c.getFecha() %>"   min="<%= java.time.LocalDate.now() %>"  required>
                                                     </div>
                                                     <div class="col-md-6 mb-3">
                                                         <label class="form-label">Hora</label>
-                                                        <input type="time" name="txtHora" class="form-control" value="<%= c.getHora() %>" required>
+                                                        <select name="txtHora" id="txtHoraEdit<%= c.getIdCita() %>"  class="form-select" required>
+
+                                                            <option value="<%= c.getHora() %>" selected>
+                                                                <%= c.getHora() %>
+                                                            </option>
+
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3">
@@ -361,7 +371,7 @@
                                             <% if (listaClientes != null) { 
                                                 for(clientes cl : listaClientes) { %>
                                             <option value="<%= cl.getIdCliente() %>">ID: <%= cl.getIdCliente() %> - <%= cl.getNombreCompleto() %></option>
-                                                <%  } 
+                                            <%  } 
                                             } %>
                                         </select>
                                     </div>
@@ -395,11 +405,16 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Fecha</label>
-                                        <input type="date" name="txtFecha" class="form-control" required>
+                                        <input type="date" name="txtFecha"  id="txtFecha" class="form-control"  min="<%= java.time.LocalDate.now() %>" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Hora</label>
-                                        <input type="time" name="txtHora" class="form-control" required>
+                                        <select name="txtHora"  id="txtHora" class="form-select" required>
+                                            <option value="">
+                                                Seleccione hora
+                                            </option>
+
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="mb-3">
@@ -421,13 +436,13 @@
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
         <script>
-            function actualizarFecha() {
-                const fecha = new Date();
-                const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
-                document.getElementById("fechaHora").innerHTML = fecha.toLocaleDateString('es-ES', opciones) + " | " + fecha.toLocaleTimeString();
-            }
-            actualizarFecha();
-            setInterval(actualizarFecha, 1000);
+                                                function actualizarFecha() {
+                                                    const fecha = new Date();
+                                                    const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+                                                    document.getElementById("fechaHora").innerHTML = fecha.toLocaleDateString('es-ES', opciones) + " | " + fecha.toLocaleTimeString();
+                                                }
+                                                actualizarFecha();
+                                                setInterval(actualizarFecha, 1000);
         </script>
 
         <%
@@ -437,7 +452,7 @@
             if (mensajeExito != null) {
         %>
         <script>
-                alertify.success("<%= mensajeExito %>");
+            alertify.success("<%= mensajeExito %>");
         </script>
         <%
                 request.getSession().removeAttribute("mensajeExito");
@@ -445,7 +460,7 @@
             if (mensajeError != null) {
         %>
         <script>
-                alertify.error("<%= mensajeError %>");
+            alertify.error("<%= mensajeError %>");
         </script>
         <%
                 request.getSession().removeAttribute("mensajeError");
@@ -479,7 +494,8 @@
 
                     todasOpciones.forEach(op => {
 
-                        if (op.value === "") return;
+                        if (op.value === "")
+                            return;
 
                         if (op.dataset.cliente === idCliente) {
                             mascotaSelect.appendChild(op.cloneNode(true));
@@ -490,6 +506,121 @@
                 });
 
             });
-            </script>
+        </script>
+        <script>
+
+            document.getElementById("txtFecha")
+                    .addEventListener("change", function () {
+
+                        let fecha = this.value;
+                        console.log("Fecha seleccionada:", fecha);
+                        fetch(
+                                "${pageContext.request.contextPath}/controladorcitas?accion=horasDisponibles&fecha="
+                                + fecha
+                                )
+                                .then(response => response.json())
+                                .then(data => {
+
+                                    console.log(data);
+
+                                    let combo = document.getElementById("txtHora");
+
+                                    combo.innerHTML = '<option value="">Seleccione hora</option>';
+
+                                    data.forEach(function (hora) {
+
+                                        let option = document.createElement("option");
+
+                                        option.value = hora;
+                                        option.textContent = hora;
+
+                                        combo.appendChild(option);
+
+                                    });
+
+                                })
+                                .catch(error => {
+                                    console.error("ERROR:", error);
+                                });
+
+                    });
+
+        </script>
+        <script>
+
+            document.addEventListener("DOMContentLoaded", function () {
+
+            <% for(citas c : lista){ %>
+
+                document.getElementById("txtFechaEdit<%= c.getIdCita() %>")
+                        .addEventListener("change", function () {
+
+                            let fecha = this.value;
+
+                            fetch(
+                                    "${pageContext.request.contextPath}/controladorcitas?accion=horasDisponiblesEditar&fecha=" + fecha
+                                    + "&idCita=<%= c.getIdCita() %>"
+                                    )
+                                    .then(response => response.json())
+                                    .then(data => {
+
+                                        let combo =
+                                                document.getElementById("txtHoraEdit<%= c.getIdCita() %>");
+
+                                        combo.innerHTML =
+                                                '<option value="">Seleccione hora</option>';
+
+                                        data.forEach(function (hora) {
+
+                                            let option = document.createElement("option");
+
+                                            option.value = hora;
+                                            option.textContent = hora;
+
+                                            combo.appendChild(option);
+
+                                        });
+
+                                    });
+
+                        });
+
+            <% } %>
+
+            });
+
+
+            function cargarHorasEditar(idCita, fecha, horaActual) {
+
+                fetch(
+                        "${pageContext.request.contextPath}/controladorcitas?accion=horasDisponiblesEditar"
+                        + "&fecha=" + fecha
+                        + "&idCita=" + idCita
+                        )
+                        .then(response => response.json())
+                        .then(data => {
+
+                            let combo = document.getElementById("txtHoraEdit" + idCita);
+
+                            combo.innerHTML = "";
+
+                            data.forEach(function (hora) {
+
+                                let option = document.createElement("option");
+
+                                option.value = hora;
+                                option.textContent = hora;
+
+                                if (hora === horaActual) {
+                                    option.selected = true;
+                                }
+
+                                combo.appendChild(option);
+                            });
+
+                        });
+            }
+
+        </script>
     </body>
-</html>" 
+</html>

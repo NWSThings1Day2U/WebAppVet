@@ -95,10 +95,13 @@
                         <li class="nav-item">
                             <a class="nav-link ${paginaActual == 'usuarios' ? 'active' : ''}" href="${pageContext.request.contextPath}/controladorseccion?seccion=usuarios"><span style="margin-right: 5px;"><i class="fa-solid fa-users"></i></span>Usuarios</a>
                         </li>
-
+                        <li class="nav-item">
+                            <a class="nav-link ${paginaActual == 'horario' ? 'active' : ''}" href="${pageContext.request.contextPath}/controladorseccion?seccion=horarios"><span style="margin-right: 5px;"><i class="fa-solid fa-clock"></i></span>Horarios</a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link ${paginaActual == 'perfil' ? 'active' : ''}" href="${pageContext.request.contextPath}/controladorseccion?seccion=perfil"><span style="margin-right: 5px;"><i class="fa-solid fa-circle-user"></i></span>Perfil</a>
                         </li>
+                        
                     </ul>
 
                     <div class="d-flex align-items-center gap-3" style="margin-top: 20px;">

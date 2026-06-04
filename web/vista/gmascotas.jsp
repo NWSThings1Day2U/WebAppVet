@@ -203,7 +203,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            <a href="${pageContext.request.contextPath}/controladormascota?accion=eliminar&id=<%= m.getIdMascota() %>" class="btn btn-dangerfw-semibold">Eliminar Permanentemente</a>
+                                            <a href="${pageContext.request.contextPath}/controladormascota?accion=eliminar&id=<%= m.getIdMascota() %>" class="btn btn-danger fw-semibold">Eliminar Permanentemente</a>
                                         </div>
                                     </div>
                                 </div>

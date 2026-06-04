@@ -37,14 +37,24 @@
                     <h2 class="text-center titulo-vet">Mis Citas</h2>
                     <p class="text-center p-vet">Administra las citas de tus mascotas</p>
                 </div>
-                <div class="filtros-vet">
-                    <div class="d-grid gap-2 d-md-block">
-                        <button class="btn btn-primary btn-vet-prin me-2" type="button">Todas</button>
-                        <button class="btn btn-primary btn-vet-sec me-2" type="button">Pendientes</button>
-                        <button class="btn btn-primary btn-vet-sec me-2" type="button">Confirmadas</button>
-                        <button class="btn btn-primary btn-vet-sec me-2" type="button">Completadas</button>
-                        <button class="btn btn-primary btn-vet-sec me-2" type="button">Canceladas</button>
-                        
+                <div class="filtros-vet row mb-4 align-items-center">
+                    <!-- Contenedor de los botones de filtro -->
+                    <div class="col-auto">
+                        <div class="d-grid gap-2 d-md-block">
+                            <button class="btn btn-primary btn-vet-prin me-2" type="button">Todas</button>
+                            <button class="btn btn-primary btn-vet-sec me-2" type="button">Pendientes</button>
+                            <button class="btn btn-primary btn-vet-sec me-2" type="button">Confirmadas</button>
+                            <button class="btn btn-primary btn-vet-sec me-2" type="button">Completadas</button>
+                            <button class="btn btn-primary btn-vet-sec me-2" type="button">Canceladas</button>
+                        </div>
+                    </div>
+                    <div class="col-auto ms-auto">
+                        <select class="form-select" aria-label="Default select example">
+                            <option selected>Selecciona cliente</option>
+                            <option value="1">Cliente principal (yo)</option>
+                            <option value="2">cliente externo</option>
+                            <option value="3">cliente externo</option>
+                        </select>
                     </div>
                 </div>
             </div>

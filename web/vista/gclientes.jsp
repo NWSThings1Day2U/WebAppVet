@@ -229,7 +229,7 @@
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                <a href="${pageContext.request.contextPath}/controladorcliente?accion=eliminar&id=<%= c.getIdCliente() %>" class="btn btn-dangerfw-semibold">Eliminar Permanentemente</a>
+                                                <a href="${pageContext.request.contextPath}/controladorcliente?accion=eliminar&id=<%= c.getIdCliente() %>" class="btn btn-danger fw-semibold">Eliminar Permanentemente</a>
                                             </div>
                                         </div>
                                     </div>
