@@ -116,7 +116,26 @@ public class productodao {
             closeResources();
         }
     }
+    //buscar x idprod
 
+    public productos buscarPorId(int idProducto) {
+        productos p = null;
+        try {
+            List<productos> lista
+                    = listarProductos();
+            for (productos prod : lista) {
+                if (prod.getIdProducto() == idProducto) {
+                    p = prod;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(
+                    "Error buscarPorId: "
+                    + e.getMessage());
+        }
+        return p;
+    }
     private void closeResources() {
         try {
             if (rs != null) rs.close();
