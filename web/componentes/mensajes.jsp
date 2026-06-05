@@ -53,3 +53,14 @@
     </script>
     <c:remove var="success" scope="session"/>
 </c:if>
+<c:if test="${not empty sessionScope.registroExitoso}">
+    <script>
+        Swal.fire({
+            title: '¡Registrado con éxito!',
+            text: '${sessionScope.registroExitoso}',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+        });
+    </script>
+    <c:remove var="registroExitoso" scope="session"/>
+</c:if>

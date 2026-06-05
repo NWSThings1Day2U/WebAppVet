@@ -97,7 +97,7 @@ public class controladorusuario extends HttpServlet {
         String userDefecto = primerNombre + (System.currentTimeMillis() % 1000);
 
         if (us.registrar(userDefecto, pass, nombre, dni, correo, telefono)) {
-            request.getSession().setAttribute("success", "¡Cuenta creada! Tu usuario es: " + userDefecto);
+            request.getSession().setAttribute("registroExitoso", "¡Registrado con éxito! Tu usuario es: " + userDefecto);
             response.sendRedirect("index.jsp");
         } else {
             request.getSession().setAttribute("error", "Error al registrar. El DNI o Correo ya existen.");
@@ -112,18 +112,13 @@ public class controladorusuario extends HttpServlet {
         int idUsuario = us.iniciarRecuperacion(correo, codigo);
 
         if (idUsuario > 0) {
-            boolean enviado
-                    = emailservicio.enviarCodigo(correo, codigo);
+            boolean enviado  = emailservicio.enviarCodigo(correo, codigo);
 
             if (!enviado) {
-                request.getSession().setAttribute(
-                        "error",
-                        "No fue posible enviar el correo."
+                request.getSession().setAttribute( "error",  "No fue posible enviar el correo."
                 );
 
-                response.sendRedirect(
-                        "index.jsp?modo=olvido"
-                );
+                response.sendRedirect("index.jsp?modo=olvido");
 
                 return;
             }
@@ -270,28 +265,18 @@ public class controladorusuario extends HttpServlet {
                 correo,
                 codigo);
 
-        if (idUsuario > 0
-                && emailservicio.enviarCodigo(
-                        correo,
-                        codigo)) {
+        if (idUsuario > 0 && emailservicio.enviarCodigo(  correo, codigo)) {
 
-            session.setAttribute(
-                    "success",
-                    "Nuevo código enviado.");
+            session.setAttribute(  "success",  "Nuevo código enviado.");
 
-            session.setAttribute(
-                    "ultimoEnvioCodigo",
-                    System.currentTimeMillis());
+            session.setAttribute(  "ultimoEnvioCodigo", System.currentTimeMillis());
 
         } else {
 
-            session.setAttribute(
-                    "error",
-                    "No fue posible reenviar el código.");
+            session.setAttribute( "error", "No fue posible reenviar el código.");
         }
 
-        response.sendRedirect(
-                "index.jsp?modo=olvido&paso=2");
+        response.sendRedirect( "index.jsp?modo=olvido&paso=2");
     }
 
     @Override
