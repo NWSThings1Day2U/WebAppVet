@@ -20,7 +20,8 @@
     <meta charset="UTF-8">
 
     <title>Detalle Venta</title>
-
+    <!-- Icon -->
+        <link rel="icon" href="recursos/logoveet.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet">
 

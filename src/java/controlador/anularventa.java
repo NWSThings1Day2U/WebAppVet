@@ -14,9 +14,25 @@ public class anularventa extends HttpServlet {
    public anularventa() {
    }
 
-   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      int idVenta = Integer.parseInt(request.getParameter("id"));
-      this.dao.anularVenta(idVenta);
-      response.sendRedirect("controladorseccion?seccion=ventas");
-   }
+   protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws IOException {
+
+    int idVenta = Integer.parseInt(request.getParameter("id"));
+
+    boolean exito = dao.anularVenta(idVenta);
+
+    if (exito) {
+        request.getSession().setAttribute(
+                "mensajeExito",
+                "Venta anulada correctamente."
+        );
+    } else {
+        request.getSession().setAttribute(
+                "mensajeError",
+                "No se pudo anular la venta."
+        );
+    }
+
+    response.sendRedirect("controladorseccion?seccion=ventas");
+}
 }

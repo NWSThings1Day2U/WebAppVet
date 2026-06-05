@@ -436,13 +436,13 @@
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
         <script>
-                                                function actualizarFecha() {
-                                                    const fecha = new Date();
-                                                    const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
-                                                    document.getElementById("fechaHora").innerHTML = fecha.toLocaleDateString('es-ES', opciones) + " | " + fecha.toLocaleTimeString();
-                                                }
-                                                actualizarFecha();
-                                                setInterval(actualizarFecha, 1000);
+             function actualizarFecha() {
+                 const fecha = new Date();
+                  const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+                  document.getElementById("fechaHora").innerHTML = fecha.toLocaleDateString('es-ES', opciones) + " | " + fecha.toLocaleTimeString();
+                    }
+                  actualizarFecha();
+                 setInterval(actualizarFecha, 1000);
         </script>
 
         <%

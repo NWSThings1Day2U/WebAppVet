@@ -33,8 +33,9 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Vollkorn:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">     <!-- Iconos -->
-        <!-- Icon -->
+        
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+        <!-- Icon -->
         <link rel="icon" href="recursos/logoveet.png">
         <!-- Alertify -->
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
@@ -121,8 +122,7 @@
                                 Nueva Venta
                             </button>
 
-                            <a href="${pageContext.request.contextPath}/exportarventas"
-                               class="btn btn-outline-success">
+                            <a href="${pageContext.request.contextPath}/exportarventas" class="btn btn-outline-success"   onclick="alertify.success('Exportando archivo Excel...')">
                                 <i class="fa-solid fa-file-excel"></i>
                                 Exportar Excel
                             </a>
@@ -402,7 +402,33 @@
             </div>
         </div>
         <!-- Bootstrap y alertify -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <jsp:include page="/componentes/mensajes.jsp" />
+        
+        <%
+    String mensajeExito = (String) session.getAttribute("mensajeExito");
+    String mensajeError = (String) session.getAttribute("mensajeError");
+        %>
 
+        <script>
+        window.onload = function() {
+            <% if (mensajeExito != null) { %>
+                alertify.success("<%= mensajeExito %>");
+            <% } %>
+
+            <% if (mensajeError != null) { %>
+                alertify.error("<%= mensajeError %>");
+            <% } %>
+        };
+        </script>
+
+        <%
+        session.removeAttribute("mensajeExito");
+        session.removeAttribute("mensajeError");
+        %>
         <script>
             function calcularVenta() {
                 let precio =
@@ -446,9 +472,6 @@
 
 
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        
     </body>
 </html>
