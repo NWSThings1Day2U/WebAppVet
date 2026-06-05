@@ -97,7 +97,7 @@ public class controladorusuario extends HttpServlet {
         String userDefecto = primerNombre + (System.currentTimeMillis() % 1000);
 
         if (us.registrar(userDefecto, pass, nombre, dni, correo, telefono)) {
-            request.getSession().setAttribute("registroExitoso", "¡Registrado con éxito! Tu usuario es: " + userDefecto);
+            request.getSession().setAttribute("registroExitoso", "¡Bienvenido(a) a la plataforma! Tu usuario es: " + userDefecto);
             response.sendRedirect("index.jsp");
         } else {
             request.getSession().setAttribute("error", "Error al registrar. El DNI o Correo ya existen.");

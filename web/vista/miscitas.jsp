@@ -39,23 +39,26 @@
                 </div>
                 <div class="filtros-vet row mb-4 align-items-center">
                     <!-- Contenedor de los botones de filtro -->
-                    <div class="col-auto">
-                        <div class="d-grid gap-2 d-md-block">
-                            <button class="btn btn-primary btn-vet-prin me-2" type="button">Todas</button>
-                            <button class="btn btn-primary btn-vet-sec me-2" type="button">Pendientes</button>
-                            <button class="btn btn-primary btn-vet-sec me-2" type="button">Confirmadas</button>
-                            <button class="btn btn-primary btn-vet-sec me-2" type="button">Completadas</button>
-                            <button class="btn btn-primary btn-vet-sec me-2" type="button">Canceladas</button>
-                        </div>
-                    </div>
-                    <div class="col-auto ms-auto">
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected>Selecciona cliente</option>
-                            <option value="1">Cliente principal (yo)</option>
-                            <option value="2">cliente externo</option>
-                            <option value="3">cliente externo</option>
-                        </select>
-                    </div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+    <!-- Grupo de botones de filtro -->
+    <div class="d-flex flex-wrap gap-2">
+        <button class="btn btn-filtro active" type="button">Todas</button>
+        <button class="btn btn-filtro" type="button">Pendientes</button>
+        <button class="btn btn-filtro" type="button">Confirmadas</button>
+        <button class="btn btn-filtro" type="button">Completadas</button>
+        <button class="btn btn-filtro" type="button">Canceladas</button>
+    </div>
+
+    <!-- Selector Combobox a la derecha -->
+    <div class="combo-cliente-container">
+        <select class="form-select select-custom-vet" style="font-size: 13px !important;">
+            <option selected disabled>Selecciona cliente</option>
+            <option value="1">Cliente A</option>
+            <option value="2">Cliente B</option>
+        </select>
+    </div>
+</div>
+
                 </div>
             </div>
         </main>

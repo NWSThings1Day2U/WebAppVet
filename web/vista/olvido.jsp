@@ -202,18 +202,15 @@
     document.getElementById('formRecuperar')
         .addEventListener('submit', function (e) {
 
-            const accion =
-                    document.getElementById('accionForm').value;
+            const accion = document.getElementById('accionForm').value;
 
             if (accion !== 'verificar') {
                 return;
             }
 
-            const pass =
-                    document.getElementById('reg_pass').value;
+            const pass =  document.getElementById('reg_pass').value;
 
-            const conf =
-                    document.getElementById('reg_pass_conf').value;
+            const conf = document.getElementById('reg_pass_conf').value;
 
             if (pass !== conf) {
 
