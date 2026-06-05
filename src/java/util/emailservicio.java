@@ -1,4 +1,4 @@
-package modelo;
+package util;
 
 import org.apache.commons.mail2.jakarta.DefaultAuthenticator;
 import org.apache.commons.mail2.jakarta.HtmlEmail;

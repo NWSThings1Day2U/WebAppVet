@@ -3,7 +3,7 @@ package dao;
 import conexion.conexionvet_bd;
 import modelo.usuarios;
 import java.sql.*;
-import modelo.encriptar;
+import util.encriptar;
 
 public class perfildao {
     private Connection cn;

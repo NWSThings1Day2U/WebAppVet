@@ -5,7 +5,7 @@ import modelo.usuarios;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import modelo.encriptar;
+import util.encriptar;
 
 public class usuariodao {
 
