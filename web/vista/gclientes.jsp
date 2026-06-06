@@ -9,11 +9,9 @@
 <%@page import="modelo.clientes"%>
 
 <%
-    List<clientes> lista =
-            (List<clientes>) request.getAttribute("listaClientes");
+    List<clientes> lista =  (List<clientes>) request.getAttribute("listaClientes");
 
-    List<clientes> listaResponsables =
-            (List<clientes>) request.getAttribute("listaResponsables");
+    List<clientes> listaResponsables = (List<clientes>) request.getAttribute("listaResponsables");
 %>
 <!DOCTYPE html>
 <html>

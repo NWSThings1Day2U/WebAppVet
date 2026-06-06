@@ -1,4 +1,14 @@
-
+<%@page import="modelo.citas"%>
+<%@page import="modelo.clientes"%>
+<%@page import="modelo.mascotas"%>
+<%@page import="dao.citadao"%>
+<%@page import="java.util.List"%>
+<%
+    List<citas> lista = (List<citas>) request.getAttribute("listaCitas");
+    List<clientes> listaClientes = (List<clientes>) request.getAttribute("listaClientes");
+    List<mascotas> listaMascotas = (List<mascotas>) request.getAttribute("listaMascotas");
+    
+%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -183,7 +193,7 @@
                     <div class="d-flex align-items-center justify-content-between w-100 gap-3 mb-4">
 
                         <div class="d-flex align-items-center gap-2 ">
-                            <div class="d-flex align-items-center justify-content-center icon-perfil-vet">
+                            <div class="d-flex align-items-center justify-content-center icon-perfil-vet me-3">
                                 <i class="fa-solid fa-dog"></i>
                             </div>
                             <h4 class="m-0 subtitulo-vet">
@@ -192,103 +202,153 @@
                         </div>
 
                         <div class="d-flex align-items-center gap-2">
-                            <button class="btn btn-vet-principal text-nowrap">
+                            <button class="btn btn-vet-principal text-nowrap" data-bs-toggle="modal" data-bs-target="#modalNuevaMascota">
                                 <i class="fa-solid fa-plus me-2"></i>Agregar mascota
                             </button>
 
-                            <div class="combo-cliente-container" style="min-width: 200px;">
-                                <select class="form-select select-custom-vet" style="font-size: 13px !important;">
-                                    <option selected>Selecciona cliente</option>
-                                    <option value="1">Cliente principal (yo)</option>
-                                    <option value="2">cliente externo</option>
-                                    <option value="3">cliente externo</option>
-                                </select>
+                            <div class="combo-cliente-container">
+                                <select id="clienteFiltro" class="form-select select-custom-vet">
+
+                                    <option value="">Seleccione Cliente</option>
+
+                                    <% if (listaClientes != null) {
+                                        for(clientes cl : listaClientes){ %>
+
+                                        <option value="<%= cl.getIdCliente() %>">
+                                            <%= cl.getNombreCompleto() %>
+                                        </option>
+
+                                    <% }
+                                    } %>
+
+                                </select>                        
                             </div>
                         </div>
 
                     </div>
 
 
-                    <div class="d-flex flex-column gap-4">
+                    <div id="contenedorMascotas"  class="d-flex flex-column gap-4">
+
+                                                <%
+                        if(listaMascotas != null &&
+                           !listaMascotas.isEmpty()){
+
+                            for(mascotas m : listaMascotas){
+                        %>
 
                         <div class="card car-vet shadow-sm m-0">
-                            <h5 class="card-header sub1-vet">Mascota 1</h5>
+
+                            <h5 class="card-header sub1-vet">
+                                <%= m.getNombre() %>
+                            </h5>
+
                             <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-md-10">
-                                        <h5 class="card-title sub2-vet mb-3">Nombre mascota</h5>
-                                        <p class="card-text text-vet m-0">
-                                            <strong>Especie: </strong> Perro <br>
-                                            <strong>Raza: </strong> Golden Retriever <br>
-                                            <strong>Edad: </strong> 3 años <br>
-                                            <strong>Peso: </strong> 28 kg
-                                        </p>
-                                    </div>
-                                    <div class="col-md-2 mt-3 mt-md-0 text-md-end text-center">
-                                        <div class="d-flex gap-2 justify-content-md-end justify-content-center">
-                                            <button class="btn btn-warning text-white" type="button" title="Editar Mascota">
-                                                <i class="fa-solid fa-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-danger" type="button" title="Eliminar Mascota">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+
+                                <strong>Especie:</strong>
+                                <%= m.getEspecie() %>
+                                <br>
+
+                                <strong>Raza:</strong>
+                                <%= m.getRaza() %>
+                                <br>
+
+                                <strong>Sexo:</strong>
+                                <%
+                                    String sexo;
+                                    if (m.getSexo().equals("M")) {
+                                        sexo = "Macho";
+                                    } else {
+                                        sexo = "Hembra";
+                                    }
+                                %>
+                                <%= sexo %>
+                                
+                                <br>
+
+                                <strong>Peso:</strong>
+                                <%= m.getPeso() %> kg
+
                             </div>
+
                         </div>
 
-                        <div class="card car-vet shadow-sm m-0">
-                            <h5 class="card-header sub1-vet">Mascota 2</h5>
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-md-10">
-                                        <h5 class="card-title sub2-vet mb-3">Nombre mascota</h5>
-                                        <p class="card-text text-vet m-0">
-                                            <strong>Especie: </strong> Perro <br>
-                                            <strong>Raza: </strong> Golden Retriever <br>
-                                            <strong>Edad: </strong> 3 años <br>
-                                            <strong>Peso: </strong> 28 kg
-                                        </p>
-                                    </div>
-                                    <div class="col-md-2 mt-3 mt-md-0 text-md-end text-center">
-                                        <div class="d-flex gap-2 justify-content-md-end justify-content-center">
-                                            <button class="btn btn-warning text-white" type="button" title="Editar Mascota">
-                                                <i class="fa-solid fa-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-danger" type="button" title="Eliminar Mascota">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        <%
+                            }
+                        }else{
+                        %>
+
+                        <div class="alert alert-info">
+                            Seleccione un cliente para visualizar sus mascotas.
                         </div>
 
-                        <div class="card car-vet shadow-sm m-0">
-                            <h5 class="card-header sub1-vet">Mascota 3</h5>
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-md-10">
-                                        <h5 class="card-title sub2-vet mb-3">Nombre mascota</h5>
-                                        <p class="card-text text-vet m-0">
-                                            <strong>Especie: </strong> Perro <br>
-                                            <strong>Raza: </strong> Golden Retriever <br>
-                                            <strong>Edad: </strong> 3 años <br>
-                                            <strong>Peso: </strong> 28 kg
-                                        </p>
+                        <%
+                        }
+                        %>
+                    </div>
+                    
+                    <!-- crear modal -->
+                    <div class="modal fade" id="modalNuevaMascota" tabindex="-1">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <form action="controladormascota?accion=guardar" method="POST">
+                                    <input type="hidden" name="origen" value="perfil">
+                                    <div class="modal-header bg-success text-white">
+                                        <h5 class="modal-title"><i class="fa-solid fa-paw"></i> Registrar Nueva Mascota</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                     </div>
-                                    <div class="col-md-2 mt-3 mt-md-0 text-md-end text-center">
-                                        <div class="d-flex gap-2 justify-content-md-end justify-content-center">
-                                            <button class="btn btn-warning text-white" type="button" title="Editar Mascota">
-                                                <i class="fa-solid fa-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-danger" type="button" title="Eliminar Mascota">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Nombre</label>
+                                                <input type="text" name="txtNombre" class="form-control" placeholder="Ingrese nombre" required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Especie</label>
+                                                <input type="text" name="txtEspecie" class="form-control" placeholder="Ingrese especie" required>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label class="form-label">Raza</label>
+                                                <input type="text" name="txtRaza" class="form-control" placeholder="Ingrese raza" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Nombre de cliente (Dueño)</label>
+                                                <select name="txtIdCliente" id="modalTxtIdCliente" class="form-select" required>
+                                                    <option value="" selected disabled>Selecciona dueño</option>
+                                                    <% if (listaClientes != null) {
+                                                        for(clientes c : listaClientes) { %>
+                                                    <option value="<%= c.getIdCliente() %>">(ID: <%= c.getIdCliente() %>) - <%= c.getNombreCompleto() %></option>
+                                                    <%   }
+                                                     } %>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Sexo</label>
+                                                <select name="txtSexo" class="form-select" required>
+                                                    <option value="" selected disabled>Selecciona sexo</option>
+                                                    <option value="F">Hembra</option>
+                                                    <option value="M">Macho</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Peso (kg)</label>
+                                                <input type="number" step="0.01" name="txtPeso" class="form-control" placeholder="Ingrese peso" min="0" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Fecha de nacimiento</label>
+                                                <input type="date" name="txtFechaNac" class="form-control" required>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success">Guardar Mascota</button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -298,6 +358,36 @@
         <!-- Bootstrap y alertify -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>        
-        <jsp:include page="/componentes/mensajes.jsp" /> 
+        <jsp:include page="/componentes/mensajes.jsp" />
+        <% if(session.getAttribute("mensajeExito") != null) { %>
+            <script>alertify.success('<%= session.getAttribute("mensajeExito") %>');</script>
+        <% session.removeAttribute("mensajeExito"); } %>
+
+        <% if(session.getAttribute("mensajeError") != null) { %>
+            <script>alertify.error('<%= session.getAttribute("mensajeError") %>');</script>
+        <% session.removeAttribute("mensajeError"); } %>
+        <script>
+            document.getElementById("clienteFiltro").addEventListener("change", function() {
+                console.log("Filtrando para el idCliente: " + this.value); 
+
+                fetch("controladorperfil?accion=filtrarMascotas&idCliente=" + this.value)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("contenedorMascotas").innerHTML = html;
+                })
+                .catch(error => console.error("Error al filtrar las mascotas:", error));
+            });
+            
+            document.getElementById('modalNuevaMascota').addEventListener('show.bs.modal', function () {
+                const filtroClienteValue = document.getElementById('clienteFiltro').value;
+                const modalSelectCliente = document.getElementById('modalTxtIdCliente');
+
+                if (filtroClienteValue) {
+                    modalSelectCliente.value = filtroClienteValue;
+                } else {
+                    modalSelectCliente.value = ""; 
+                }
+            });
+        </script>
     </body>
 </html>

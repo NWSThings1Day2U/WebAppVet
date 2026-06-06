@@ -386,11 +386,9 @@ public class controladorcitas extends HttpServlet {
         Integer id = (Integer) session.getAttribute("id");
         String rol = (String) session.getAttribute("rol");
 
-        request.setAttribute("listaClientes",
-                new clientedao().listarClientesPorUsuario(id));
+        request.setAttribute("listaClientes",new clientedao().listarClientesPorUsuario(id));
 
-        request.setAttribute("listaMascotas",
-                new mascotadao().listarMascotas());
+        request.setAttribute("listaMascotas",new mascotadao().listarMascotas());
 
         request.getRequestDispatcher(pagagendarcitas).forward(request, response);
     }
@@ -403,7 +401,9 @@ public class controladorcitas extends HttpServlet {
         HttpSession session = request.getSession();
         Integer id = (Integer) session.getAttribute("id");
         String rol = (String) session.getAttribute("rol");
+        request.setAttribute("listaClientes",new clientedao().listarClientesPorUsuario(id));
 
+        request.setAttribute("listaMascotas",new mascotadao().listarMascotas());
         request.setAttribute("listaCitas", dao.listarCitasPorCliente(id));
 
         request.getRequestDispatcher(pagmiscitas).forward(request, response);

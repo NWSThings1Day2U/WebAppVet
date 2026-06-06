@@ -28,7 +28,7 @@
                         <option value="">Seleccione Cliente</option>
                         <% if (listaClientes != null) { 
                                                 for(clientes cl : listaClientes) { %>
-                        <option value="<%= cl.getIdCliente() %>">ID: <%= cl.getIdCliente() %> - <%= cl.getNombreCompleto() %></option>
+                        <option value="<%= cl.getIdCliente() %>"><%= cl.getNombreCompleto() %></option>
                         <%  } 
                                             } %>
                     </select>

@@ -172,6 +172,7 @@
                 </div>    
                         
                 <div class="tarjeta-final-vet mt-5 mb-5">
+                    <h2 class="text-start titulo-vet fs-3 mb-4" style="color: #333 !important;">Recuerde:</h2>
                     <div class="card border-0 rounded-4 shadow-sm p-4" style="background-color: #FFFFFF; border-radius: 25px !important;">
                         <div class="row align-items-center justify-content-between g-3">
                             

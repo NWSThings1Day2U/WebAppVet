@@ -59,7 +59,7 @@ public class controladorseccion extends HttpServlet {
                 horarios(request,response);
                 break;
             case "perfil":
-                request.getRequestDispatcher("controladorperfil").forward(request, response);
+                perfil(request,response);
                 break;
             default:
                 throw new AssertionError();
@@ -152,9 +152,7 @@ public class controladorseccion extends HttpServlet {
 
     private void perfil(HttpServletRequest request, HttpServletResponse response)              
             throws ServletException, IOException {
-        request.setAttribute("paginaActual", "perfil");
-
-        request.getRequestDispatcher(pagperfil).forward(request, response);
+        request.getRequestDispatcher("controladorperfil").forward(request, response);
     }
 
     private void citas(HttpServletRequest request, HttpServletResponse response) 

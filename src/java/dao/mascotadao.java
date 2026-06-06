@@ -5,12 +5,14 @@ import modelo.mascotas;
 
 import java.sql.*;
 import java.util.*;
+import modelo.clientes;
 
 public class mascotadao {
 
     private Connection cn = null;
     private CallableStatement cs = null;
     private ResultSet rs = null;
+    private PreparedStatement ps;
 
     // 1. LISTAR TODAS LAS MASCOTAS
     public List<mascotas> listarMascotas() {
@@ -144,9 +146,8 @@ public class mascotadao {
             closeResources();
         }
     }
-    
+
     //6. Contar mascotas activas
-    
     public int contarMascotas() {
         int total = 0;
 
@@ -167,6 +168,78 @@ public class mascotadao {
 
         return total;
     }
+
+    //listar cliente segund idcliente
+    public List<mascotas> listarTodasLasMascotasDelGrupo(List<clientes> listaClientes) {
+        List<mascotas> lista = new ArrayList<>();
+
+        if (listaClientes == null || listaClientes.isEmpty()) {
+            return lista;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < listaClientes.size(); i++) {
+            sb.append("?");
+            if (i < listaClientes.size() - 1) {
+                sb.append(",");
+            }
+        }
+
+        String sql = "SELECT * FROM mascotas WHERE id_cliente IN (" + sb.toString() + ")";
+
+        try {
+            cn = conexionvet_bd.probarConexion();
+            ps = cn.prepareStatement(sql);
+
+            for (int i = 0; i < listaClientes.size(); i++) {
+                ps.setInt(i + 1, listaClientes.get(i).getIdCliente());
+            }
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                mascotas m = new mascotas();
+                m.setIdMascota(rs.getInt("id_mascota"));
+                m.setNombre(rs.getString("nombre"));
+                m.setEspecie(rs.getString("especie"));
+                m.setRaza(rs.getString("raza"));
+                m.setSexo(rs.getString("sexo"));
+                m.setPeso(rs.getDouble("peso"));
+                lista.add(m);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+
+    public List<mascotas> listarMascotasxCliente(int idCliente) {
+        List<mascotas> lista = new ArrayList<>();
+        String sql = "SELECT * FROM mascotas WHERE id_cliente = ?";
+        try {
+            cn = conexionvet_bd.probarConexion();
+            ps = cn.prepareStatement(sql);
+            ps.setInt(1, idCliente);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                mascotas m = new mascotas();
+                m.setIdMascota(rs.getInt("id_mascota"));
+                m.setNombre(rs.getString("nombre"));
+                m.setEspecie(rs.getString("especie"));
+                m.setRaza(rs.getString("raza"));
+                m.setSexo(rs.getString("sexo"));
+                m.setPeso(rs.getDouble("peso"));
+                lista.add(m);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+
     private void closeResources() {
         try {
             if (rs != null) {

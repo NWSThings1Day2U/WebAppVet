@@ -48,7 +48,7 @@ public class citadao {
         return lista;
     }
 
-    // Lista citas segun cliente
+    // Lista citas segun cliente logurado
     public List<citas> listarCitasPorCliente(int idUsuario) {
         List<citas> lista = new ArrayList<>();
         try {
@@ -77,7 +77,8 @@ public class citadao {
         }
         return lista;
     }
-
+    
+    
     // crear cita
     public boolean insertarCita(citas c) {
         try {

@@ -6,13 +6,14 @@ import modelo.clientes;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import modelo.mascotas;
 
 public class clientedao {
 
     private Connection cn = null;
     private CallableStatement cs = null;
     private ResultSet rs = null;
-
+    
     // 1. METODO LISTAR CLIENTES
     public List<clientes> listarClientes() {
         List<clientes> lista = new ArrayList<>();
@@ -314,6 +315,7 @@ public class clientedao {
         return lista;
     }   
     
+
     private void closeResources() {
         try {
             if (rs != null) {

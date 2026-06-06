@@ -156,16 +156,36 @@
                                                 <td>${c.hora}</td>
                                                 <td>
                                                     <c:choose>
-                                                        <c:when test="${c.estado=='Confirmada'}">
-                                                            <span class="badge bg-success">${c.estado}</span>
-                                                        </c:when>
-                                                        <c:when test="${c.estado=='Pendiente'}">
-                                                            <span class="badge bg-warning text-dark">${c.estado}</span>
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            <span class="badge bg-danger">${c.estado}</span>
-                                                        </c:otherwise>
-                                                    </c:choose>
+                                                    <c:when test="${c.estado == 'PENDIENTE'}">
+                                                        <span class="badge bg-warning text-dark">
+                                                            Pendiente
+                                                        </span>
+                                                    </c:when>
+
+                                                    <c:when test="${c.estado == 'CONFIRMADA'}">
+                                                        <span class="badge bg-primary">
+                                                            Confirmada
+                                                        </span>
+                                                    </c:when>
+
+                                                    <c:when test="${c.estado == 'ATENDIDA'}">
+                                                        <span class="badge bg-success">
+                                                            Atendida
+                                                        </span>
+                                                    </c:when>
+
+                                                    <c:when test="${c.estado == 'CANCELADA'}">
+                                                        <span class="badge bg-danger">
+                                                            Cancelada
+                                                        </span>
+                                                    </c:when>
+
+                                                    <c:otherwise>
+                                                        <span class="badge bg-secondary">
+                                                            ${c.estado}
+                                                        </span>
+                                                    </c:otherwise>
+                                                </c:choose>
                                                 </td>
                                             </tr>
                                         </c:forEach>

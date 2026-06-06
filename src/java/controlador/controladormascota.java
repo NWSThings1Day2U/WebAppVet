@@ -78,8 +78,13 @@ public class controladormascota extends HttpServlet {
         } catch (Exception e) {
             request.getSession().setAttribute("mensajeError", "Datos inválidos: " + e.getMessage());
         }
-        response.sendRedirect("controladormascota?accion=listar");
-    }
+        String origen = request.getParameter("origen");
+            if ("perfil".equals(origen)) {
+                response.sendRedirect("controladorperfil?accion=listar");
+            } else {
+                response.sendRedirect("controladormascota?accion=listar");
+            }
+        }
 
     private void editar(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {

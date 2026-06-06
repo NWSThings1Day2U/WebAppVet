@@ -1,6 +1,16 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%@page import="modelo.citas"%>
+<%@page import="modelo.clientes"%>
+<%@page import="modelo.mascotas"%>
+<%@page import="dao.citadao"%>
+<%@page import="java.util.List"%>
+<%
+    List<citas> lista = (List<citas>) request.getAttribute("listaCitas");
+    List<clientes> listaClientes = (List<clientes>) request.getAttribute("listaClientes");
+    List<mascotas> listaMascotas = (List<mascotas>) request.getAttribute("listaMascotas");
+    
+%>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -37,10 +47,8 @@
                     <h2 class="text-center titulo-vet">Mis Citas</h2>
                     <p class="text-center p-vet">Administra las citas de tus mascotas</p>
                 </div>
-                <div class="filtros-vet row mb-4 align-items-center">
-                    <!-- Contenedor de los botones de filtro -->
-                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
-                        <!-- Grupo de botones de filtro -->
+                <div class="filtros-vet row mb-4 gy-3 align-items-center">
+                    <div class="col-12 col-md-auto me-auto">
                         <div class="d-flex flex-wrap gap-2">
                             <button class="btn btn-filtro active" type="button">Todas</button>
                             <button class="btn btn-filtro" type="button">Pendientes</button>
@@ -48,17 +56,23 @@
                             <button class="btn btn-filtro" type="button">Completadas</button>
                             <button class="btn btn-filtro" type="button">Canceladas</button>
                         </div>
+                    </div>
 
-                        <!-- Selector Combobox a la derecha -->
+                    <div class="col-12 col-md-4 col-lg-3">
                         <div class="combo-cliente-container">
-                            <select class="form-select select-custom-vet" style="font-size: 13px !important;">
-                                <option selected disabled>Selecciona cliente</option>
-                                <option value="1">Cliente A</option>
-                                <option value="2">Cliente B</option>
+                            <select class="form-select select-custom-vet">
+                                <option value="">Seleccione Cliente</option>
+                                <% 
+                                    if (listaClientes != null) { 
+                                        int i = 1;
+                                        for(clientes cl : listaClientes) { %>
+                                <option value="<%= cl.getIdCliente() %>"><%=i%>. <%= cl.getNombreCompleto() %></option>
+                                <% i++;
+                                } 
+                                } %>
                             </select>
                         </div>
                     </div>
-
                 </div>
             </div>
         </main>
