@@ -68,7 +68,7 @@ public class controladorcliente extends HttpServlet {
 
     private void guardar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        try {
         String nombre = request.getParameter("txtNombre");
         String dni = request.getParameter("txtDni");
         String correo = request.getParameter("txtCorreo");
@@ -87,39 +87,62 @@ public class controladorcliente extends HttpServlet {
         c.setCorreo(correo);
         c.setTelefono(telefono);
 
-        boolean insertado = dao.crearCliente(c);
-        
+        boolean exito = dao.crearCliente(c);
+        if (exito) {
+                request.getSession().setAttribute("mensajeExito", "Cliente registrado correctamente.");
+            } else {
+                request.getSession().setAttribute("mensajeError", "Error en la base de datos al registrar el cliente.");
+            }
+        }catch (Exception e) {
+            request.getSession().setAttribute("mensajeError", "Error en los datos enviados: " + e.getMessage());
+        }
         response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
     }
 
     private void editar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("txtId"));
-        String nombre = request.getParameter("txtNombre");
-        String dni = request.getParameter("txtDni");
-        String correo = request.getParameter("txtCorreo");
-        String telefono = request.getParameter("txtTelefono");
-        int estado = Integer.parseInt(request.getParameter("txtEstado"));
+        try {
+            int id = Integer.parseInt(request.getParameter("txtId"));
+            String nombre = request.getParameter("txtNombre");
+            String dni = request.getParameter("txtDni");
+            String correo = request.getParameter("txtCorreo");
+            String telefono = request.getParameter("txtTelefono");
+            int estado = Integer.parseInt(request.getParameter("txtEstado"));
 
-        clientes c = new clientes();
-        c.setIdCliente(id);
-        c.setNombreCompleto(nombre);
-        c.setDni(dni);
-        c.setCorreo(correo);
-        c.setTelefono(telefono);
-        c.setEstado(estado);
+            clientes c = new clientes();
+            c.setIdCliente(id);
+            c.setNombreCompleto(nombre);
+            c.setDni(dni);
+            c.setCorreo(correo);
+            c.setTelefono(telefono);
+            c.setEstado(estado);
 
-        boolean editado = dao.editarCliente(c);
-
+            boolean editado = dao.editarCliente(c);
+            if (editado) {
+                request.getSession().setAttribute("mensajeExito", "Cliente actualizado correctamente.");
+            } else {
+                request.getSession().setAttribute("mensajeError", "No se pudo actualizar el cliente.");
+            }
+        } catch (Exception e) {
+            request.getSession().setAttribute("mensajeError", "Error de parámetros al editar: " + e.getMessage());
+        }
         response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
     }
 
     private void eliminar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        
-        boolean eliminado = dao.eliminarCliente(id);
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
 
+            boolean eliminado = dao.eliminarCliente(id);
+            if (eliminado) {
+                request.getSession().setAttribute("mensajeExito", "Cliente eliminado correctamente del sistema.");
+            } else {
+                request.getSession().setAttribute("mensajeError", "No se puede eliminar el cliente (puede tener registros vinculados).");
+            }
+        } catch (Exception e) {
+            request.getSession().setAttribute("mensajeError", "Error de parámetros al eliminar: " + e.getMessage());
+        }
         response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
     }
 

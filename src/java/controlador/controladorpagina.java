@@ -94,16 +94,13 @@ public class controladorpagina extends HttpServlet {
 
     private void agendarcitas(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("paginaActual", "agendarcitas");
-
-        request.getRequestDispatcher(pagagendarcitas).forward(request, response);    
+         request.getRequestDispatcher("/controladorcitas?accion=agendarcitasCliente").forward(request, response);
+         
     }
 
     private void miscitas(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("paginaActual", "miscitas");
-
-        request.getRequestDispatcher(pagmiscitas).forward(request, response);
+        request.getRequestDispatcher("/controladorcitas?accion=listarcitasCliente").forward(request, response);
     }
 
     private void perfil(HttpServletRequest request, HttpServletResponse response) 

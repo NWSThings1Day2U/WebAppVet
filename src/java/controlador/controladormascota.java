@@ -41,10 +41,10 @@ public class controladormascota extends HttpServlet {
         
         List<mascotas> listaMascotas;
         
-        Integer idUsuarioLogueado = (Integer) session.getAttribute("idUsuario");
+        Integer idUsuarioLogueado = (Integer) session.getAttribute("id");
         String rolUsuario = (String) session.getAttribute("rol"); // Ejemplo: "ADMIN" o "CLIENTE"
         
-        if (rolUsuario != null && rolUsuario.equals("CLIENTE") && idUsuarioLogueado != null) {
+        if (rolUsuario != null && rolUsuario.equals("cliente") && idUsuarioLogueado != null) {
             listaMascotas = dao.listarMascotasPorCliente(idUsuarioLogueado);
         } else {
             listaMascotas = dao.listarMascotas();

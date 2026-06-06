@@ -2,6 +2,8 @@ package controlador;
 
 import com.google.gson.Gson;
 import dao.citadao;
+import dao.clientedao;
+import dao.mascotadao;
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -12,13 +14,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.PrintWriter;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import modelo.citas;
+import modelo.clientes;
+import modelo.mascotas;
+import modelo.usuarios;
 
 @WebServlet(name = "controladorcitas", urlPatterns = {"/controladorcitas"})
 public class controladorcitas extends HttpServlet {
 
     private final citadao dao = new citadao();
+    private final clientedao clienteDao = new clientedao();
+    private final mascotadao mascotaDao = new mascotadao();
     private final String pagCitas = "/vista/gcitas.jsp";
+    private final String pagagendarcitas = "/vista/agendarcitas.jsp";
+    private final String pagmiscitas = "/vista/miscitas.jsp";
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -50,6 +60,15 @@ public class controladorcitas extends HttpServlet {
             case "horasDisponiblesEditar":
                 cargarHorasDisponiblesEditar(request, response);
                 break;
+            case "agendarcitasCliente":
+                agendarcitasCliente(request, response);
+                break;
+            case "registrarcitaClienteNuevo":
+                registrarcitaClienteNuevo(request,response);
+                break;
+            case "listarcitasCliente":
+                listarcitasCliente(request, response);
+                break;
             default:
                 listar(request, response);
         }
@@ -74,43 +93,33 @@ public class controladorcitas extends HttpServlet {
         HttpSession session = request.getSession();
 
         String rol = (String) session.getAttribute("rol");
-        Integer idUsuario = (Integer) session.getAttribute("idUsuario");
+        Integer id = (Integer) session.getAttribute("id");
 
         List<citas> listaCitas;
 
         // Validar rol
-        if (rol != null && rol.equalsIgnoreCase("CLIENTE") && idUsuario != null) {
-            listaCitas = dao.listarCitasPorCliente(idUsuario);
-            request.setAttribute("paginaActual", "miscitas");
+        if (rol != null && rol.equalsIgnoreCase("cliente") && id != null) {
+            listaCitas = dao.listarCitasPorCliente(id);
+            request.setAttribute("paginaActual", "listarcitasCliente");
         } else {
             listaCitas = dao.listarCitas();
             request.setAttribute("paginaActual", "citas");
         }
 
         request.setAttribute("listaCitas", listaCitas);
-        dao.clientedao clienteDao = new dao.clientedao();
-        dao.mascotadao mascotaDao = new dao.mascotadao();
-
         request.setAttribute("listaClientes", clienteDao.listarClientes());
         request.setAttribute("listaMascotas", mascotaDao.listarMascotas());
         request.getRequestDispatcher(pagCitas).forward(request, response);
     }
 
-    // 2. REGISTRAR NUEVA CITA (ADMIN O CLIENTE)
+    // 2. Registrar nueva cita admin o cliente
     private void guardar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String rol = (String) session.getAttribute("rol");
         try {
-            HttpSession session = request.getSession();
-            String rol = (String) session.getAttribute("rol");
 
-            int idCliente;
-
-            if (rol != null && rol.equalsIgnoreCase("CLIENTE")) {
-                idCliente = (Integer) session.getAttribute("idUsuario");
-            } else {
-                idCliente = Integer.parseInt(request.getParameter("txtIdCliente"));
-            }
-
+            int idCliente = Integer.parseInt(request.getParameter("txtIdCliente"));
             int idMascota = Integer.parseInt(request.getParameter("txtIdMascota"));
 
             boolean pertenece = dao.mascotaPerteneceCliente(idMascota, idCliente);
@@ -189,10 +198,17 @@ public class controladorcitas extends HttpServlet {
         } catch (Exception e) {
             request.getSession().setAttribute("mensajeError", "Error en los datos enviados: " + e.getMessage());
         }
-        response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
+        if ("cliente".equalsIgnoreCase(rol)) {
+
+            response.sendRedirect(request.getContextPath()+ "/controladorcitas?accion=listarcitasCliente");
+
+        } else {
+
+            response.sendRedirect(request.getContextPath()+ "/controladorcitas?accion=listar");
+        }
     }
 
-    // 3. EDITAR / REPROGRAMAR CITA COMPLETA
+    // 3. editar/programar cita
     private void editar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -264,7 +280,7 @@ public class controladorcitas extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
     }
 
-    // 4. CAMBIAR EL ESTADO RÁPIDAMENTE
+    // 4. cambiar estado
     private void actualizarEstado(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -284,7 +300,7 @@ public class controladorcitas extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
     }
 
-    // 5. ELIMINAR CITA FISICAMENTE
+    // 5. eliminar cita fisico
     private void eliminar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -332,40 +348,140 @@ public class controladorcitas extends HttpServlet {
     }
 
     //obtener horarios disponibles para editar
-    private void cargarHorasDisponiblesEditar(
-        HttpServletRequest request,
-        HttpServletResponse response)
-        throws IOException {
+    private void cargarHorasDisponiblesEditar(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
-    System.out.println("ENTRO A EDITAR");
+        try {
 
-    try {
+            String fecha = request.getParameter("fecha");
+            System.out.println("Fecha recibida: " + fecha);
+            int idCita = Integer.parseInt(request.getParameter("idCita"));
 
-        String fecha = request.getParameter("fecha");
+            List<String> horas = dao.obtenerHorasDisponiblesEditar(fecha,idCita);
+            System.out.println("Horas encontradas: " + horas);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter out = response.getWriter();
 
-        int idCita = Integer.parseInt(
-                request.getParameter("idCita"));
+            out.print(new Gson().toJson(horas));
+            out.flush();
 
-        List<String> horas =
-                dao.obtenerHorasDisponiblesEditar(
-                        fecha,
-                        idCita);
+        } catch (Exception e) {
 
-        response.setContentType("application/json");
+            e.printStackTrace();
 
-        PrintWriter out = response.getWriter();
-
-        out.print(new Gson().toJson(horas));
-
-    } catch (Exception e) {
-
-        e.printStackTrace();
-
+        }
     }
-}
 
     @Override
     public String getServletInfo() {
         return "Controlador encargado de la persistencia del flujo de citas.";
+    }
+
+    //agendar citas para vista cliente
+    private void agendarcitasCliente(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        Integer id = (Integer) session.getAttribute("id");
+        String rol = (String) session.getAttribute("rol");
+
+        request.setAttribute("listaClientes",
+                new clientedao().listarClientesPorUsuario(id));
+
+        request.setAttribute("listaMascotas",
+                new mascotadao().listarMascotas());
+
+        request.getRequestDispatcher(pagagendarcitas).forward(request, response);
+    }
+    
+
+    //listar citas para vista cliente
+    private void listarcitasCliente(HttpServletRequest request,HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession();
+        Integer id = (Integer) session.getAttribute("id");
+        String rol = (String) session.getAttribute("rol");
+
+        request.setAttribute("listaCitas", dao.listarCitasPorCliente(id));
+
+        request.getRequestDispatcher(pagmiscitas).forward(request, response);
+    }
+    //registrar cliente, mascota y citas
+    private void registrarcitaClienteNuevo(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String rol = (String) session.getAttribute("rol");
+        Integer idUsuarioSession = (Integer) session.getAttribute("id");
+        try {
+            String fecha = request.getParameter("txtFecha");
+            String hora = request.getParameter("txtHora");
+            LocalDate fechaSeleccionada = LocalDate.parse(fecha);
+
+            if (fechaSeleccionada.isBefore(LocalDate.now())) {
+                session.setAttribute("mensajeError", "No puede registrar citas en fechas pasadas.");
+                redireccionarSegunRol(request, response, rol);
+                return;
+            }
+
+            if (fechaSeleccionada.equals(LocalDate.now())) {
+                LocalTime horaSeleccionada = LocalTime.parse(hora);
+                if (horaSeleccionada.isBefore(LocalTime.now())) {
+                    session.setAttribute("mensajeError", "No puede registrar una cita en una hora ya transcurrida.");
+                    redireccionarSegunRol(request, response, rol);
+                    return;
+                }
+            }
+
+            if (!dao.horaDisponible(fecha, hora)) {
+                session.setAttribute("mensajeError", "La hora seleccionada ya no se encuentra disponible.");
+                redireccionarSegunRol(request, response, rol);
+                return;
+            }
+
+            clientes cli = new clientes();
+            cli.setNombreCompleto(request.getParameter("nombre"));
+            cli.setDni(request.getParameter("dni"));
+            cli.setCorreo(request.getParameter("correo"));
+            cli.setTelefono(request.getParameter("telefono"));
+            if (idUsuarioSession != null) { cli.setIdUsuario(idUsuarioSession); }
+            mascotas mas = new mascotas();
+            mas.setNombre(request.getParameter("mascota"));
+            mas.setEspecie(request.getParameter("txtEspecie"));
+            mas.setRaza(request.getParameter("txtRaza"));
+            String pesoStr = request.getParameter("txtPeso");
+            double peso = (pesoStr != null && !pesoStr.isEmpty()) ? Double.parseDouble(pesoStr) : 0.0;
+            mas.setPeso(peso);
+            mas.setFechaNacimiento(request.getParameter("txtFechaNac"));
+            mas.setSexo(request.getParameter("txtSexo"));
+
+            citas cita = new citas();
+            cita.setIdTipo(Integer.parseInt(request.getParameter("txtIdTipo")));
+            cita.setFecha(fecha);
+            cita.setHora(hora);
+            cita.setMotivo(request.getParameter("txtMotivo"));
+
+            boolean ok = dao.registrarClienteMascotaCita(cli, mas, cita);
+
+            if (ok) {
+                session.setAttribute("mensajeExito", "Cliente, mascota y cita registrados de manera exitosa.");
+            } else {
+                session.setAttribute("mensajeError", "Ocurrió un error interno en la base de datos.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace(); 
+            session.setAttribute("mensajeError", "Error en el procesamiento de datos: " + e.getMessage());
+        }
+        
+        redireccionarSegunRol(request, response, rol);
+    }
+    
+    private void redireccionarSegunRol(HttpServletRequest request, HttpServletResponse response, String rol) throws IOException {
+        if ("cliente".equalsIgnoreCase(rol)) {
+            response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listarcitasCliente");
+        } else {
+            response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
+        }
     }
 }
