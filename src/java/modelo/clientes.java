@@ -5,6 +5,7 @@ import java.util.Date;
 public class clientes {
 
     private int idCliente;
+    private int idUsuario;
     private String nombreCompleto;
     private String dni;
     private String correo;
@@ -101,6 +102,14 @@ public class clientes {
 
     public void setFechaRegistro(Date fechaRegistro) {
         this.fechaRegistro = fechaRegistro;
+    }
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
     
 
