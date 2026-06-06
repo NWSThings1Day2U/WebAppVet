@@ -8,7 +8,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import modelo.clientes;
 import modelo.horarios;
+import modelo.mascotas;
 
 public class citadao {
 
@@ -320,10 +322,7 @@ public class citadao {
 
         return false;
     }
-    public boolean horaDisponibleEditar(
-            int idCita,
-            String fecha,
-            String hora) {
+    public boolean horaDisponibleEditar(int idCita,String fecha,String hora) {
 
         try {
 
@@ -363,9 +362,7 @@ public class citadao {
         return false;
     }
  
-    public List<String> obtenerHorasOcupadasEditar(
-            String fecha,
-            int idCita) {
+    public List<String> obtenerHorasOcupadasEditar(String fecha,int idCita) {
 
         List<String> ocupadas = new ArrayList<>();
 
@@ -403,9 +400,7 @@ public class citadao {
         return ocupadas;
     }
 
-    public List<String> obtenerHorasDisponiblesEditar(
-            String fecha,
-            int idCita) {
+    public List<String> obtenerHorasDisponiblesEditar( String fecha,int idCita) {
 
         List<String> disponibles = new ArrayList<>();
 
@@ -465,12 +460,82 @@ public class citadao {
 
             e.printStackTrace();
 
+        }finally {
+
+            closeResources();
+
         }
         System.out.println("OCUPADAS = " + ocupadas);
         System.out.println("DISPONIBLES = " + disponibles);
         return disponibles;
     }
-    
+
+    // Metodo para crear cliente, mascota y cita a su vez 
+// Metodo para crear cliente, mascota y cita a su vez 
+public boolean registrarClienteMascotaCita(clientes c, mascotas m, citas cita) {
+    boolean resultado = false;
+    try {
+        cn = conexionvet_bd.probarConexion();
+        CallableStatement cs = cn.prepareCall(
+                "{CALL sp_registrar_cita_cliente_nuevo(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
+        );
+
+        // 1. Datos del Cliente
+        cs.setString(1, c.getNombreCompleto());
+        cs.setString(2, c.getDni());
+        cs.setString(3, c.getCorreo());
+        cs.setString(4, c.getTelefono());
+
+        // 2. Datos de la Mascota
+        cs.setString(5, m.getNombre());
+        cs.setString(6, m.getEspecie());
+        cs.setString(7, m.getRaza());
+        cs.setDouble(8, m.getPeso());
+        
+        // CONTROL DEL NULL: Validamos la fecha de nacimiento de la mascota
+        if (m.getFechaNacimiento() != null && !m.getFechaNacimiento().trim().isEmpty()) {
+            cs.setDate(9, java.sql.Date.valueOf(m.getFechaNacimiento()));
+        } else {
+            cs.setNull(9, java.sql.Types.DATE); // Envía un NULL limpio a MySQL si no se ingresó
+        }
+        cs.setString(10, m.getSexo());
+
+        // 3. Datos de la Cita
+        cs.setInt(11, cita.getIdTipo());
+        
+        // Control de fecha de la cita
+        if (cita.getFecha() != null && !cita.getFecha().trim().isEmpty()) {
+            cs.setDate(12, java.sql.Date.valueOf(cita.getFecha()));
+        } else {
+            cs.setNull(12, java.sql.Types.DATE);
+        }
+        
+        // CONTROL DEL FORMATO DE HORA: Si viene un formato de 5 dígitos (ej. "15:30"), le agregamos los segundos para evitar caídas
+        String horaFormateada = cita.getHora();
+        if (horaFormateada != null && horaFormateada.trim().length() == 5) {
+            horaFormateada += ":00"; 
+        }
+        
+        if (horaFormateada != null && !horaFormateada.trim().isEmpty()) {
+            cs.setTime(13, java.sql.Time.valueOf(horaFormateada));
+        } else {
+            cs.setNull(13, java.sql.Types.TIME);
+        }
+        
+        cs.setString(14, cita.getMotivo());
+
+        // Ejecución segura
+        cs.execute();
+        resultado = true;
+
+    } catch (Exception e) {
+        System.out.println("Error registrar cita de cliente nuevo de forma explícita:");
+        e.printStackTrace(); // ¡Muestra el trazo completo para identificar la línea exacta si vuelve a fallar!
+    } finally {
+        closeResources();
+    }
+    return resultado;
+}
     private String convertirDia(DayOfWeek day) {
 
         switch (day) {

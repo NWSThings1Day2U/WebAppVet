@@ -33,12 +33,9 @@ public class clientedao {
                 c.setEstado(rs.getInt("estado"));
                 c.setFechaRegistro(rs.getDate("fecha_registro"));
 
-                c.setIdClienteResponsable(
-                        rs.getInt("id_cliente_responsable")
-                );
+                c.setIdClienteResponsable( rs.getInt("id_cliente_responsable"));
 
-                c.setNombreResponsable(
-                        rs.getString("nombre_responsable")
+                c.setNombreResponsable(rs.getString("nombre_responsable")
                 );
                 lista.add(c);
             }
@@ -204,7 +201,53 @@ public class clientedao {
 
         return total;
     }
+    //8. Mostrar todos los clientes de un cliente logueado
+    public List<clientes> listarClientesPorUsuario(int idUsuario) {
 
+        List<clientes> lista = new ArrayList<>();
+
+        String sql = "{call sp_listar_clientes_por_usuario(?)}";
+
+        try {
+
+            cn = conexionvet_bd.probarConexion();
+            cs = cn.prepareCall(sql);
+
+            cs.setInt(1, idUsuario);
+
+            rs = cs.executeQuery();
+
+            while (rs.next()) {
+
+                clientes c = new clientes();
+
+                c.setIdCliente(rs.getInt("id_cliente"));
+                c.setIdUsuario(rs.getInt("id_usuario"));
+                c.setNombreCompleto(rs.getString("nombre_completo"));
+                c.setDni(rs.getString("dni"));
+                c.setCorreo(rs.getString("correo"));
+                c.setTelefono(rs.getString("telefono"));
+                c.setEstado(rs.getInt("estado"));
+                c.setFechaRegistro(rs.getDate("fecha_registro"));
+                c.setIdClienteResponsable(
+                        rs.getInt("id_cliente_responsable")
+                );
+
+                lista.add(c);
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            closeResources();
+
+        }
+
+        return lista;
+    }
     private void closeResources() {
         try {
             if (rs != null) {
