@@ -165,9 +165,9 @@
                                 <div class="modal fade" id="modalEditar<%= c.getIdCliente() %>" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
-                                            <div class="modal-header bg-warning text-dark">
+                                            <div class="modal-header bg-warning-light text-dark">
                                                 <h5 class="modal-title fw-bold">
-                                                    <i class="fa-solid fa-pen-to-square"></i> Modificar Datos del Cliente #<%= c.getIdCliente() %>
+                                                    <i class="fa-solid fa-pen-to-square me-2"></i> Modificar Datos del Cliente #<%= c.getIdCliente() %>
                                                 </h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>

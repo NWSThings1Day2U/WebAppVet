@@ -33,8 +33,9 @@
         <link href="https://fonts.googleapis.com/css2?family=Vollkorn:wght@400;700&display=swap" rel="stylesheet">     
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
         <link rel="icon" href="${pageContext.request.contextPath}/recursos/logoveet.png">
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css"/>
-        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css"/>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+        
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/contenidoadmin.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/esadmin.css">
     </head>
@@ -139,26 +140,30 @@
                                             <span class="badge bg-secondary">Inactivo</span>
                                         <% } %>
                                     </td>
-                                   <td class="text-center">
+                                    <td class="text-center">
                                         <div class="d-flex justify-content-center gap-2">
-                                            <button class="btn btn-warning btn-sm fw-semibold text-dark" title="Editar Datos" data-bs-toggle="modal" data-bs-target="#modalEditar<%= u.getIdUsuario() %>">
-                                                <i class="fa-solid fa-pencil"></i> 
+                                            <button class="btn text-white d-inline-flex align-items-center justify-content-center" 
+                                                    title="Editar Datos" data-bs-toggle="modal" data-bs-target="#modalEditar<%= u.getIdUsuario() %>"
+                                                    style="width: 40px; height: 40px; background-color: #0d735c; border: none; border-radius: 6px; padding: 0;">
+                                                <i class="fa-solid fa-pencil" style="font-size: 0.9rem;"></i> 
                                             </button>
 
                                             <% if (u.getEstadoCliente() == 1) { %>
-                                                <button type="button" 
-                                                        onclick="confirmarBaja(<%= u.getIdUsuario() %>, '<%= u.getNombreusuario() %>')" 
-                                                        class="btn btn-danger btn-sm fw-semibold text-white" 
-                                                        title="Dar de baja cuenta">
-                                                    <i class="fa-solid fa-user-xmark"></i>
-                                                </button>
+                                            <button type="button" 
+                                                    onclick="confirmarBaja(<%= u.getIdUsuario() %>, '<%= u.getNombreusuario() %>')" 
+                                                    class="btn text-white d-inline-flex align-items-center justify-content-center" 
+                                                    title="Dar de baja cuenta"
+                                                    style="width: 40px; height: 40px; background-color: #dc3545; border: none; border-radius: 6px; padding: 0;">
+                                                <i class="fa-solid fa-user-xmark" style="font-size: 0.9rem;"></i>
+                                            </button>
                                             <% } else { %>
-                                                <button type="button" 
-                                                        onclick="confirmarAlta(<%= u.getIdUsuario() %>, '<%= u.getNombreusuario() %>')" 
-                                                        class="btn btn-success btn-sm fw-semibold text-white" 
-                                                        title="Reactivar cuenta">
-                                                    <i class="fa-solid fa-user-check"></i>
-                                                </button>
+                                            <button type="button" 
+                                                    onclick="confirmarAlta(<%= u.getIdUsuario() %>, '<%= u.getNombreusuario() %>')" 
+                                                    class="btn text-white d-inline-flex align-items-center justify-content-center" 
+                                                    title="Reactivar cuenta"
+                                                    style="width: 40px; height: 40px; background-color: #669900; border: none; border-radius: 6px; padding: 0;">
+                                                <i class="fa-solid fa-user-check" style="font-size: 0.9rem;"></i>
+                                            </button>
                                             <% } %>
                                         </div>
                                     </td>
@@ -167,8 +172,8 @@
                                 <div class="modal fade" id="modalEditar<%= u.getIdUsuario() %>" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
-                                            <div class="modal-header bg-warning text-dark">
-                                                <h5 class="modal-title fw-bold"><i class="fa-solid fa-user-gear"></i> Modificar Cuenta de Usuario</h5>
+                                            <div class="modal-header bg-warning-light text-dark">
+                                                <h5 class="modal-title fw-bold"><i class="fa-solid fa-pen-to-square me-2"></i> Modificar Cuenta de Usuario</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body text-start">
@@ -211,7 +216,7 @@
                                                     
                                                     <div class="modal-footer px-0 pb-0 mt-3">
                                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="btn btn-dark fw-semibold">Guardar Cambios</button>
+                                                        <button type="submit" class="btn btn-warning  fw-semibold">Guardar Cambios</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -282,7 +287,8 @@
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         
         <script>
             function actualizarFecha() {
@@ -293,40 +299,58 @@
             setInterval(actualizarFecha, 1000);
             actualizarFecha();
 
-
             <% String success = (String) session.getAttribute("msgSuccess");
                String error = (String) session.getAttribute("msgError");
                if(success != null) { %>
-                    alertify.success('<%= success %>');
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Operación Exitosa!',
+                        text: '<%= success %>',
+                        confirmButtonColor: '#198754'
+                    });
             <% session.removeAttribute("msgSuccess"); } %>
             <% if(error != null) { %>
-                    alertify.error('<%= error %>');
+                    Swal.fire({
+                        icon: 'error',
+                        title: '¡Ocurrió un inconveniente!',
+                        text: '<%= error %>',
+                        confirmButtonColor: '#dc3545'
+                    });
             <% session.removeAttribute("msgError"); } %>
                 
-                
-            
             function confirmarBaja(id, usuario) {
-                alertify.confirm('Confirmar Baja Lógica', 
-                    '¿Está seguro de que desea DAR DE BAJA la cuenta del usuario <strong>' + usuario + '</strong>? El usuario no podrá iniciar sesión.', 
-                    function(){ 
+                Swal.fire({
+                    title: '¿Desactivar esta cuenta?',
+                    html: '¿Está seguro de que desea suspender al usuario <strong>' + usuario + '</strong>?<br><span class="text-danger small"><i class="fa-solid fa-triangle-exclamation"></i> El usuario perderá el acceso al sistema de inmediato.</span>',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fa-solid fa-user-xmark me-1"></i> Sí, desactivar',
+                    cancelButtonText: 'Mantener activo',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         window.location.href = "${pageContext.request.contextPath}/controladorusuarios?accion=cambiarEstado&id=" + id + "&estado=1";
-                    }, 
-                    function(){ 
-                        alertify.error('Operación cancelada'); 
                     }
-                ).set('labels', {ok:'Sí, dar de baja', cancel:'Cancelar'});
+                });
             }
-
             function confirmarAlta(id, usuario) {
-                alertify.confirm('Confirmar Reactivación', 
-                    '¿Desea REACTIVAR y dar de ALTA la cuenta del usuario <strong>' + usuario + '</strong> nuevamente?', 
-                    function(){ 
+                Swal.fire({
+                    title: '¿Reactivar esta cuenta?',
+                    html: '¿Desea <strong>habilitar</strong> la cuenta del usuario <strong>' + usuario + '</strong> nuevamente?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#198754',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="fa-solid fa-user-check me-1"></i> Sí, activar cuenta',
+                    cancelButtonText: 'Cancelar',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
                         window.location.href = "${pageContext.request.contextPath}/controladorusuarios?accion=cambiarEstado&id=" + id + "&estado=0";
-                    }, 
-                    function(){ 
-                        alertify.error('Operación cancelada'); 
                     }
-                ).set('labels', {ok:'Sí, activar cuenta', cancel:'Cancelar'});
+                });
             }
         </script>
     </body>

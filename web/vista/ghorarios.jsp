@@ -115,9 +115,9 @@
                                 <div class="modal-dialog">
                                     <div class="modal-content">
 
-                                        <div class="modal-header bg-warning">
+                                        <div class="modal-header bg-warning-light">
                                             <h5 class="modal-title">
-                                                Editar horario de <%= h.getDiaSemana() %>
+                                                <i class="fa-solid fa-pen-to-square me-2"></i>Editar horario de <%= h.getDiaSemana() %>
                                             </h5>
                                             <button type="button"
                                                     class="btn-close"

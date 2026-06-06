@@ -138,3 +138,26 @@
     box-shadow: 0 2px 10px rgba(0,0,0,.08);
     background-color: white;
 }
+.btn-warning {
+    background-color: #097568 !important;
+    border-color: #097568 !important;
+    color: #ffffff !important; 
+}
+
+.btn-warning:hover {
+    background-color: #075c51 !important;
+    border-color: #075c51 !important;
+    color: #ffffff !important;
+}
+.bg-warning-light {
+    background-color: #cce3e0 !important; 
+    color: #05433b !important;
+}
+.bg-warning-light .btn-close {
+    filter: invert(19%) sepia(87%) saturate(415%) hue-rotate(124deg) brightness(91%) contrast(96%) !important;
+    opacity: 0.8;
+}
+
+.bg-warning-light .btn-close:hover {
+    opacity: 1;
+}

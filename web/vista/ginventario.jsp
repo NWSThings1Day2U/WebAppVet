@@ -199,8 +199,8 @@
             <div class="modal fade" id="modalEditar<%= p.getIdProducto()%>" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
-                        <div class="modal-header bg-warning text-dark">
-                            <h5 class="modal-title"><i class="fa-solid fa-pen"></i> Editar Producto</h5>
+                        <div class="modal-header bg-warning-light text-dark">
+                            <h5 class="modal-title"><i class="fa-solid fa-pen-to-square me-2"></i> Editar Producto</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
@@ -249,7 +249,7 @@
                                 </div>
                                 <div class="modal-footer pb-0 pe-0 border-0">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="submit" class="btn btn-warning"><i class="fa-solid fa-floppy-disk"></i> Actualizar Producto</button>
+                                    <button type="submit" class="btn btn-warning">Guardar Cambios</button>
                                 </div>
                             </form>
                         </div>

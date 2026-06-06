@@ -326,8 +326,8 @@
                         <form action="controladormascota?accion=editar" method="POST">
                             <input type="hidden" name="txtId" id="editId">
                             
-                            <div class="modal-header bg-warning text-dark">
-                                <h5 class="modal-title"><i class="fa-solid fa-pen"></i> Editar Mascota</h5>
+                            <div class="modal-header bg-warning-light text-dark">
+                                <h5 class="modal-title"><i class="fa-solid fa-pen-to-square me-2"></i> Editar Mascota</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
                             <div class="modal-body">
@@ -386,7 +386,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-warning">Actualizar Cambios</button>
+                                <button type="submit" class="btn btn-warning">Guardar Cambios</button>
                             </div>
                         </form>
                     </div>

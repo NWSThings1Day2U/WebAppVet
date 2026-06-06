@@ -75,7 +75,6 @@ public class controladorusuarios extends HttpServlet {
             case "cambiarEstado":
                 int idUserEst = Integer.parseInt(request.getParameter("id"));
                 int estadoActual = Integer.parseInt(request.getParameter("estado"));
-                // Si el estado actual es 1 (Activo), lo cambiamos a 0 (Dar de Baja). Si es 0, lo reactivamos a 1.
                 int nuevoEstado = (estadoActual == 1) ? 0 : 1;
 
                 boolean estOk = dao.cambiarEstadoUsuario(idUserEst, nuevoEstado);

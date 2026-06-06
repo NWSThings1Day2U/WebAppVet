@@ -77,104 +77,43 @@
                     </div>
                 </div>
 
-                <!-- tarjetas -->
-
                 <div class="row g-4 mb-4">
-
-                    <!-- ttal -->
-
                     <div class="col-xl-3 col-md-6">
-
                         <div class="card-dashboard">
-
                             <div>
-
                                 <h5>Total Citas</h5>
-
-                                <h1>
-
-                                    <%= (lista != null) ? lista.size() : 0 %>
-
-                                </h1>
-
+                                <h1><%= totalCitas %></h1>
                             </div>
-
-                            <i class="fa-solid fa-calendar-check
-
-                               text-success
-
-                               icon-card"></i>
-
+                            <i class="fa-solid fa-calendar-check text-success icon-card"></i>
                         </div>
-
                     </div>
-
-                    <!-- hoy -->
-
                     <div class="col-xl-3 col-md-6">
-
                         <div class="card-dashboard">
-
                             <div>
-
                                 <h5>Citas Hoy</h5>
-
                                 <h1><%= totalHoy %></h1>
-
                             </div>
-
-                            <i class="fa-solid fa-clock
-
-                               text-primary
-
-                               icon-card"></i>
-
+                            <i class="fa-solid fa-clock text-primary icon-card"></i>
                         </div>
-
                     </div>
-
-                    <!-- veterinarios -->
-
                     <div class="col-xl-3 col-md-6">
-
                         <div class="card-dashboard">
-
                             <div>
-
                                 <h5>Pendientes</h5>
-
                                 <h1><%= totalPendientes %></h1>
-
                             </div>
-
                             <i class="fa-solid fa-hourglass-half text-danger icon-card"></i>
-
                         </div>
-
                     </div>
-
-                    <!-- pendientes -->
-
                     <div class="col-xl-3 col-md-6">
-
                         <div class="card-dashboard">
-
                             <div>
-
                                 <h5>Canceladas</h5>
-
                                 <h1><%= totalCanceladas %></h1>
-
                             </div>
-
-                            <i class="fa-solid fa-circle-xmark text-secondary
-
-                               icon-card"></i>
-
+                            <i class="fa-solid fa-circle-xmark text-secondary icon-card"></i>
                         </div>
-
                     </div>
-
                 </div>
 
                 <div class="tabla-panel">
@@ -218,135 +157,125 @@
                                     <td><%= c.getFecha()%></td>
                                     <td><%= c.getHora()%></td>
                                     <td>
-                                        <div class="d-flex gap-2 flex-wrap">
-                                            <form action="${pageContext.request.contextPath}/controladorcitas" method="POST" class="d-flex gap-2 align-items-center">
-                                                <input type="hidden" name="accion" value="actualizarEstado">
-                                                <input type="hidden" name="id" value="<%= c.getIdCita()%>">
-                                                <select name="estado" class="form-select form-select-sm">
-                                                    <option value="PENDIENTE" <%= c.getEstado().equals("PENDIENTE") ? "selected" : ""%>>PENDIENTE</option>
-                                                    <option value="CONFIRMADA" <%= c.getEstado().equals("CONFIRMADA") ? "selected" : ""%>>CONFIRMADA</option>
-                                                    <option value="ATENDIDA" <%= c.getEstado().equals("ATENDIDA") ? "selected" : ""%>>ATENDIDA</option>
-                                                    <option value="CANCELADA" <%= c.getEstado().equals("CANCELADA") ? "selected" : ""%>>CANCELADA</option>
-                                                </select>
-                                                <button type="submit" class="btn btn-primary btn-sm">
-                                                    <i class="fa-solid fa-floppy-disk"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                        <form action="${pageContext.request.contextPath}/controladorcitas" method="POST" class="d-flex gap-2 align-items-center">
+                                            <input type="hidden" name="accion" value="actualizarEstado">
+                                            <input type="hidden" name="id" value="<%= c.getIdCita()%>">
+                                            <select name="estado" class="form-select form-select-sm">
+                                                <option value="PENDIENTE" <%= c.getEstado().equals("PENDIENTE") ? "selected" : ""%>>PENDIENTE</option>
+                                                <option value="CONFIRMADA" <%= c.getEstado().equals("CONFIRMADA") ? "selected" : ""%>>CONFIRMADA</option>
+                                                <option value="ATENDIDA" <%= c.getEstado().equals("ATENDIDA") ? "selected" : ""%>>ATENDIDA</option>
+                                                <option value="CANCELADA" <%= c.getEstado().equals("CANCELADA") ? "selected" : ""%>>CANCELADA</option>
+                                            </select>
+                                            <button type="submit" class="btn btn-primary btn-sm">
+                                                <i class="fa-solid fa-floppy-disk"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                     <td>
                                         <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
-
-
-                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarCita<%= c.getIdCita() %>" onclick="cargarHorasEditar(
-                                                    <%= c.getIdCita() %>,
-                                                            document.getElementById('txtFechaEdit<%= c.getIdCita() %>').value,
-                                                            '<%= c.getHora() %>'
-                                                            )">
+                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarCita<%= c.getIdCita() %>" onclick="cargarHorasEditar(<%= c.getIdCita() %>, '<%= c.getHora() %>')">
                                                 <i class="fa-solid fa-pencil"></i>
                                             </button>
-
                                             <button class="btn btn-danger btn-sm" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar<%= c.getIdCita()%>">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>
                                 </tr>
-                            <div class="modal fade" id="modalEliminar<%= c.getIdCita() %>" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-danger text-white">
-                                            <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Confirmar Eliminación?</h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>¿Estás completamente seguro de que deseas eliminar cita Nro. <strong><%= c.getIdCita() %></strong> del cliente <strong><%= c.getCliente() %></strong> ?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            <a href="${pageContext.request.contextPath}/controladorcitas?accion=eliminar&id=<%= c.getIdCita() %>" class="btn btn-danger fw-semibold">Eliminar Permanentemente</a>                                            </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal fade" id="modalEditarCita<%= c.getIdCita() %>" tabindex="-1">
-                                <div class="modal-dialog modal-lg">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-warning text-white">
-                                            <h5 class="modal-title"><i class="fa-solid fa-pen-to-square"></i> Editar / Reprogramar Cita #<%= c.getIdCita() %></h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form action="${pageContext.request.contextPath}/controladorcitas" method="POST">
-                                                <input type="hidden" name="accion" value="editar">
-                                                <input type="hidden" name="txtIdCita" value="<%= c.getIdCita() %>">
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Mascota</label>
-                                                        <select name="txtIdMascota" class="form-select" required>
-                                                            <% if (listaMascotas != null) { 
-                                                                 for(mascotas m : listaMascotas) { %>
-                                                            <option value="<%= m.getIdMascota() %>" <%= m.getIdMascota() == c.getIdMascota() ? "selected" : "" %>>
-                                                                <%= m.getNombre() %> (Dueño: <%= m.getNombreCliente() %>)
-                                                            </option>
-                                                            <%  } 
-                                                            } %>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Tipo Atención</label>
-                                                        <select name="txtIdTipo" class="form-select" required>
-                                                            <option value="1" <%= c.getIdTipo() == 1 ? "selected" : "" %>>1. Vacunación</option>
-                                                            <option value="2" <%= c.getIdTipo() == 2 ? "selected" : "" %>>2. Cirugía</option>
-                                                            <option value="3" <%= c.getIdTipo() == 3 ? "selected" : "" %>>3. Consulta</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Fecha</label>
-                                                        <input type="date"  name="txtFecha"  id="txtFechaEdit<%= c.getIdCita() %>"   class="form-control"  value="<%= c.getFecha() %>"   min="<%= java.time.LocalDate.now() %>"  required>
-                                                    </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label class="form-label">Hora</label>
-                                                        <select name="txtHora" id="txtHoraEdit<%= c.getIdCita() %>"  class="form-select" required>
 
-                                                            <option value="<%= c.getHora() %>" selected>
-                                                                <%= c.getHora() %>
-                                                            </option>
-
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Motivo</label>
-                                                    <textarea name="txtMotivo" class="form-control" rows="2"><%= c.getMotivo() %></textarea>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Estado General</label>
-                                                    <select name="txtEstado" class="form-select">
-                                                        <option value="PENDIENTE" <%= c.getEstado().equals("PENDIENTE") ? "selected" : ""%>>PENDIENTE</option>
-                                                        <option value="CONFIRMADA" <%= c.getEstado().equals("CONFIRMADA") ? "selected" : ""%>>CONFIRMADA</option>
-                                                        <option value="ATENDIDA" <%= c.getEstado().equals("ATENDIDA") ? "selected" : ""%>>ATENDIDA</option>
-                                                        <option value="CANCELADA" <%= c.getEstado().equals("CANCELADA") ? "selected" : ""%>>CANCELADA</option>
-                                                    </select>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                    <button type="submit" class="btn btn-warning">Guardar Cambios</button>
-                                                </div>
-                                            </form>
+                                <div class="modal fade" id="modalEliminar<%= c.getIdCita() %>" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-danger text-white">
+                                                <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Confirmar Eliminación?</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>¿Estás completamente seguro de que deseas eliminar la cita Nro. <strong><%= c.getIdCita() %></strong> del cliente <strong><%= c.getCliente() %></strong>?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <a href="${pageContext.request.contextPath}/controladorcitas?accion=eliminar&id=<%= c.getIdCita() %>" class="btn btn-danger fw-semibold">Eliminar Permanentemente</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <% 
-                                    }
-                                } else { 
-                            %>
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">No se encontraron citas registradas.</td>
-                            </tr>
-                            <% } %>
+
+                                <div class="modal fade" id="modalEditarCita<%= c.getIdCita() %>" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-warning-light text-white">
+                                                <h5 class="modal-title"><i class="fa-solid fa-pen-to-square me-2"></i> Editar / Reprogramar Cita #<%= c.getIdCita() %></h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form action="${pageContext.request.contextPath}/controladorcitas" method="POST">
+                                                    <input type="hidden" name="accion" value="editar">
+                                                    <input type="hidden" name="txtIdCita" value="<%= c.getIdCita() %>">
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Mascota</label>
+                                                            <select name="txtIdMascota" class="form-select" required>
+                                                                <% if (listaMascotas != null) { 
+                                                                     for(mascotas m : listaMascotas) { %>
+                                                                <option value="<%= m.getIdMascota() %>" <%= m.getIdMascota() == c.getIdMascota() ? "selected" : "" %>>
+                                                                    <%= m.getNombre() %> (Dueño: <%= m.getNombreCliente() %>)
+                                                                </option>
+                                                                <%  } 
+                                                                  } %>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Tipo Atención</label>
+                                                            <select name="txtIdTipo" class="form-select" required>
+                                                                <option value="1" <%= c.getIdTipo() == 1 ? "selected" : "" %>>1. Vacunación</option>
+                                                                <option value="2" <%= c.getIdTipo() == 2 ? "selected" : "" %>>2. Cirugía</option>
+                                                                <option value="3" <%= c.getIdTipo() == 3 ? "selected" : "" %>>3. Consulta</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Fecha</label>
+                                                            <input type="date" name="txtFecha" id="txtFechaEdit<%= c.getIdCita() %>" class="form-control" value="<%= c.getFecha() %>" min="<%= java.time.LocalDate.now() %>" required>
+                                                        </div>
+                                                        <div class="col-md-6 mb-3">
+                                                            <label class="form-label">Hora</label>
+                                                            <select name="txtHora" id="txtHoraEdit<%= c.getIdCita() %>" class="form-select" required>
+                                                                <option value="<%=c.getHora()%>" selected><%= c.getHora() %></option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Motivo</label>
+                                                        <textarea name="txtMotivo" class="form-control" rows="2"><%= c.getMotivo() %></textarea>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Estado General</label>
+                                                        <select name="txtEstado" class="form-select">
+                                                            <option value="PENDIENTE" <%= c.getEstado().equals("PENDIENTE") ? "selected" : ""%>>PENDIENTE</option>
+                                                            <option value="CONFIRMADA" <%= c.getEstado().equals("CONFIRMADA") ? "selected" : ""%>>CONFIRMADA</option>
+                                                            <option value="ATENDIDA" <%= c.getEstado().equals("ATENDIDA") ? "selected" : ""%>>ATENDIDA</option>
+                                                            <option value="CANCELADA" <%= c.getEstado().equals("CANCELADA") ? "selected" : ""%>>CANCELADA</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                        <button type="submit" class="btn btn-warning">Guardar Cambios</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% 
+                                        }
+                                    } else { 
+                                %>
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">No se encontraron citas registradas.</td>
+                                </tr>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -379,15 +308,11 @@
                                         <label class="form-label">Mascota</label>
                                         <select name="txtIdMascota" id="txtIdMascota" class="form-select" required disabled>
                                             <option value="">Seleccione Mascota</option>
-
                                             <% if (listaMascotas != null) {
                                                 for(mascotas m : listaMascotas) { %>
-
-                                            <option value="<%= m.getIdMascota() %>"
-                                                    data-cliente="<%= m.getIdCliente() %>">
+                                            <option value="<%= m.getIdMascota() %>" data-cliente="<%= m.getIdCliente() %>">
                                                 <%= m.getNombre() %> (Dueño: <%= m.getNombreCliente() %>)
                                             </option>
-
                                             <% }
                                              } %>
                                         </select>
@@ -405,15 +330,12 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Fecha</label>
-                                        <input type="date" name="txtFecha"  id="txtFecha" class="form-control"  min="<%= java.time.LocalDate.now() %>" required>
+                                        <input type="date" name="txtFecha" id="txtFecha" class="form-control" min="<%= java.time.LocalDate.now() %>" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Hora</label>
-                                        <select name="txtHora"  id="txtHora" class="form-select" required>
-                                            <option value="">
-                                                Seleccione hora
-                                            </option>
-
+                                        <select name="txtHora" id="txtHora" class="form-select" required>
+                                            <option value="">Seleccione hora</option>
                                         </select>
                                     </div>
                                 </div>
@@ -429,20 +351,20 @@
                         </div>
                     </div>
                 </div>
-            </div>                 
+            </div>                  
         </main>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
         <script>
-             function actualizarFecha() {
-                 const fecha = new Date();
-                  const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
-                  document.getElementById("fechaHora").innerHTML = fecha.toLocaleDateString('es-ES', opciones) + " | " + fecha.toLocaleTimeString();
-                    }
-                  actualizarFecha();
-                 setInterval(actualizarFecha, 1000);
+            function actualizarFecha() {
+                const fecha = new Date();
+                const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
+                document.getElementById("fechaHora").innerHTML = fecha.toLocaleDateString('es-ES', opciones) + " | " + fecha.toLocaleTimeString();
+            }
+            actualizarFecha();
+            setInterval(actualizarFecha, 1000);
         </script>
 
         <%
@@ -466,18 +388,17 @@
                 request.getSession().removeAttribute("mensajeError");
             }
         %>
+
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-
+                
+                // --- FILTRO DINÁMICO DE MASCOTAS POR CLIENTE (NUEVA CITA) ---
                 const clienteSelect = document.getElementById("txtIdCliente");
                 const mascotaSelect = document.getElementById("txtIdMascota");
-
                 const todasOpciones = Array.from(mascotaSelect.options);
 
                 clienteSelect.addEventListener("change", function () {
-
                     const idCliente = this.value;
-
                     mascotaSelect.innerHTML = "";
 
                     const opcionInicial = document.createElement("option");
@@ -491,136 +412,66 @@
                     }
 
                     mascotaSelect.disabled = false;
-
                     todasOpciones.forEach(op => {
-
-                        if (op.value === "")
-                            return;
-
+                        if (op.value === "") return;
                         if (op.dataset.cliente === idCliente) {
                             mascotaSelect.appendChild(op.cloneNode(true));
                         }
-
                     });
-
                 });
 
-            });
-        </script>
-        <script>
-
-            document.getElementById("txtFecha")
-                    .addEventListener("change", function () {
-
-                        let fecha = this.value;
-                        console.log("Fecha seleccionada:", fecha);
-                        fetch(
-                                "${pageContext.request.contextPath}/controladorcitas?accion=horasDisponibles&fecha="
-                                + fecha
-                                )
-                                .then(response => response.json())
-                                .then(data => {
-
-                                    console.log(data);
-
-                                    let combo = document.getElementById("txtHora");
-
-                                    combo.innerHTML = '<option value="">Seleccione hora</option>';
-
-                                    data.forEach(function (hora) {
-
-                                        let option = document.createElement("option");
-
-                                        option.value = hora;
-                                        option.textContent = hora;
-
-                                        combo.appendChild(option);
-
-                                    });
-
-                                })
-                                .catch(error => {
-                                    console.error("ERROR:", error);
-                                });
-
-                    });
-
-        </script>
-        <script>
-
-            document.addEventListener("DOMContentLoaded", function () {
-
-            <% for(citas c : lista){ %>
-
-                document.getElementById("txtFechaEdit<%= c.getIdCita() %>")
-                        .addEventListener("change", function () {
-
-                            let fecha = this.value;
-
-                            fetch(
-                                    "${pageContext.request.contextPath}/controladorcitas?accion=horasDisponiblesEditar&fecha=" + fecha
-                                    + "&idCita=<%= c.getIdCita() %>"
-                                    )
-                                    .then(response => response.json())
-                                    .then(data => {
-
-                                        let combo =
-                                                document.getElementById("txtHoraEdit<%= c.getIdCita() %>");
-
-                                        combo.innerHTML =
-                                                '<option value="">Seleccione hora</option>';
-
-                                        data.forEach(function (hora) {
-
-                                            let option = document.createElement("option");
-
-                                            option.value = hora;
-                                            option.textContent = hora;
-
-                                            combo.appendChild(option);
-
-                                        });
-
-                                    });
-
-                        });
-
-            <% } %>
-
-            });
-
-
-            function cargarHorasEditar(idCita, fecha, horaActual) {
-
-                fetch(
-                        "${pageContext.request.contextPath}/controladorcitas?accion=horasDisponiblesEditar"
-                        + "&fecha=" + fecha
-                        + "&idCita=" + idCita
-                        )
+                // --- FETCH HORAS DISPONIBLES (NUEVA CITA) ---
+                document.getElementById("txtFecha").addEventListener("change", function () {
+                    let fecha = this.value;
+                    fetch("${pageContext.request.contextPath}/controladorcitas?accion=horasDisponibles&fecha=" + fecha)
                         .then(response => response.json())
                         .then(data => {
-
-                            let combo = document.getElementById("txtHoraEdit" + idCita);
-
-                            combo.innerHTML = "";
-
+                            let combo = document.getElementById("txtHora");
+                            combo.innerHTML = '<option value="">Seleccione hora</option>';
                             data.forEach(function (hora) {
-
                                 let option = document.createElement("option");
-
                                 option.value = hora;
                                 option.textContent = hora;
-
-                                if (hora === horaActual) {
-                                    option.selected = true;
-                                }
-
                                 combo.appendChild(option);
                             });
+                        })
+                        .catch(error => console.error("ERROR:", error));
+                });
 
+                // --- DETECTAR CAMBIO DE FECHA EN MODALES DE EDICIÓN ---
+                <% if (lista != null) { 
+                    for(citas c : lista){ %>
+                    document.getElementById("txtFechaEdit<%= c.getIdCita() %>")
+                        .addEventListener("change", function () {
+                            let fecha = this.value;
+                            fetch("${pageContext.request.contextPath}/controladorcitas?accion=horasDisponiblesEditar&fecha=" + fecha + "&idCita=<%= c.getIdCita() %>")
+                                .then(response => response.json())
+                                .then(data => {
+                                    let combo = document.getElementById("txtHoraEdit<%= c.getIdCita() %>");
+                                    combo.innerHTML = '<option value="">Seleccione hora</option>';
+                                    data.forEach(function (hora) {
+                                        let option = document.createElement("option");
+                                        option.value = hora;
+                                        option.textContent = hora;
+                                        combo.appendChild(option);
+                                    });
+                                });
                         });
-            }
+                <%  } 
+               } %>
+            });
 
+            // --- CARGA INICIAL DE LA HORA ACTUAL EN EL MODAL DE EDICIÓN ---
+            function cargarHorasEditar(idCita, horaActual) {
+                let combo = document.getElementById("txtHoraEdit" + idCita);
+                combo.innerHTML = "";
+                
+                let option = document.createElement("option");
+                option.value = horaActual;
+                option.textContent = horaActual;
+                option.selected = true;
+                combo.appendChild(option);
+            }
         </script>
     </body>
 </html>
