@@ -40,24 +40,24 @@
                 <div class="filtros-vet row mb-4 align-items-center">
                     <!-- Contenedor de los botones de filtro -->
                     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
-    <!-- Grupo de botones de filtro -->
-    <div class="d-flex flex-wrap gap-2">
-        <button class="btn btn-filtro active" type="button">Todas</button>
-        <button class="btn btn-filtro" type="button">Pendientes</button>
-        <button class="btn btn-filtro" type="button">Confirmadas</button>
-        <button class="btn btn-filtro" type="button">Completadas</button>
-        <button class="btn btn-filtro" type="button">Canceladas</button>
-    </div>
+                        <!-- Grupo de botones de filtro -->
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-filtro active" type="button">Todas</button>
+                            <button class="btn btn-filtro" type="button">Pendientes</button>
+                            <button class="btn btn-filtro" type="button">Confirmadas</button>
+                            <button class="btn btn-filtro" type="button">Completadas</button>
+                            <button class="btn btn-filtro" type="button">Canceladas</button>
+                        </div>
 
-    <!-- Selector Combobox a la derecha -->
-    <div class="combo-cliente-container">
-        <select class="form-select select-custom-vet" style="font-size: 13px !important;">
-            <option selected disabled>Selecciona cliente</option>
-            <option value="1">Cliente A</option>
-            <option value="2">Cliente B</option>
-        </select>
-    </div>
-</div>
+                        <!-- Selector Combobox a la derecha -->
+                        <div class="combo-cliente-container">
+                            <select class="form-select select-custom-vet" style="font-size: 13px !important;">
+                                <option selected disabled>Selecciona cliente</option>
+                                <option value="1">Cliente A</option>
+                                <option value="2">Cliente B</option>
+                            </select>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -65,6 +65,30 @@
         <!-- Bootstrap y alertify -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+        <!-- SweetAlert -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <jsp:include page="/componentes/mensajes.jsp" /> 
+
+        <c:if test="${not empty sessionScope.mensajeExito}">
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Éxito',
+                    text: '${sessionScope.mensajeExito}'
+                });
+            </script>
+            <c:remove var="mensajeExito" scope="session"/>
+        </c:if>
+
+        <c:if test="${not empty sessionScope.mensajeError}">
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '${sessionScope.mensajeError}'
+                });
+            </script>
+            <c:remove var="mensajeError" scope="session"/>
+        </c:if>
     </body>
 </html>

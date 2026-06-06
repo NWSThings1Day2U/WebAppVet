@@ -181,16 +181,16 @@
                                                     </div>
                                                     <div class="mb-2">
                                                         <label class="form-label fw-semibold">Nombre Completo:</label>
-                                                        <input type="text" name="txtNombre" class="form-control" value="<%= u.getNombrecompleto() %>" required>
+                                                        <input type="text" name="txtNombre" class="form-control" value="<%= u.getNombrecompleto() %>" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" required>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-6 mb-2">
                                                             <label class="form-label fw-semibold">DNI:</label>
-                                                            <input type="text" name="txtDni" class="form-control" value="<%= u.getDni() %>" required maxlength="15">
+                                                            <input type="text" name="txtDni" class="form-control" value="<%= u.getDni() %>"  maxlength="8" pattern="\d{8}" required>
                                                         </div>
                                                         <div class="col-md-6 mb-2">
                                                             <label class="form-label fw-semibold">Teléfono:</label>
-                                                            <input type="text" name="txtTelefono" class="form-control" value="<%= u.getTelefono() %>">
+                                                            <input type="text" name="txtTelefono" class="form-control" value="<%= u.getTelefono() %>" pattern="9\d{8}" maxlength="9" >
                                                         </div>
                                                     </div>
                                                     <div class="mb-2">
@@ -250,7 +250,7 @@
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label fw-semibold">Contraseña:</label>
-                                    <input type="password" name="txtPass" class="form-control" required placeholder="******">
+                                    <input type="password" name="txtPass" class="form-control" required placeholder="******" minlength="6">
                                 </div>
                             </div>
                             <div class="mb-2">
@@ -260,11 +260,11 @@
                             <div class="row">
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label fw-semibold">DNI:</label>
-                                    <input type="text" name="txtDni" class="form-control" required maxlength="8">
+                                    <input type="text" name="txtDni" class="form-control" maxlength="8" pattern="\d{8}" required>
                                 </div>
                                 <div class="col-md-6 mb-2">
                                     <label class="form-label fw-semibold">Teléfono:</label>
-                                    <input type="text" name="txtTelefono" class="form-control" placeholder="987654321">
+                                    <input type="text" name="txtTelefono" class="form-control" pattern="9\d{8}" maxlength="9"  placeholder="987654321">
                                 </div>
                             </div>
                             <div class="mb-3">

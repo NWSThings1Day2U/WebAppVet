@@ -77,7 +77,7 @@
                     </div>
                 </div>
 
-                <!-- tarjets -->
+                <!-- tarjetas -->
 
                 <div class="row g-4 mb-4">
 

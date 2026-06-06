@@ -55,7 +55,7 @@
                     </div>
                  </div>
                 
-                <div class="card p-4 border-top-0 rounded-bottom mb-5" style="box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
+                <div class="perfil-card">
                 <div class="row g-0 h-100">
                     <div class="col-md-5 d-none d-md-block">
                         <img src="${pageContext.request.contextPath}/recursos/${sessionScope.imagen}" 
@@ -94,13 +94,13 @@
                                 <div class="row mb-4">
                                     <div class="col-md-6">
                                         <label class="form-label">Nombre completo: </label>
-                                        <input type="text" class="form-control  editable" name="nombreCompleto" 
+                                        <input type="text" class="form-control  editable" name="nombreCompleto"  pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$"
                                                value="${datosUsuario.nombrecompleto}" required 
                                                ${not empty sessionScope.error ? '' : 'disabled'}>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">DNI: </label>
-                                        <input type="text" class="form-control " value="${datosUsuario.dni}" readonly disabled>
+                                        <input type="text" class="form-control " maxlength="8" pattern="\d{8}" value="${datosUsuario.dni}" readonly disabled>
                                     </div>
                                 </div>
 

@@ -35,7 +35,7 @@
         <main class="container mt-5 pt-4 contenido-cli" style="margin-top: 180px; margin-bottom: 150px;">
             <div class="container-fluid">
                 <div class="bien-mensaje-vet">
-                    <h1 class="text-start titulo-vet fs-2 mb-2">¡Hola, 
+                    <h1 class="text-start titulo-vet fs-2 mb-2" style="color: #333;">¡Hola, 
                         <span style="color: #336600;">${sessionScope.nombrecompleto}</span>! 
                         <span><i class="fa-solid fa-hand mano-animada"></i></span>
                     </h1>

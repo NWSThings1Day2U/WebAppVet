@@ -21,7 +21,7 @@
 
         <!-- CSS -->                
         <link rel="stylesheet" href="estilos/escliente.css">
-
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/contenidocliente.css">
     </head>
     <body>
 
@@ -35,7 +35,7 @@
                 <h2 class="text-center titulo-vet">Mi Perfil</h2>
                 <p class="text-center p-vet">Administra tu información personal y mascotas</p>
             </div>
-            <div class="card p-4 border-top-0 rounded-bottom mb-5" style="box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);">
+            <div class="perfil-card ">
                 <div class="row g-0 h-100">
                     <div class="col-md-5 d-none d-md-block">
                         <img src="${pageContext.request.contextPath}/recursos/${sessionScope.imagen}" 
@@ -107,7 +107,7 @@
                                             <label class="form-label" for="reg_pass">Nueva Contraseña: </label>
                                             <div class="input-group">
                                                 <input type="password" class="form-control editable" name="contrasena"  id="reg_pass" 
-                                                   minlength="6"  ${not empty sessionScope.error ? '' : 'disabled'}>
+                                                       minlength="6"  ${not empty sessionScope.error ? '' : 'disabled'}>
                                                 <span class="input-group-text" id="togglePassword1" style="border-left: none; cursor: pointer;">
                                                     <i class="fa-regular fa-eye" id="eyeIcon1"></i>
                                                 </span>
@@ -147,7 +147,7 @@
                                     this.style.display = 'none';
                                     document.getElementById('btnGuardar').style.display = 'block';
                                 });
-                                
+
                                 function setupPasswordToggle(buttonId, inputId, iconId) {
                                     const btn = document.getElementById(buttonId);
                                     const input = document.getElementById(inputId);
@@ -177,118 +177,121 @@
                     </div>
                 </div>
             </div>
-            <div class="card p-4 border-top-0 rounded-bottom mb-5" style="box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);"> 
+            <div class="perfil-card p-5">
+                <div class="row g-0 h-100"> 
 
-                <div class="row mb-4 align-items-center">
-                    <div class="col-auto">
-                        <div class="d-flex align-items-center justify-content-center icon-perfil-vet">
-                            <i class="fa-solid fa-dog"></i>
+                    <div class="d-flex align-items-center justify-content-between w-100 gap-3 mb-4">
+
+                        <div class="d-flex align-items-center gap-2 ">
+                            <div class="d-flex align-items-center justify-content-center icon-perfil-vet">
+                                <i class="fa-solid fa-dog"></i>
+                            </div>
+                            <h4 class="m-0 subtitulo-vet">
+                                Mis Mascotas Registradas
+                            </h4>
                         </div>
+
+                        <div class="d-flex align-items-center gap-2">
+                            <button class="btn btn-vet-principal text-nowrap">
+                                <i class="fa-solid fa-plus me-2"></i>Agregar mascota
+                            </button>
+
+                            <div class="combo-cliente-container" style="min-width: 200px;">
+                                <select class="form-select select-custom-vet" style="font-size: 13px !important;">
+                                    <option selected>Selecciona cliente</option>
+                                    <option value="1">Cliente principal (yo)</option>
+                                    <option value="2">cliente externo</option>
+                                    <option value="3">cliente externo</option>
+                                </select>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="col">
-                        <h4 class="m-0 subtitulo-vet">
-                            Mis Mascotas Registradas
-                        </h4>
-                    </div>
-                    <div class="col-auto">
-                        <button class="btn btn-vet-principal">
-                            <i class="fa-solid fa-plus me-2"></i>Agregar mascota
-                        </button>
-                    </div>
-                    <div class="col-auto">
-                        <select class="form-select" aria-label="Default select example">
-                            <option selected>Selecciona cliente</option>
-                            <option value="1">Cliente principal (yo)</option>
-                            <option value="2">cliente externo</option>
-                            <option value="3">cliente externo</option>
-                        </select>
-                    </div>
-                </div>
 
-                <div class="d-flex flex-column gap-4">
+                    <div class="d-flex flex-column gap-4">
 
-                    <div class="card car-vet shadow-sm m-0">
-                        <h5 class="card-header sub1-vet">Mascota 1</h5>
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-md-10">
-                                    <h5 class="card-title sub2-vet mb-3">Nombre mascota</h5>
-                                    <p class="card-text text-vet m-0">
-                                        <strong>Especie: </strong> Perro <br>
-                                        <strong>Raza: </strong> Golden Retriever <br>
-                                        <strong>Edad: </strong> 3 años <br>
-                                        <strong>Peso: </strong> 28 kg
-                                    </p>
+                        <div class="card car-vet shadow-sm m-0">
+                            <h5 class="card-header sub1-vet">Mascota 1</h5>
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-10">
+                                        <h5 class="card-title sub2-vet mb-3">Nombre mascota</h5>
+                                        <p class="card-text text-vet m-0">
+                                            <strong>Especie: </strong> Perro <br>
+                                            <strong>Raza: </strong> Golden Retriever <br>
+                                            <strong>Edad: </strong> 3 años <br>
+                                            <strong>Peso: </strong> 28 kg
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 mt-md-0 text-md-end text-center">
+                                        <div class="d-flex gap-2 justify-content-md-end justify-content-center">
+                                            <button class="btn btn-warning text-white" type="button" title="Editar Mascota">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-danger" type="button" title="Eliminar Mascota">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-md-2 mt-3 mt-md-0 text-md-end text-center">
-                                    <div class="d-flex gap-2 justify-content-md-end justify-content-center">
-                                        <button class="btn btn-warning text-white" type="button" title="Editar Mascota">
-                                            <i class="fa-solid fa-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-danger" type="button" title="Eliminar Mascota">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
+                            </div>
+                        </div>
+
+                        <div class="card car-vet shadow-sm m-0">
+                            <h5 class="card-header sub1-vet">Mascota 2</h5>
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-10">
+                                        <h5 class="card-title sub2-vet mb-3">Nombre mascota</h5>
+                                        <p class="card-text text-vet m-0">
+                                            <strong>Especie: </strong> Perro <br>
+                                            <strong>Raza: </strong> Golden Retriever <br>
+                                            <strong>Edad: </strong> 3 años <br>
+                                            <strong>Peso: </strong> 28 kg
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 mt-md-0 text-md-end text-center">
+                                        <div class="d-flex gap-2 justify-content-md-end justify-content-center">
+                                            <button class="btn btn-warning text-white" type="button" title="Editar Mascota">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-danger" type="button" title="Eliminar Mascota">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card car-vet shadow-sm m-0">
+                            <h5 class="card-header sub1-vet">Mascota 3</h5>
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-10">
+                                        <h5 class="card-title sub2-vet mb-3">Nombre mascota</h5>
+                                        <p class="card-text text-vet m-0">
+                                            <strong>Especie: </strong> Perro <br>
+                                            <strong>Raza: </strong> Golden Retriever <br>
+                                            <strong>Edad: </strong> 3 años <br>
+                                            <strong>Peso: </strong> 28 kg
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2 mt-3 mt-md-0 text-md-end text-center">
+                                        <div class="d-flex gap-2 justify-content-md-end justify-content-center">
+                                            <button class="btn btn-warning text-white" type="button" title="Editar Mascota">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-danger" type="button" title="Eliminar Mascota">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="card car-vet shadow-sm m-0">
-                        <h5 class="card-header sub1-vet">Mascota 2</h5>
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-md-10">
-                                    <h5 class="card-title sub2-vet mb-3">Nombre mascota</h5>
-                                    <p class="card-text text-vet m-0">
-                                        <strong>Especie: </strong> Perro <br>
-                                        <strong>Raza: </strong> Golden Retriever <br>
-                                        <strong>Edad: </strong> 3 años <br>
-                                        <strong>Peso: </strong> 28 kg
-                                    </p>
-                                </div>
-                                <div class="col-md-2 mt-3 mt-md-0 text-md-end text-center">
-                                    <div class="d-flex gap-2 justify-content-md-end justify-content-center">
-                                        <button class="btn btn-warning text-white" type="button" title="Editar Mascota">
-                                            <i class="fa-solid fa-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-danger" type="button" title="Eliminar Mascota">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card car-vet shadow-sm m-0">
-                        <h5 class="card-header sub1-vet">Mascota 3</h5>
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-md-10">
-                                    <h5 class="card-title sub2-vet mb-3">Nombre mascota</h5>
-                                    <p class="card-text text-vet m-0">
-                                        <strong>Especie: </strong> Perro <br>
-                                        <strong>Raza: </strong> Golden Retriever <br>
-                                        <strong>Edad: </strong> 3 años <br>
-                                        <strong>Peso: </strong> 28 kg
-                                    </p>
-                                </div>
-                                <div class="col-md-2 mt-3 mt-md-0 text-md-end text-center">
-                                    <div class="d-flex gap-2 justify-content-md-end justify-content-center">
-                                        <button class="btn btn-warning text-white" type="button" title="Editar Mascota">
-                                            <i class="fa-solid fa-pencil"></i>
-                                        </button>
-                                        <button class="btn btn-danger" type="button" title="Eliminar Mascota">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div> 
             </div>
         </main>

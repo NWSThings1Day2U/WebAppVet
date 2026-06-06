@@ -262,12 +262,12 @@
                             <form action="${pageContext.request.contextPath}/controladorcliente?accion=guardar" method="POST">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-semibold">Nombre Completo</label>
-                                        <input type="text" name="txtNombre" class="form-control" placeholder="Ingrese nombre y apellido" required>
+                                        <label class="form-label fw-semibold"  for="nombrecompleto">Nombre Completo</label>
+                                        <input type="text" name="txtNombre" class="form-control" placeholder="Ingrese nombre y apellido" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" id="nombrecompleto" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-semibold">DNI</label>
-                                        <input type="text" name="txtDni" class="form-control" placeholder="Ingrese número de documento" required>
+                                        <label class="form-label fw-semibold" for="documentodeidentidad">DNI</label>
+                                        <input type="text" name="txtDni" class="form-control" id="documentodeidentidad" maxlength="8" pattern="\d{8}" placeholder="Ingrese número de documento" required>
                                     </div>
                                 </div> 
                                 <div class="row"><div class="col-md-12 mb-3">
@@ -301,7 +301,7 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold">Teléfono / Celular</label>
-                                        <input type="text" name="txtTelefono" class="form-control" placeholder="Ingrese teléfono de contacto">
+                                        <input type="text" name="txtTelefono" class="form-control" maxlength="9" pattern="9\d{8}" placeholder="Ingrese teléfono de contacto">
                                     </div>
                                 </div>
                                 <div class="modal-footer px-0 pb-0 mt-3">
@@ -333,5 +333,28 @@
             setInterval(actualizarFecha, 1000);
             actualizarFecha();
         </script>
+        <%
+            String mensajeExito = (String) request.getSession().getAttribute("mensajeExito");
+            String mensajeError = (String) request.getSession().getAttribute("mensajeError");
+            
+            if (mensajeExito != null) {
+        %>
+        <script>
+            alertify.success("<%= mensajeExito %>");
+        </script>
+        <%
+                request.getSession().removeAttribute("mensajeExito");
+            }
+            if (mensajeError != null) {
+        %>
+        <script>
+            alertify.error("<%= mensajeError %>");
+        </script>
+        <%
+                request.getSession().removeAttribute("mensajeError");
+            }
+        %>
+        
+
     </body>
 </html>
