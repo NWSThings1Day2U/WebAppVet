@@ -127,3 +127,14 @@
         text-align:center;
     }
 }
+
+.perfil-card { 
+    margin-bottom: 50px;
+    max-width: none; 
+    width: auto;     
+    
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    background-color: white;
+}
