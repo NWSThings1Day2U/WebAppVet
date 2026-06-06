@@ -171,9 +171,46 @@
                     <h2 class="text-start titulo-vet fs-3 mb-4" style="color: #333 !important;">Agenda del Médico Veterinario:</h2>
                 </div>    
                         
-                 <div class="tarjeta-final-vet mt-5">
-                    <h2 class="text-start titulo-vet fs-3 mb-4" style="color: #333 !important;">Recuerde:</h2>
-                </div>         
+                <div class="tarjeta-final-vet mt-5 mb-5">
+                    <div class="card border-0 rounded-4 shadow-sm p-4" style="background-color: #FFFFFF; border-radius: 25px !important;">
+                        <div class="row align-items-center justify-content-between g-3">
+                            
+                            <div class="col-12 col-md-3 d-flex align-items-center justify-content-center justify-content-md-start border-end-md">
+                                <div class="me-3 fs-1" style="color: #c0392b;">
+                                    <i class="fa-regular fa-calendar-check"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 fw-bold" style="color: #1e7e34;">Cita próxima:</h6>
+                                    <p class="mb-0 fw-bold text-dark">12/05 - 10:00 A</p>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-1 d-flex justify-content-center">
+                                <span class="fs-2" style="color: #d35400;">
+                                    <i class="fa-regular fa-heart"></i>
+                                </span>
+                            </div>
+
+                            <div class="col-12 col-md-4">
+                                <h6 class="mb-2 fw-bold text-center text-md-start" style="color: #1e7e34;">Horario habitual:</h6>
+                                <p class="mb-1 small fw-bold text-dark text-center text-md-start">
+                                    Lunes a Sabado de 9:00 a.m. - 17:00 p.m.
+                                </p>
+                                <p class="mb-0 small fw-bold text-dark text-center text-md-start">
+                                    Domingo de 9:00 a.m. - 14:00 p.m.
+                                </p>
+                            </div>
+
+                            <div class="col-12 col-md-4 border-start-md ps-md-4">
+                                <h6 class="mb-1 fw-bold text-center text-md-start" style="color: #1e7e34;">Nota:</h6>
+                                <p class="mb-0 small text-dark text-center text-md-start" style="line-height: 1.3;">
+                                    Estimad@ <span class="fw-bold" style="color: #d35400;">${sessionScope.nombrecompleto}</span>, recuerde asistir con puntualidad a sus citas
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>        
 
             </div>        
 

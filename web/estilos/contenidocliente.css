@@ -33,10 +33,10 @@ body {
 
 /* Estilo para las tarjetas de servicios */
 .card-servicio {
-    border: 1px solid #e9ecef !important;
+    border: 0 !important;
     border-radius: 14px !important;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -60,9 +60,9 @@ body {
 
 /* Estilo para tarjetas de modulos */
 .card-modulo {
-    border: 1px solid #e9ecef;
+    border: none !important;
     border-radius: 18px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     padding: 1.5rem 1rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -399,4 +399,19 @@ body {
     overflow: hidden;
     box-shadow: 0 2px 10px rgba(0,0,0,.08);
     background-color: white;
+}
+.buscarmas-vet .input-group {
+    border-radius: 12px; 
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03); 
+}
+
+.buscarmas-vet .form-control,
+.buscarmas-vet .input-group-text {
+    border: none !important; 
+}
+
+.buscarmas-vet .form-control:focus {
+    box-shadow: none !important;
+    background-color: #ffffff;
 }
