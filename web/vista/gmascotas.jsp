@@ -6,6 +6,37 @@
 <%
     List<mascotas> lista = (List<mascotas>) request.getAttribute("listaMascotas");
     List<clientes> listaClientes = (List<clientes>) request.getAttribute("listaClientes");
+    // Inicializar contadores en 0
+    int totalPerros = 0;
+    int totalGatos = 0;
+    int totalNuevas = 0;
+
+    if (lista != null) {
+        for (mascotas m : lista) {
+            String especie = (m.getEspecie() != null) ? m.getEspecie().trim().toLowerCase() : "";
+            
+            if (especie.equals("perro") || especie.equals("perra") || especie.equals("can")) {
+                totalPerros++;
+            } 
+            else if (especie.equals("gato") || especie.equals("gata") || especie.equals("felino")) {
+                totalGatos++;
+            }
+
+            if (m.getFechaNacimiento() != null) {
+                try {
+                    java.time.format.DateTimeFormatter fmt = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    java.time.LocalDate fechaNac = java.time.LocalDate.parse(m.getFechaNacimiento(), fmt);
+                    java.time.LocalDate fechaActual = java.time.LocalDate.now();
+                    
+                    if (java.time.temporal.ChronoUnit.DAYS.between(fechaNac, fechaActual) <= 90) {
+                        totalNuevas++;
+                    }
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -63,9 +94,9 @@
                             <i class="fa-solid fa-paw text-warning icon-card"></i>
                         </div>
                     </div>
-                    <div class="col-xl-3 col-md-6"><div class="card-dashboard"><div><h5>Perros</h5><h1>35</h1></div><i class="fa-solid fa-dog text-success icon-card"></i></div></div>
-                    <div class="col-xl-3 col-md-6"><div class="card-dashboard"><div><h5>Gatos</h5><h1>20</h1></div><i class="fa-solid fa-cat text-primary icon-card"></i></div></div>
-                    <div class="col-xl-3 col-md-6"><div class="card-dashboard"><div><h5>Nuevas</h5><h1>8</h1></div><i class="fa-solid fa-heart-circle-plus text-danger icon-card"></i></div></div>
+                    <div class="col-xl-3 col-md-6"><div class="card-dashboard"><div><h5>Perros</h5><h1><%= totalPerros %></h1></div><i class="fa-solid fa-dog text-success icon-card"></i></div></div>
+                    <div class="col-xl-3 col-md-6"><div class="card-dashboard"><div><h5>Gatos</h5><h1><%= totalGatos %></h1></div><i class="fa-solid fa-cat text-primary icon-card"></i></div></div>
+                    <div class="col-xl-3 col-md-6"><div class="card-dashboard"><div><h5>Cachorros</h5><h1><%= totalNuevas %></h1></div><i class="fa-solid fa-heart-circle-plus text-danger icon-card"></i></div></div>
                 </div>
                     
                 <div class="tabla-panel">
