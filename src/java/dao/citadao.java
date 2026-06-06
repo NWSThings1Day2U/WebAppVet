@@ -370,9 +370,7 @@ public class citadao {
 
             cn = conexionvet_bd.probarConexion();
 
-            cs = cn.prepareCall(
-                    "{call sp_horas_ocupadas_fecha_editar(?,?)}"
-            );
+            cs = cn.prepareCall("{call sp_horas_ocupadas_fecha_editar(?,?)}");
 
             cs.setString(1, fecha);
             cs.setInt(2, idCita);
@@ -471,71 +469,63 @@ public class citadao {
     }
 
     // Metodo para crear cliente, mascota y cita a su vez 
-// Metodo para crear cliente, mascota y cita a su vez 
-public boolean registrarClienteMascotaCita(clientes c, mascotas m, citas cita) {
-    boolean resultado = false;
-    try {
-        cn = conexionvet_bd.probarConexion();
-        CallableStatement cs = cn.prepareCall(
-                "{CALL sp_registrar_cita_cliente_nuevo(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
-        );
+    public boolean registrarClienteMascotaCita(clientes c, mascotas m, citas cita) {
+        boolean resultado = false;
+        try {
+            cn = conexionvet_bd.probarConexion();
+            CallableStatement cs = cn.prepareCall(
+                    "{CALL sp_registrar_cita_cliente_nuevo(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
+            );
 
-        // 1. Datos del Cliente
-        cs.setString(1, c.getNombreCompleto());
-        cs.setString(2, c.getDni());
-        cs.setString(3, c.getCorreo());
-        cs.setString(4, c.getTelefono());
+            cs.setString(1, c.getNombreCompleto());
+            cs.setString(2, c.getDni());
+            cs.setString(3, c.getCorreo());
+            cs.setString(4, c.getTelefono());
 
-        // 2. Datos de la Mascota
-        cs.setString(5, m.getNombre());
-        cs.setString(6, m.getEspecie());
-        cs.setString(7, m.getRaza());
-        cs.setDouble(8, m.getPeso());
-        
-        // CONTROL DEL NULL: Validamos la fecha de nacimiento de la mascota
-        if (m.getFechaNacimiento() != null && !m.getFechaNacimiento().trim().isEmpty()) {
-            cs.setDate(9, java.sql.Date.valueOf(m.getFechaNacimiento()));
-        } else {
-            cs.setNull(9, java.sql.Types.DATE); // Envía un NULL limpio a MySQL si no se ingresó
+            cs.setString(5, m.getNombre());
+            cs.setString(6, m.getEspecie());
+            cs.setString(7, m.getRaza());
+            cs.setDouble(8, m.getPeso());
+
+            if (m.getFechaNacimiento() != null && !m.getFechaNacimiento().trim().isEmpty()) {
+                cs.setDate(9, java.sql.Date.valueOf(m.getFechaNacimiento()));
+            } else {
+                cs.setNull(9, java.sql.Types.DATE); 
+            }
+            cs.setString(10, m.getSexo());
+
+            cs.setInt(11, cita.getIdTipo());
+
+            if (cita.getFecha() != null && !cita.getFecha().trim().isEmpty()) {
+                cs.setDate(12, java.sql.Date.valueOf(cita.getFecha()));
+            } else {
+                cs.setNull(12, java.sql.Types.DATE);
+            }
+
+            String horaFormateada = cita.getHora();
+            if (horaFormateada != null && horaFormateada.trim().length() == 5) {
+                horaFormateada += ":00"; 
+            }
+
+            if (horaFormateada != null && !horaFormateada.trim().isEmpty()) {
+                cs.setTime(13, java.sql.Time.valueOf(horaFormateada));
+            } else {
+                cs.setNull(13, java.sql.Types.TIME);
+            }
+
+            cs.setString(14, cita.getMotivo());
+
+            cs.execute();
+            resultado = true;
+
+        } catch (Exception e) {
+            System.out.println("Error registrar cita de cliente nuevo de forma explícita:");
+            e.printStackTrace(); 
+        } finally {
+            closeResources();
         }
-        cs.setString(10, m.getSexo());
-
-        // 3. Datos de la Cita
-        cs.setInt(11, cita.getIdTipo());
-        
-        // Control de fecha de la cita
-        if (cita.getFecha() != null && !cita.getFecha().trim().isEmpty()) {
-            cs.setDate(12, java.sql.Date.valueOf(cita.getFecha()));
-        } else {
-            cs.setNull(12, java.sql.Types.DATE);
-        }
-        
-        // CONTROL DEL FORMATO DE HORA: Si viene un formato de 5 dígitos (ej. "15:30"), le agregamos los segundos para evitar caídas
-        String horaFormateada = cita.getHora();
-        if (horaFormateada != null && horaFormateada.trim().length() == 5) {
-            horaFormateada += ":00"; 
-        }
-        
-        if (horaFormateada != null && !horaFormateada.trim().isEmpty()) {
-            cs.setTime(13, java.sql.Time.valueOf(horaFormateada));
-        } else {
-            cs.setNull(13, java.sql.Types.TIME);
-        }
-        
-        cs.setString(14, cita.getMotivo());
-
-        // Ejecución segura
-        cs.execute();
-        resultado = true;
-
-    } catch (Exception e) {
-        System.out.println("Error registrar cita de cliente nuevo de forma explícita:");
-        e.printStackTrace(); // ¡Muestra el trazo completo para identificar la línea exacta si vuelve a fallar!
-    } finally {
-        closeResources();
+        return resultado;
     }
-    return resultado;
-}
     private String convertirDia(DayOfWeek day) {
 
         switch (day) {
@@ -565,6 +555,148 @@ public boolean registrarClienteMascotaCita(clientes c, mascotas m, citas cita) {
                 return "";
         }
     }
+    
+    
+    //Citas proximas
+    public List<citas> listarProximasCitas() {
+        List<citas> lista = new ArrayList<>();
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT c.*, "
+                    + "cl.nombre_completo nombre_cliente, "
+                    + "m.nombre nombre_mascota "
+                    + "FROM citas c "
+                    + "INNER JOIN clientes cl ON c.id_cliente=cl.id_cliente "
+                    + "INNER JOIN mascotas m ON c.id_mascota=m.id_mascota "
+                    + "WHERE c.fecha >= CURDATE() "
+                    + "ORDER BY c.fecha ASC, c.hora ASC "
+                    + "LIMIT 5";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                citas c = new citas();
+                c.setCliente(
+                        rs.getString("nombre_cliente"));
+                c.setMascota(
+                        rs.getString("nombre_mascota"));
+                c.setFecha(
+                        rs.getString("fecha"));
+                c.setHora(
+                        rs.getString("hora"));
+                c.setEstado(
+                        rs.getString("estado"));
+                lista.add(c);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+    //Citas por semana
+    public int[] citasSemana() {
+        int datos[] = new int[7];
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT DAYOFWEEK(fecha) dia, COUNT(*) total "
+                    + "FROM citas "
+                    + "WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) "
+                    + "GROUP BY DAYOFWEEK(fecha)";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int dia
+                        = rs.getInt("dia");
+                datos[dia - 1]
+                        = rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return datos;
+    }
+    // CONTAR CITAS
+    public int contarCitas() {
+        int total = 0;
+        try {
+            String sql
+                    = "SELECT COUNT(*) total FROM citas";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            ResultSet rs
+                    = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+
+    //Citas por mes
+    public int totalCitas() {
+        int total = 0;
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT COUNT(*) total "
+                    + "FROM citas "
+                    + "WHERE MONTH(fecha)=MONTH(CURDATE()) "
+                    + "AND YEAR(fecha)=YEAR(CURDATE())";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return total;
+    }
+    //Citas mas solicitadas - 04-06-26
+    public List<Object[]> serviciosMasSolicitados() {
+        List<Object[]> lista
+                = new ArrayList<>();
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT tc.nombre, "
+                    + "COUNT(*) total "
+                    + "FROM citas c "
+                    + "INNER JOIN tipo_atencion tc "
+                    + "ON c.id_tipo=tc.id_tipo "
+                    + "GROUP BY tc.nombre "
+                    + "ORDER BY total DESC";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Object fila[] = new Object[2];
+                fila[0]
+                        = rs.getString("nombre");
+                fila[1]
+                        = rs.getInt("total");
+                lista.add(fila);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+    
     private void closeResources() {
         try {
             if (rs != null) {

@@ -146,6 +146,218 @@ public class ventasdao {
         }
         return total;
     }
+    // TOTAL DE VENTAS REGISTRADAS
+    public int contarVentas() {
+        int total = 0;
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT COUNT(*) total FROM ventas";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return total;
+    }
+    
+    public double ingresosTotales() {
+
+        double total = 0;
+
+        try {
+
+            String sql
+                    = "SELECT IFNULL(SUM(total),0) total FROM ventas";
+
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+
+            ResultSet rs
+                    = ps.executeQuery();
+
+            if (rs.next()) {
+                total = rs.getDouble("total");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return total;
+    }
+    //ventas semanales
+    public double[] ventasSemana() {
+        double datos[] = new double[7];
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT DAYOFWEEK(fecha) dia, "
+                    + "SUM(total) total "
+                    + "FROM ventas "
+                    + "WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) "
+                    + "GROUP BY DAYOFWEEK(fecha)";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int dia
+                        = rs.getInt("dia");
+                datos[dia - 1]
+                        = rs.getDouble("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return datos;
+    }
+    //ultimas ventas - 04-06-26
+    public List<ventas> ultimasVentas() {
+        List<ventas> lista = new ArrayList<>();
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT v.*, "
+                    + "IFNULL(c.nombre_completo,'PUBLICO GENERAL') cliente "
+                    + "FROM ventas v "
+                    + "LEFT JOIN clientes c ON v.id_cliente=c.id_cliente "
+                    + "ORDER BY v.id_venta DESC "
+                    + "LIMIT 5";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ventas v = new ventas();
+                v.setIdVenta(
+                        rs.getInt("id_venta"));
+                v.setCliente(
+                        rs.getString("cliente"));
+                v.setFecha(
+                        rs.getString("fecha"));
+                v.setTotal(
+                        rs.getDouble("total"));
+                lista.add(v);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+    
+    //ingresos del mes
+    public double ingresosMes() {
+        double total = 0;
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT IFNULL(SUM(total),0) total "
+                    + "FROM ventas "
+                    + "WHERE MONTH(fecha)=MONTH(CURDATE()) "
+                    + "AND YEAR(fecha)=YEAR(CURDATE())";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                total
+                        = rs.getDouble("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+    //INGRESOS ULTIM 12 MESES - 04-06-26
+    public double[] ingresosUltimos12Meses() {
+        double datos[] = new double[12];
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT MONTH(fecha) mes, "
+                    + "SUM(total) total "
+                    + "FROM ventas "
+                    + "WHERE YEAR(fecha)=YEAR(CURDATE()) "
+                    + "GROUP BY MONTH(fecha)";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                int mes = rs.getInt("mes");
+                datos[mes - 1]
+                        = rs.getDouble("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return datos;
+    }
+    //KPI CRECIM MENSUAL - 04-06-26
+    public double crecimientoMensual() {
+        double actual = 0;
+        double anterior = 0;
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql1
+                    = "SELECT IFNULL(SUM(total),0) total "
+                    + "FROM ventas "
+                    + "WHERE MONTH(fecha)=MONTH(CURDATE())";
+            PreparedStatement ps1
+                    = cn.prepareStatement(sql1);
+            rs = ps1.executeQuery();
+            if (rs.next()) {
+                actual = rs.getDouble("total");
+            }
+            rs.close();
+            String sql2
+                    = "SELECT IFNULL(SUM(total),0) total "
+                    + "FROM ventas "
+                    + "WHERE MONTH(fecha)=MONTH(CURDATE())-1";
+            PreparedStatement ps2
+                    = cn.prepareStatement(sql2);
+            rs = ps2.executeQuery();
+            if (rs.next()) {
+                anterior = rs.getDouble("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (anterior == 0) {
+            return 100;
+        }
+        return ((actual - anterior) / anterior) * 100;
+    }
+    
+    
+    public int productosVendidosMes() {
+        int total = 0;
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT IFNULL(SUM(cantidad),0) total "
+                    + "FROM detalle_venta dv "
+                    + "INNER JOIN ventas v ON dv.id_venta=v.id_venta "
+                    + "WHERE MONTH(v.fecha)=MONTH(CURDATE()) "
+                    + "AND YEAR(v.fecha)=YEAR(CURDATE())";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
     
     private void closeResources() {
         try { if (rs != null) rs.close(); } catch (Exception e) {}

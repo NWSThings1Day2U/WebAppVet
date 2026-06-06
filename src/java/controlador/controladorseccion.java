@@ -4,7 +4,11 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
+import dao.citadao;
+import dao.clientedao;
+import dao.mascotadao;
+import dao.productodao;
+import dao.ventasdao;
 /**
  *
  * @author USUARIO
@@ -104,7 +108,38 @@ public class controladorseccion extends HttpServlet {
     private void inicio(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("paginaActual", "inicio");
-
+        clientedao cldao = new clientedao();
+        mascotadao mdao = new mascotadao();
+        ventasdao vdao = new ventasdao();
+        citadao cdao = new citadao();
+        productodao pdao = new productodao();
+        
+        // TARJETAS PRINCIPALES
+        request.setAttribute("totalClientes",cldao.contarClientesActivos());
+        request.setAttribute("totalMascotas",mdao.contarMascotas());
+        request.setAttribute("totalCitas",cdao.totalCitas());
+        request.setAttribute("ingresos", vdao.ingresosMes());
+        request.setAttribute("totalProductos",pdao.contarProductos());
+        // GRÁFICOS
+        request.setAttribute("ventasSemana",java.util.Arrays.toString(vdao.ventasSemana()));
+        request.setAttribute("citasSemana",java.util.Arrays.toString(cdao.citasSemana()));
+        request.setAttribute("ingresos12Meses",java.util.Arrays.toString(vdao.ingresosUltimos12Meses()));
+        // TABLAS
+        request.setAttribute("proximasCitas",cdao.listarProximasCitas());
+        request.setAttribute("ultimasVentas",vdao.ultimasVentas());
+        request.setAttribute("ultimosClientes",cldao.ultimosClientes());
+        request.setAttribute("topProductos",pdao.topProductosVendidos());
+        request.setAttribute("topClientes", cldao.topClientesCompradores());
+        request.setAttribute("serviciosTop",cdao.serviciosMasSolicitados());
+        request.setAttribute("productosCriticos", pdao.productosCriticos());
+        request.setAttribute("productosPorVencer",pdao.productosPorVencer());
+        // INDICADORES
+        request.setAttribute("crecimiento",vdao.crecimientoMensual());
+        request.setAttribute("ingresosMes", vdao.ingresosMes());
+        request.setAttribute("clientesNuevos",cldao.contarClientesNuevos());
+        request.setAttribute("mascotasRegistradas",mdao.contarMascotas());
+        request.setAttribute("totalVentas",vdao.contarVentas());
+        request.setAttribute("productosVendidos", vdao.productosVendidosMes());
         request.getRequestDispatcher(paginicio).forward(request, response);
     }
 

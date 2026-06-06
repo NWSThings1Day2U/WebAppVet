@@ -130,12 +130,141 @@ public class productodao {
                 }
             }
         } catch (Exception e) {
-            System.out.println(
-                    "Error buscarPorId: "
-                    + e.getMessage());
+            System.out.println("Error buscarPorId: "+ e.getMessage());
         }
         return p;
     }
+    
+    
+    // CONTAR PRODUCTOS
+    public int contarProductos() {
+        cn = conexionvet_bd.probarConexion();
+        int total = 0;
+
+        try {
+            
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT COUNT(*) total FROM productos";
+
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+
+            ResultSet rs
+                    = ps.executeQuery();
+
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return total;
+    }
+    
+    //productos top - 04-06-26
+
+    public List<Object[]> topProductosVendidos() {
+        List<Object[]> lista
+                = new ArrayList<>();
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT p.nombre, "
+                    + "SUM(dv.cantidad) vendidos "
+                    + "FROM detalle_venta dv "
+                    + "INNER JOIN productos p "
+                    + "ON dv.id_producto=p.id_producto "
+                    + "GROUP BY p.nombre "
+                    + "ORDER BY vendidos DESC "
+                    + "LIMIT 5";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Object fila[] = new Object[2];
+                fila[0] = rs.getString("nombre");
+                fila[1] = rs.getInt("vendidos");
+                lista.add(fila);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+    
+    //productos x vencer - 04-06-26
+    public List<productos> productosPorVencer() {
+        List<productos> lista = new ArrayList<>();
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT * "
+                    + "FROM productos "
+                    + "WHERE fecha_vencimiento BETWEEN CURDATE() "
+                    + "AND DATE_ADD(CURDATE(),INTERVAL 30 DAY) "
+                    + "ORDER BY fecha_vencimiento ASC";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                productos p = new productos();
+                p.setIdProducto(
+                        rs.getInt("id_producto"));
+                p.setNombre(
+                        rs.getString("nombre"));
+                p.setFechaVencimiento(
+                        rs.getString("fecha_vencimiento"));
+                lista.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+    
+    //productos criticos
+    public List<productos> productosCriticos() {
+        List<productos> lista
+                = new ArrayList<>();
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT * "
+                    + "FROM productos "
+                    + "WHERE stock <= stock_minimo "
+                  /*  + "AND estado='Activo' " */
+                    + "ORDER BY stock ASC";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                productos p
+                        = new productos();
+                p.setIdProducto(
+                        rs.getInt("id_producto"));
+                p.setNombre(
+                        rs.getString("nombre"));
+                p.setStock(
+                        rs.getInt("stock"));
+                p.setStockMinimo(
+                        rs.getInt("stock_minimo"));
+                lista.add(p);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+                    
     private void closeResources() {
         try {
             if (rs != null) rs.close();

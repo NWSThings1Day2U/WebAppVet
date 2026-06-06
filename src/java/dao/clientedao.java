@@ -248,6 +248,72 @@ public class clientedao {
 
         return lista;
     }
+    
+    //ultimos clientes - 04-06-26 
+    public List<clientes> ultimosClientes() {
+        List<clientes> lista = new ArrayList<>();
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT * "
+                    + "FROM clientes "
+                    + "ORDER BY id_cliente DESC "
+                    + "LIMIT 5";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                clientes c = new clientes();
+                c.setNombreCompleto(
+                        rs.getString("nombre_completo"));
+                c.setTelefono(
+                        rs.getString("telefono"));
+                c.setFechaRegistro(
+                        rs.getDate("fecha_registro"));
+                lista.add(c);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+
+    //TOP CLIENTES X COMPRAS - 04-06-26
+    public List<Object[]> topClientesCompradores() {
+        List<Object[]> lista
+                = new ArrayList<>();
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT c.nombre_completo, "
+                    + "SUM(v.total) gastado "
+                    + "FROM ventas v "
+                    + "INNER JOIN clientes c "
+                    + "ON v.id_cliente=c.id_cliente "
+                    + "GROUP BY c.nombre_completo "
+                    + "ORDER BY gastado DESC "
+                    + "LIMIT 5";
+            PreparedStatement ps
+                    = cn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Object fila[] = new Object[2];
+                fila[0]
+                        = rs.getString("nombre_completo");
+                fila[1]
+                        = rs.getDouble("gastado");
+                lista.add(fila);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }   
+    
     private void closeResources() {
         try {
             if (rs != null) {
