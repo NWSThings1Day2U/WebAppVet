@@ -9,6 +9,7 @@ public class productos {
     private int stock;
     private int stockMinimo;
     private double precio;
+    private String activo;
 
     private String fechaIngreso;
     private String fechaVencimiento;
@@ -104,6 +105,15 @@ public class productos {
     public void setEstado(String estado) {
         this.estado = estado;
     }
+    
+    public String getActivo() {
+        return activo;
+    }
+
+    public void setActivo(String activo) {
+        this.activo = activo;
+    }
+    
 }
 
 

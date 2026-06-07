@@ -186,7 +186,7 @@
                                         <div class="modal-header bg-danger text-white">
                                             <h5 class="modal-title fw-bold">
                                                 <i class="fa-solid fa-triangle-exclamation"></i>
-                                                ¿Confirmar Anulación?
+                                                ¿Deseas anular la venta?
                                             </h5>
 
                                             <button type="button"

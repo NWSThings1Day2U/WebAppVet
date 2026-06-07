@@ -305,7 +305,7 @@
             }
             document.addEventListener("DOMContentLoaded", function() {
 
-                        <% for(citas c : lista){ %>
+            <% for(citas c : lista){ %>
 
             document.getElementById("txtFechaEdit<%= c.getIdCita() %>")
             .addEventListener("change", function () {

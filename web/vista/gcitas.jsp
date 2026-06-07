@@ -1,3 +1,5 @@
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page import="modelo.citas"%>
 <%@page import="modelo.clientes"%>
 <%@page import="modelo.mascotas"%>
@@ -31,7 +33,7 @@
     }
 %>
 
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -171,31 +173,53 @@
                                             </button>
                                         </form>
                                     </td>
-                                    <td>
-                                        <div class="d-flex justify-content-center align-items-center gap-2 flex-wrap">
-                                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarCita<%= c.getIdCita() %>" onclick="cargarHorasEditar(<%= c.getIdCita() %>, '<%= c.getHora() %>')">
-                                                <i class="fa-solid fa-pencil"></i>
-                                            </button>
-                                            <button class="btn btn-danger btn-sm" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar<%= c.getIdCita()%>">
-                                                <i class="fa-solid fa-trash"></i>
-                                            </button>
+                                  <td>
+                                    <div class="d-flex justify-content-center align-items-center gap-2">
+
+                                        <div class="d-flex justify-content-center align-items-center" style="width: 36px; height: 36px;">
+                                            <% if (c.getEstado().equals("CONFIRMADA")) { %>
+                                                <button class="btn btn-sm text-white fw-bold d-flex align-items-center justify-content-center" 
+                                                        style="background-color: #0088FF; border-radius: 6px; width: 36px; height: 36px; padding: 0;">
+                                                    <i class="fa-solid fa-download"></i>
+                                                </button>
+                                            <% } else if (c.getEstado().equals("ATENDIDA")) { %>
+                                                <button class="btn btn-sm fw-bold d-flex align-items-center justify-content-center" 
+                                                        style="color: #2E7D32; border: 2px solid #71C87B; background-color: #E2F4E4; border-radius: 6px; width: 36px; height: 36px; padding: 0;">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </button>
+                                            <% } %>
                                         </div>
-                                    </td>
+
+                                        <button class="btn btn-warning btn-sm d-flex align-items-center justify-content-center" 
+                                                data-bs-toggle="modal" data-bs-target="#modalEditarCita<%= c.getIdCita() %>" onclick="cargarHorasEditar(<%= c.getIdCita() %>, '<%= c.getHora() %>')"
+                                                style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
+                                            <i class="fa-solid fa-pencil"></i>
+                                        </button>
+
+                                        <button class="btn btn-danger btn-sm d-flex align-items-center justify-content-center" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar<%= c.getIdCita()%>"
+                                                style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
+                                            <i class="fa-solid fa-calendar-xmark"></i>
+                                        </button>
+
+                                    </div>
+                                </td>
+
+
                                 </tr>
 
                                 <div class="modal fade" id="modalEliminar<%= c.getIdCita() %>" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header bg-danger text-white">
-                                                <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Confirmar Eliminación?</h5>
+                                                <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Deseas cancelar la cita?</h5>
                                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <p>¿Estás completamente seguro de que deseas eliminar la cita Nro. <strong><%= c.getIdCita() %></strong> del cliente <strong><%= c.getCliente() %></strong>?</p>
+                                                <p>¿Estás completamente seguro de que deseas cancelar la cita Nro. <strong><%= c.getIdCita() %></strong> del cliente <strong><%= c.getCliente() %></strong>?</p>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                <a href="${pageContext.request.contextPath}/controladorcitas?accion=eliminar&id=<%= c.getIdCita() %>" class="btn btn-danger fw-semibold">Eliminar Permanentemente</a>
+                                                <a href="${pageContext.request.contextPath}/controladorcitas?accion=eliminar&id=<%= c.getIdCita() %>" class="btn btn-danger fw-semibold">Cancelar Cita</a>
                                             </div>
                                         </div>
                                     </div>
@@ -356,7 +380,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             function actualizarFecha() {
                 const fecha = new Date();
@@ -469,5 +493,7 @@
                 combo.appendChild(option);
             }
         </script>
+        
+        
     </body>
 </html>

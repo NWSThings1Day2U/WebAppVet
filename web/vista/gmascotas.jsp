@@ -220,21 +220,24 @@
                                             </button>    
                                         </div>
                                     </td>
-                                </tr><!-- Eliminar modal -->
+                                </tr>
+                                
+                             <!-- Eliminar modal -->
 
                             <div class="modal fade" id="modalEliminar<%= m.getIdMascota() %>" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header bg-danger text-white">
-                                            <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Confirmar Eliminación?</h5>
+                                            <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Confirmar dar de baja?</h5>
                                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <p>¿Estás completamente seguro de que deseas eliminar <strong><%=  m.getNombre() %></strong>  ?</p>
+                                            <p>¿Estás completamente seguro de que deseas dar de baja a la mascota: <strong><%=  m.getNombre() %></strong>  ?</p>
+                                            <p class="text-danger small mb-0"><i class="fa-solid fa-circle-info"></i> Nota: Al dar de baja a la mascota, se ocultará de la lista.</p>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                            <a href="${pageContext.request.contextPath}/controladormascota?accion=eliminar&id=<%= m.getIdMascota() %>" class="btn btn-danger fw-semibold">Eliminar Permanentemente</a>
+                                            <a href="${pageContext.request.contextPath}/controladormascota?accion=eliminar&id=<%= m.getIdMascota() %>" class="btn btn-danger fw-semibold">Aceptar</a>
                                         </div>
                                     </div>
                                 </div>

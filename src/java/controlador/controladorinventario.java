@@ -27,6 +27,7 @@ public class controladorinventario extends HttpServlet {
             case "guardar": guardar(request, response); break;
             case "editar": editar(request, response); break;
             case "eliminar": eliminar(request, response); break;
+            case "reactivar":reactivar(request,response);break;
             default: listar(request, response);
         }
     }
@@ -88,16 +89,41 @@ public class controladorinventario extends HttpServlet {
         try {
             int id = Integer.parseInt(request.getParameter("id"));
             if (dao.eliminarProducto(id)) {
-                request.getSession().setAttribute("mensajeExito", "Producto dado de baja correctamente.");
+                request.getSession().setAttribute("mensajeExito", "Producto desactivado correctamente.");
             } else {
-                request.getSession().setAttribute("mensajeError", "No se pudo eliminar el producto.");
+                request.getSession().setAttribute("mensajeError", "No se pudo desactivar el producto.");
             }
         } catch (Exception e) {
-            request.getSession().setAttribute("mensajeError", "Error al eliminar: " + e.getMessage());
+            request.getSession().setAttribute("mensajeError", "Error al desactivar: " + e.getMessage());
         }
         response.sendRedirect("controladorinventario?accion=listar");
     }
+    private void reactivar(HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
 
+        try {
+
+            int id = Integer.parseInt(
+                    request.getParameter("id"));
+
+            if (dao.reactivarProducto(id)) {
+
+                request.getSession().setAttribute("mensajeExito","Producto reactivado correctamente");
+
+            } else {
+
+                request.getSession().setAttribute("mensajeError","No se pudo reactivar");
+
+            }
+
+        } catch (Exception e) {
+
+            request.getSession().setAttribute("mensajeError",e.getMessage());
+
+        }
+
+        response.sendRedirect("controladorinventario?accion=listar");
+    }
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         processRequest(request, response);

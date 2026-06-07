@@ -367,12 +367,12 @@ public class controladorcitas extends HttpServlet {
             boolean exito = dao.eliminarCita(idCita);
 
             if (exito) {
-                request.getSession().setAttribute("mensajeExito", "Cita eliminada correctamente del sistema.");
+                request.getSession().setAttribute("mensajeExito", "Cita cancelada correctamente del sistema.");
             } else {
-                request.getSession().setAttribute("mensajeError", "No se puede eliminar la cita (puede tener registros vinculados).");
+                request.getSession().setAttribute("mensajeError", "No se puede cancelar la cita (puede tener registros vinculados).");
             }
         } catch (Exception e) {
-            request.getSession().setAttribute("mensajeError", "Error de parámetros al eliminar: " + e.getMessage());
+            request.getSession().setAttribute("mensajeError", "Error de parámetros al cancelar: " + e.getMessage());
         }
         redireccionarSegunRol(request, response, rol);
     }

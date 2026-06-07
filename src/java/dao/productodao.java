@@ -34,6 +34,7 @@ public class productodao {
                 p.setFechaVencimiento(rs.getString("fecha_vencimiento"));
                 p.setProveedor(rs.getString("proveedor"));
                 p.setEstado(rs.getString("estado"));
+                p.setActivo(rs.getString("activo"));
 
                 lista.add(p);
             }
@@ -144,8 +145,9 @@ public class productodao {
         try {
             
             cn = conexionvet_bd.probarConexion();
-            String sql
-                    = "SELECT COUNT(*) total FROM productos";
+            String sql = "SELECT COUNT(*) total" +
+                        "FROM productos" +
+                        "WHERE activo='ACTIVO'";
 
             PreparedStatement ps
                     = cn.prepareStatement(sql);
@@ -205,7 +207,7 @@ public class productodao {
             String sql
                     = "SELECT * "
                     + "FROM productos "
-                    + "WHERE fecha_vencimiento BETWEEN CURDATE() "
+                    + "WHERE activo='ACTIVO' AND fecha_vencimiento BETWEEN CURDATE() "
                     + "AND DATE_ADD(CURDATE(),INTERVAL 30 DAY) "
                     + "ORDER BY fecha_vencimiento ASC";
             PreparedStatement ps
@@ -238,7 +240,7 @@ public class productodao {
             String sql
                     = "SELECT * "
                     + "FROM productos "
-                    + "WHERE stock <= stock_minimo "
+                    + "WHERE activo='ACTIVO' AND stock <= stock_minimo "
                   /*  + "AND estado='Activo' " */
                     + "ORDER BY stock ASC";
             PreparedStatement ps
@@ -264,7 +266,23 @@ public class productodao {
         }
         return lista;
     }
-                    
+    public boolean reactivarProducto(int id) {
+        try {
+            cn = conexionvet_bd.probarConexion();
+
+            cs = cn.prepareCall("{call sp_reactivar_producto(?)}");
+
+            cs.setInt(1, id);
+
+            return cs.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            closeResources();
+        }
+    }                
     private void closeResources() {
         try {
             if (rs != null) rs.close();

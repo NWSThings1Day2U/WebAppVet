@@ -128,7 +128,7 @@ public class controladorcliente extends HttpServlet {
         }
         response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
     }
-
+    //eliminar logico (desactivar cuenta)
     private void eliminar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -136,12 +136,12 @@ public class controladorcliente extends HttpServlet {
 
             boolean eliminado = dao.eliminarCliente(id);
             if (eliminado) {
-                request.getSession().setAttribute("mensajeExito", "Cliente eliminado correctamente del sistema.");
+                request.getSession().setAttribute("mensajeExito", "Cliente desactivado correctamente.");
             } else {
-                request.getSession().setAttribute("mensajeError", "No se puede eliminar el cliente (puede tener registros vinculados).");
+                request.getSession().setAttribute("mensajeError", "No se puede desactivar el cliente.");
             }
         } catch (Exception e) {
-            request.getSession().setAttribute("mensajeError", "Error de parámetros al eliminar: " + e.getMessage());
+            request.getSession().setAttribute("mensajeError", "Error de parámetros al desactivar: " + e.getMessage());
         }
         response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
     }

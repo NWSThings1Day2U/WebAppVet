@@ -185,15 +185,20 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Confirmar Eliminación?</h5>
+                            <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Deseas desactivar el producto?</h5>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>¿Estás completamente seguro de que deseas dar de baja el producto <strong><%= p.getNombre() %></strong> del sistema web?</p>
+                            <p>
+                                ¿Estás seguro de que deseas desactivar el producto
+                                <strong><%= p.getNombre() %></strong>?
+                            <p class="text-danger small mb-0"><i class="fa-solid fa-circle-info"></i> Una vez desactivado, el producto ya no aparecerá en la lista del inventario ni podrá ser utilizado en nuevas ventas.</p>
+                            </p>
+
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                            <a href="${pageContext.request.contextPath}/controladorinventario?accion=eliminar&id=<%= p.getIdProducto() %>" class="btn btn-danger fw-semibold">Eliminar Permanentemente</a>
+                            <a href="${pageContext.request.contextPath}/controladorinventario?accion=eliminar&id=<%= p.getIdProducto() %>" class="btn btn-danger fw-semibold">Desactivar Producto</a>
                         </div>
                     </div>
                 </div>

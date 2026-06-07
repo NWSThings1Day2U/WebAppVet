@@ -155,8 +155,8 @@
                                             <button class="btn btn-warning btn-sm" title="Editar" data-bs-toggle="modal" data-bs-target="#modalEditar<%= c.getIdCliente() %>">
                                                 <i class="fa-solid fa-pen"></i>
                                             </button>
-                                            <button class="btn btn-danger btn-sm" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar<%= c.getIdCliente() %>">
-                                                <i class="fa-solid fa-trash"></i>
+                                            <button class="btn text-white d-inline-flex align-items-center justify-content-center"  style="width: 40px; height: 40px; background-color: #dc3545; border: none; border-radius: 6px; padding: 0;" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar<%= c.getIdCliente() %>">
+                                                <i class="fa-solid fa-person-circle-xmark"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -218,16 +218,16 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header bg-danger text-white">
-                                                <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Confirmar Eliminación?</h5>
+                                                <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Deseas desactivar cliente?</h5>
                                                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <p>¿Estás completamente seguro de que deseas eliminar al cliente <strong><%= c.getNombreCompleto() %></strong> del sistema web?</p>
-                                                <p class="text-danger small mb-0"><i class="fa-solid fa-circle-info"></i> Nota: Esta acción podría fallar si el cliente ya tiene registros de mascotas o citas médicas en la veterinaria.</p>
+                                                <p>¿Estás completamente seguro de que deseas desactivar al cliente <strong><%= c.getNombreCompleto() %></strong> del sistema web?</p>
+                                                
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                <a href="${pageContext.request.contextPath}/controladorcliente?accion=eliminar&id=<%= c.getIdCliente() %>" class="btn btn-danger fw-semibold">Eliminar Permanentemente</a>
+                                                <a href="${pageContext.request.contextPath}/controladorcliente?accion=eliminar&id=<%= c.getIdCliente() %>" class="btn btn-danger fw-semibold">Desactivar Cliente</a>
                                             </div>
                                         </div>
                                     </div>
