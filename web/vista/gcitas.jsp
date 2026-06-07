@@ -392,7 +392,6 @@
         <script>
             document.addEventListener("DOMContentLoaded", function () {
                 
-                // --- FILTRO DINÁMICO DE MASCOTAS POR CLIENTE (NUEVA CITA) ---
                 const clienteSelect = document.getElementById("txtIdCliente");
                 const mascotaSelect = document.getElementById("txtIdMascota");
                 const todasOpciones = Array.from(mascotaSelect.options);
@@ -420,7 +419,6 @@
                     });
                 });
 
-                // --- FETCH HORAS DISPONIBLES (NUEVA CITA) ---
                 document.getElementById("txtFecha").addEventListener("change", function () {
                     let fecha = this.value;
                     fetch("${pageContext.request.contextPath}/controladorcitas?accion=horasDisponibles&fecha=" + fecha)
@@ -438,7 +436,6 @@
                         .catch(error => console.error("ERROR:", error));
                 });
 
-                // --- DETECTAR CAMBIO DE FECHA EN MODALES DE EDICIÓN ---
                 <% if (lista != null) { 
                     for(citas c : lista){ %>
                     document.getElementById("txtFechaEdit<%= c.getIdCita() %>")
@@ -461,7 +458,6 @@
                } %>
             });
 
-            // --- CARGA INICIAL DE LA HORA ACTUAL EN EL MODAL DE EDICIÓN ---
             function cargarHorasEditar(idCita, horaActual) {
                 let combo = document.getElementById("txtHoraEdit" + idCita);
                 combo.innerHTML = "";

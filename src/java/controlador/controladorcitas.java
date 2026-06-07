@@ -69,6 +69,9 @@ public class controladorcitas extends HttpServlet {
             case "listarcitasCliente":
                 listarcitasCliente(request, response);
                 break;
+            case "reprogramarCita":
+                reprogramarCita(request, response);
+                break;
             default:
                 listar(request, response);
         }
@@ -208,7 +211,7 @@ public class controladorcitas extends HttpServlet {
         }
     }
 
-    // 3. editar/programar cita
+    // 3. editar
     private void editar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
@@ -279,7 +282,60 @@ public class controladorcitas extends HttpServlet {
         }
         response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
     }
+//reprogramar para vista cliente
+    private void reprogramarCita(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        String rol = (String) session.getAttribute("rol");
+        try {
+            int idCita = Integer.parseInt(request.getParameter("txtIdCita"));
+            String fecha = request.getParameter("txtFecha");
+            String hora = request.getParameter("txtHora");
 
+            LocalDate fechaSeleccionada = LocalDate.parse(fecha);
+
+            // Validación: No permitir fechas pasadas
+            if (fechaSeleccionada.isBefore(LocalDate.now())) {
+                session.setAttribute("mensajeError", "No puede reprogramar citas a fechas pasadas.");
+                redireccionarSegunRol(request, response, rol);
+                return;
+            }
+
+            // Validación: Si es hoy, verificar que la hora no haya pasado
+            if (fechaSeleccionada.equals(LocalDate.now())) {
+                LocalTime horaSeleccionada = LocalTime.parse(hora);
+                if (horaSeleccionada.isBefore(LocalTime.now())) {
+                    session.setAttribute("mensajeError", "No puede reprogramar una cita a una hora ya transcurrida.");
+                    redireccionarSegunRol(request, response, rol);
+                    return;
+                }
+            }
+
+            boolean disponible = dao.horaDisponibleEditar(idCita, fecha, hora);
+            if (!disponible) {
+                session.setAttribute("mensajeError", "La nueva hora seleccionada ya se encuentra reservada.");
+                redireccionarSegunRol(request, response, rol);
+                return;
+            }
+
+            citas c = new citas();
+            c.setIdCita(idCita);
+            c.setFecha(fecha);
+            c.setHora(hora);
+
+            boolean exito = dao.reprogramarCita(c);
+
+            if (exito) {
+                session.setAttribute("mensajeExito", "Cita reprogramada correctamente de manera exitosa.");
+            } else {
+                session.setAttribute("mensajeError", "No se pudo reprogramar la cita. Verifique el estado actual.");
+            }
+
+        } catch (Exception e) {
+            session.setAttribute("mensajeError", "Error al reprogramar: " + e.getMessage());
+        }
+
+        redireccionarSegunRol(request, response, rol);
+    }
     // 4. cambiar estado
     private void actualizarEstado(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -300,9 +356,11 @@ public class controladorcitas extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
     }
 
-    // 5. eliminar cita fisico
+    // 5. cancelar cita
     private void eliminar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String rol = (String) session.getAttribute("rol");
         try {
             int idCita = Integer.parseInt(request.getParameter("id"));
 
@@ -316,7 +374,7 @@ public class controladorcitas extends HttpServlet {
         } catch (Exception e) {
             request.getSession().setAttribute("mensajeError", "Error de parámetros al eliminar: " + e.getMessage());
         }
-        response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
+        redireccionarSegunRol(request, response, rol);
     }
 
     //Obtener horarios disponibles
@@ -487,4 +545,5 @@ public class controladorcitas extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
         }
     }
+    
 }

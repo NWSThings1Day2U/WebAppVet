@@ -287,35 +287,42 @@
                         %>
                     </div>
                     
-                    <!-- crear modal -->
-                    <div class="modal fade" id="modalNuevaMascota" tabindex="-1">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
+                    <div class="modal fade" id="modalNuevaMascota" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalNuevaMascotaLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content" style="border-radius: 20px; border: none; overflow: hidden;">
+
+                                <div class="modal-header border-0 bg-light" style="border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 1.5rem;">
+                                    <h5 class="modal-title fw-bold text-dark font-vollkorn d-flex align-items-center">
+                                        <i class="fa-solid fa-paw shadow-sm p-2 rounded-3 bg-white text-success me-2" style="color: #00796B !important;"></i> 
+                                        Registrar Nueva Mascota
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
                                 <form action="controladormascota?accion=guardar" method="POST">
                                     <input type="hidden" name="origen" value="perfil">
-                                    <div class="modal-header bg-success text-white">
-                                        <h5 class="modal-title"><i class="fa-solid fa-paw"></i> Registrar Nueva Mascota</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label">Nombre</label>
-                                                <input type="text" name="txtNombre" class="form-control" placeholder="Ingrese nombre" required>
+
+                                    <div class="modal-body p-4">
+
+                                        <div class="row g-3 mb-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label text-muted small fw-bold">NOMBRE</label>
+                                                <input type="text" name="txtNombre" class="form-control py-2" placeholder="Ej. Max, Luna..." style="border-radius: 10px;" required>
                                             </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label">Especie</label>
-                                                <input type="text" name="txtEspecie" class="form-control" placeholder="Ingrese especie" required>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-muted small fw-bold">ESPECIE</label>
+                                                <input type="text" name="txtEspecie" class="form-control py-2" placeholder="Ej. Canino, Felino..." style="border-radius: 10px;" required>
                                             </div>
-                                            <div class="col-md-4 mb-3">
-                                                <label class="form-label">Raza</label>
-                                                <input type="text" name="txtRaza" class="form-control" placeholder="Ingrese raza" required>
+                                            <div class="col-md-4">
+                                                <label class="form-label text-muted small fw-bold">RAZA</label>
+                                                <input type="text" name="txtRaza" class="form-control py-2" placeholder="Ej. Schnauzer, Persa..." style="border-radius: 10px;" required>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label">Nombre de cliente (Dueño)</label>
-                                                <select name="txtIdCliente" id="modalTxtIdCliente" class="form-select" required>
+
+                                        <div class="row g-3 mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label text-muted small fw-bold">NOMBRE DE CLIENTE (DUEÑO)</label>
+                                                <select name="txtIdCliente" id="modalTxtIdCliente" class="form-select py-2" style="border-radius: 10px;" required>
                                                     <option value="" selected disabled>Selecciona dueño</option>
                                                     <% if (listaClientes != null) {
                                                         for(clientes c : listaClientes) { %>
@@ -324,30 +331,36 @@
                                                      } %>
                                                 </select>
                                             </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label">Sexo</label>
-                                                <select name="txtSexo" class="form-select" required>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-muted small fw-bold">SEXO</label>
+                                                <select name="txtSexo" class="form-select py-2" style="border-radius: 10px;" required>
                                                     <option value="" selected disabled>Selecciona sexo</option>
                                                     <option value="F">Hembra</option>
                                                     <option value="M">Macho</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label">Peso (kg)</label>
-                                                <input type="number" step="0.01" name="txtPeso" class="form-control" placeholder="Ingrese peso" min="0" required>
+
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label text-muted small fw-bold">PESO (KG)</label>
+                                                <input type="number" step="0.01" name="txtPeso" class="form-control py-2" placeholder="0.00" min="0" style="border-radius: 10px;" required>
                                             </div>
-                                            <div class="col-md-6 mb-3">
-                                                <label class="form-label">Fecha de nacimiento</label>
-                                                <input type="date" name="txtFechaNac" class="form-control" required>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-muted small fw-bold">FECHA DE NACIMIENTO</label>
+                                                <input type="date" name="txtFechaNac" class="form-control py-2" max="<%= java.time.LocalDate.now() %>" style="border-radius: 10px;" required>
                                             </div>
                                         </div>
+
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-success">Guardar Mascota</button>
+
+                                    <div class="modal-footer border-0 p-3 bg-light" style="border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;">
+                                        <button type="button" class="btn btn-secondary px-4 py-2" style="border-radius: 12px;" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn text-white px-4 py-2 fw-bold" style="background-color: #00796B; border-radius: 12px;">
+                                            <i class="fa-solid fa-floppy-disk me-1"></i> Guardar Mascota
+                                        </button>
                                     </div>
+
                                 </form>
                             </div>
                         </div>
