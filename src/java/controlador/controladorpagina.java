@@ -1,9 +1,11 @@
 package controlador;
 
+import dao.citadao;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import modelo.citas;
 
 /**
  *
@@ -88,7 +90,19 @@ public class controladorpagina extends HttpServlet {
     private void inicio(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("paginaActual", "inicio");
+        HttpSession session = request.getSession();
 
+        Integer idUsuario = (Integer) session.getAttribute("id");
+
+        citadao dao = new citadao();
+
+        citas proxima =dao.obtenerProximaCitaCliente(idUsuario);
+
+        request.setAttribute("proximaCita",proxima);
+        dao.mascotadao daoMascota = new dao.mascotadao(); 
+        java.util.List<modelo.mascotas> listaMascotas = daoMascota.listarMascotasPorCliente(idUsuario);
+    
+        request.setAttribute("misMascotas", listaMascotas);
         request.getRequestDispatcher(paginicio).forward(request, response);
     }
 

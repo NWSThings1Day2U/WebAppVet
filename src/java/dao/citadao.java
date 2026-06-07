@@ -77,8 +77,7 @@ public class citadao {
         }
         return lista;
     }
-    
-    
+
     // crear cita
     public boolean insertarCita(citas c) {
         try {
@@ -206,7 +205,7 @@ public class citadao {
         List<String> disponibles = new ArrayList<>();
         List<String> ocupadas = obtenerHorasOcupadas(fecha);
         try {
-            
+
             LocalDate f = LocalDate.parse(fecha);
             LocalDate hoy = LocalDate.now();
             LocalTime horaActual = LocalTime.now();
@@ -218,7 +217,7 @@ public class citadao {
 
             horarios horario = hdao.obtenerHorarioDia(dia);
             if (horario == null) {
-                
+
                 return disponibles;
             }
 
@@ -249,7 +248,7 @@ public class citadao {
                 }
 
                 inicio = inicio.plusMinutes(duracion);
-                
+
             }
 
         } catch (Exception e) {
@@ -323,7 +322,8 @@ public class citadao {
 
         return false;
     }
-    public boolean horaDisponibleEditar(int idCita,String fecha,String hora) {
+
+    public boolean horaDisponibleEditar(int idCita, String fecha, String hora) {
 
         try {
 
@@ -362,8 +362,8 @@ public class citadao {
 
         return false;
     }
- 
-    public List<String> obtenerHorasOcupadasEditar(String fecha,int idCita) {
+
+    public List<String> obtenerHorasOcupadasEditar(String fecha, int idCita) {
 
         List<String> ocupadas = new ArrayList<>();
 
@@ -399,11 +399,11 @@ public class citadao {
         return ocupadas;
     }
 
-    public List<String> obtenerHorasDisponiblesEditar( String fecha,int idCita) {
+    public List<String> obtenerHorasDisponiblesEditar(String fecha, int idCita) {
 
         List<String> disponibles = new ArrayList<>();
 
-        List<String> ocupadas   = obtenerHorasOcupadasEditar( fecha,  idCita   );
+        List<String> ocupadas = obtenerHorasOcupadasEditar(fecha, idCita);
 
         try {
 
@@ -459,7 +459,7 @@ public class citadao {
 
             e.printStackTrace();
 
-        }finally {
+        } finally {
 
             closeResources();
 
@@ -491,7 +491,7 @@ public class citadao {
             if (m.getFechaNacimiento() != null && !m.getFechaNacimiento().trim().isEmpty()) {
                 cs.setDate(10, java.sql.Date.valueOf(m.getFechaNacimiento()));
             } else {
-                cs.setNull(10, java.sql.Types.DATE); 
+                cs.setNull(10, java.sql.Types.DATE);
             }
             cs.setString(11, m.getSexo());
 
@@ -505,7 +505,7 @@ public class citadao {
 
             String horaFormateada = cita.getHora();
             if (horaFormateada != null && horaFormateada.trim().length() == 5) {
-                horaFormateada += ":00"; 
+                horaFormateada += ":00";
             }
 
             if (horaFormateada != null && !horaFormateada.trim().isEmpty()) {
@@ -521,12 +521,13 @@ public class citadao {
 
         } catch (Exception e) {
             System.out.println("Error registrar cita de cliente nuevo de forma explícita:");
-            e.printStackTrace(); 
+            e.printStackTrace();
         } finally {
             closeResources();
         }
         return resultado;
     }
+
     private String convertirDia(DayOfWeek day) {
 
         switch (day) {
@@ -556,8 +557,7 @@ public class citadao {
                 return "";
         }
     }
-    
-    
+
     //Citas proximas
     public List<citas> listarProximasCitas() {
         List<citas> lista = new ArrayList<>();
@@ -597,6 +597,7 @@ public class citadao {
         }
         return lista;
     }
+
     //Citas por semana
     public int[] citasSemana() {
         int datos[] = new int[7];
@@ -623,6 +624,7 @@ public class citadao {
         }
         return datos;
     }
+
     // CONTAR CITAS
     public int contarCitas() {
         int total = 0;
@@ -665,6 +667,7 @@ public class citadao {
         }
         return total;
     }
+
     //Citas mas solicitadas - 04-06-26
     public List<Object[]> serviciosMasSolicitados() {
         List<Object[]> lista
@@ -697,7 +700,56 @@ public class citadao {
         }
         return lista;
     }
-    
+
+    //cita prozima cliente logueado
+    public citas obtenerProximaCitaCliente(int idUsuario) {
+
+        citas c = null;
+
+        try {
+
+            cn = conexionvet_bd.probarConexion();
+
+            String sql
+                    = "SELECT c.*, m.nombre nombre_mascota "
+                    + "FROM citas c "
+                    + "INNER JOIN mascotas m ON c.id_mascota = m.id_mascota "
+                    + "INNER JOIN clientes cl ON c.id_cliente = cl.id_cliente "
+                    + "WHERE cl.id_cliente_responsable = ? "
+                    + "AND c.estado IN ('PENDIENTE','CONFIRMADA') "
+                    + "AND c.fecha >= CURDATE() "
+                    + "ORDER BY c.fecha ASC, c.hora ASC "
+                    + "LIMIT 1";
+
+            ps = cn.prepareStatement(sql);
+            ps.setInt(1, idUsuario);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+
+                c = new citas();
+
+                c.setIdCita(rs.getInt("id_cita"));
+                c.setFecha(rs.getString("fecha"));
+                c.setHora(rs.getString("hora"));
+                c.setMascota(rs.getString("nombre_mascota"));
+                c.setEstado(rs.getString("estado"));
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            closeResources();
+
+        }
+
+        return c;
+    }
+
     private void closeResources() {
         try {
             if (rs != null) {
@@ -717,5 +769,4 @@ public class citadao {
         }
     }
 
-    
 }

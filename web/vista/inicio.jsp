@@ -1,7 +1,11 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page import="modelo.citas"%>
 
+<%
+    citas proxima =(citas) request.getAttribute("proximaCita");
+%>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -170,7 +174,29 @@
                 <div class="tarjeta-horario-vet mt-5">
                     <h2 class="text-start titulo-vet fs-3 mb-4" style="color: #333 !important;">Agenda del Médico Veterinario:</h2>
                 </div>    
-                        
+                <div class="mis-mascotas-vet mt-5 mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="titulo-vet fs-3 mb-0" style="color: #333 !important;">Mis Mascotas:</h2>
+                        <a href="controladorpagina?pagina=miperfil" class="text-decoration-none fw-bold" style="color: #336600;">
+                            Ver más <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-4 align-items-center">
+                        <c:forEach var="mascota" items="${misMascotas}" end="6">
+                            <div class="text-center" style="width: 130px;">
+                                <div class="avatar-mascota mx-auto shadow-sm">
+                                    <img src="${pageContext.request.contextPath}/recursos/icon.png" class="img-avatar-mascota" alt="Mascota"/>
+                                </div>
+                                <p class="mt-2 mb-0 fw-bold text-dark text-truncate text-capitalize">${mascota.nombre}</p>
+                            </div>
+                        </c:forEach>
+
+                        <c:if test="${empty misMascotas}">
+                            <p class="text-muted small italic m-0"><i class="fa-solid fa-info-circle me-1"></i> Aún no tienes mascotas registradas en tu perfil.</p>
+                        </c:if>
+                    </div>
+                </div>
                 <div class="tarjeta-final-vet mt-5 mb-5">
                     <h2 class="text-start titulo-vet fs-3 mb-4" style="color: #333 !important;">Recuerde:</h2>
                     <div class="card border-0 rounded-4 shadow-sm p-4" style="background-color: #FFFFFF; border-radius: 25px !important;">
@@ -182,7 +208,22 @@
                                 </div>
                                 <div>
                                     <h6 class="mb-1 fw-bold" style="color: #1e7e34;">Cita próxima:</h6>
-                                    <p class="mb-0 fw-bold text-dark">12/05 - 10:00 A</p>
+                                    <p class="mb-0 fw-bold text-dark"><%
+                                        if(proxima != null){
+                                        %>
+
+                                        <%= proxima.getMascota() %><br>
+                                        <%= proxima.getFecha() %> - <%= proxima.getHora() %>
+
+                                        <%
+                                        }else{
+                                        %>
+
+                                        No tiene citas programadas
+
+                                        <%
+                                        }
+                                        %>
                                 </div>
                             </div>
 
