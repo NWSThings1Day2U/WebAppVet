@@ -86,7 +86,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Fecha de nacimiento</label>
-                                <input type="date" name="txtFechaNac" class="form-control" required>
+                                <input type="date" name="txtFechaNac" class="form-control" max="<%=java.time.LocalDate.now()%>" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Sexo</label>

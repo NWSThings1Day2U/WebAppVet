@@ -209,7 +209,7 @@
                             <div class="combo-cliente-container">
                                 <select id="clienteFiltro" class="form-select select-custom-vet">
 
-                                    <option value="">Seleccione Cliente</option>
+                                    <option value="">Seleccione Dueño</option>
 
                                     <% if (listaClientes != null) {
                                         for(clientes cl : listaClientes){ %>
@@ -230,7 +230,7 @@
 
                     <div id="contenedorMascotas"  class="d-flex flex-column gap-4">
 
-                                                <%
+                        <%
                         if(listaMascotas != null &&
                            !listaMascotas.isEmpty()){
 

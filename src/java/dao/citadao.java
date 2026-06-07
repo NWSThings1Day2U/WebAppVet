@@ -475,32 +475,32 @@ public class citadao {
         try {
             cn = conexionvet_bd.probarConexion();
             CallableStatement cs = cn.prepareCall(
-                    "{CALL sp_registrar_cita_cliente_nuevo(?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
+                    "{CALL sp_registrar_cita_cliente_nuevo(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}"
             );
 
             cs.setString(1, c.getNombreCompleto());
             cs.setString(2, c.getDni());
             cs.setString(3, c.getCorreo());
             cs.setString(4, c.getTelefono());
-
-            cs.setString(5, m.getNombre());
-            cs.setString(6, m.getEspecie());
-            cs.setString(7, m.getRaza());
-            cs.setDouble(8, m.getPeso());
+            cs.setInt(5, c.getIdClienteResponsable());
+            cs.setString(6, m.getNombre());
+            cs.setString(7, m.getEspecie());
+            cs.setString(8, m.getRaza());
+            cs.setDouble(9, m.getPeso());
 
             if (m.getFechaNacimiento() != null && !m.getFechaNacimiento().trim().isEmpty()) {
-                cs.setDate(9, java.sql.Date.valueOf(m.getFechaNacimiento()));
+                cs.setDate(10, java.sql.Date.valueOf(m.getFechaNacimiento()));
             } else {
-                cs.setNull(9, java.sql.Types.DATE); 
+                cs.setNull(10, java.sql.Types.DATE); 
             }
-            cs.setString(10, m.getSexo());
+            cs.setString(11, m.getSexo());
 
-            cs.setInt(11, cita.getIdTipo());
+            cs.setInt(12, cita.getIdTipo());
 
             if (cita.getFecha() != null && !cita.getFecha().trim().isEmpty()) {
-                cs.setDate(12, java.sql.Date.valueOf(cita.getFecha()));
+                cs.setDate(13, java.sql.Date.valueOf(cita.getFecha()));
             } else {
-                cs.setNull(12, java.sql.Types.DATE);
+                cs.setNull(13, java.sql.Types.DATE);
             }
 
             String horaFormateada = cita.getHora();
@@ -509,12 +509,12 @@ public class citadao {
             }
 
             if (horaFormateada != null && !horaFormateada.trim().isEmpty()) {
-                cs.setTime(13, java.sql.Time.valueOf(horaFormateada));
+                cs.setTime(14, java.sql.Time.valueOf(horaFormateada));
             } else {
-                cs.setNull(13, java.sql.Types.TIME);
+                cs.setNull(14, java.sql.Types.TIME);
             }
 
-            cs.setString(14, cita.getMotivo());
+            cs.setString(15, cita.getMotivo());
 
             cs.execute();
             resultado = true;

@@ -444,7 +444,10 @@ public class controladorcitas extends HttpServlet {
             cli.setDni(request.getParameter("dni"));
             cli.setCorreo(request.getParameter("correo"));
             cli.setTelefono(request.getParameter("telefono"));
-            if (idUsuarioSession != null) { cli.setIdUsuario(idUsuarioSession); }
+            
+            if (idUsuarioSession != null) {
+                cli.setIdClienteResponsable(idUsuarioSession);
+            }
             mascotas mas = new mascotas();
             mas.setNombre(request.getParameter("mascota"));
             mas.setEspecie(request.getParameter("txtEspecie"));
