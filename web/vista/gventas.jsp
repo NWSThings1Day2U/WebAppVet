@@ -277,8 +277,6 @@
                                     <select name="metodoPago"
                                             class="form-select">
                                         <option>Efectivo</option>
-                                        <option>Tarjeta</option>
-                                        <option>Yape</option>
                                         <option>Plin</option>
                                     </select>
                                 </div>

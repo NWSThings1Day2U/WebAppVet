@@ -4,17 +4,20 @@
 <%
     List<productos> lista = (List<productos>) request.getAttribute("listaProductos");
     
-    int stockBajo = 0;
     int stockCritico = 0;
+    int stockBajo = 0;
+    int stockBien = 0;
 
-    if (lista != null) {
-        for (productos p : lista) {
-            if (p.getStock() <= p.getStockMinimo() && p.getStock() > 0) {
-                stockBajo++;
-            }
-            if (p.getStock() == 0) {
-                stockCritico++;
-            }
+    for (productos p : lista) {
+        int actual = p.getStock();
+        int minimo = p.getStockMinimo();
+
+        if (actual < minimo) {
+            stockCritico++; 
+        } else if (actual == minimo || actual <= (minimo * 1.2)) { 
+            stockBajo++;   
+        } else {
+            stockBien++;  
         }
     }
 %>
