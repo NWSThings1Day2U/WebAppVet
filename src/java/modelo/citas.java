@@ -1,7 +1,7 @@
 package modelo;
 
 public class citas {
-
+    //atributos
     private int idCita;
     private int idCliente;
     private int idMascota;
@@ -17,6 +17,7 @@ public class citas {
     private String correoCliente;
     private String tipoAtencion;
     private String fechaRegistro;
+    //constructor vacio
     public citas() {
     }
     // GETTERS Y SETTERS

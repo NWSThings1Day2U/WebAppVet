@@ -1,7 +1,7 @@
 package modelo;
 
 public class productos {
-
+    //atributos
     private int idProducto;
     private String nombre;
     private int idCategoria;
@@ -17,11 +17,12 @@ public class productos {
     private String proveedor;
     private String estado;
     
+    // GETTERS Y SETTERS
+    
     public String getNombreCategoria() {
         return nombreCategoria;
     }
 
-    // GETTERS Y SETTERS
     public void setNombreCategoria(String nombreCategoria) {    
         this.nombreCategoria = nombreCategoria;
     }

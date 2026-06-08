@@ -1,11 +1,7 @@
 
 package modelo;
-
-/**
- *
- * @author USUARIO
- */
 public class usuarios {
+    //atributos
     private int idUsuario;
     private String nombreusuario;
     private String dni;
@@ -18,10 +14,10 @@ public class usuarios {
     private int idCliente;
     private String fechaRegistro; 
     private int estadoCliente;
-    
+    //constructor vacio
     public usuarios() {
     }
-
+    //getters & setters
     public int getIdCliente() {
         return idCliente;
     }

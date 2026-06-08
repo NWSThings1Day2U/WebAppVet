@@ -3,7 +3,7 @@ package modelo;
 import java.util.Date;
 
 public class clientes {
-
+    //atributos
     private int idCliente;
     private int idUsuario;
     private String nombreCompleto;
@@ -14,9 +14,10 @@ public class clientes {
     private int idClienteResponsable;
     private String nombreResponsable;
     private Date fechaRegistro;
+    //constructor vacio
     public clientes() {
     }
-
+    //constructor
     public clientes(int idCliente, String nombreCompleto, String dni, String correo, String telefono, int estado, int idClienteResponsable, String nombreResponsable, Date fechaRegistro) {
         this.idCliente = idCliente;
         this.nombreCompleto = nombreCompleto;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ventas {
-    
+    //atributos
     private int idVenta;
     private int idCliente;
     private String cliente;

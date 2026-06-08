@@ -1,7 +1,7 @@
 package modelo;
 
 public class mascotas {
-
+    //atributos
     private int idMascota;
     private int idCliente;
     private String nombreCliente;

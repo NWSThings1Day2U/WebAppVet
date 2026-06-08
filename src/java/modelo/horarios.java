@@ -1,7 +1,7 @@
 package modelo;
 
 public class horarios {
-
+    //atributos
     private int idHorario;
     private String diaSemana;
     private String horaInicio;
@@ -10,10 +10,11 @@ public class horarios {
     private int cuposMaximos;
     private int activo;
 
+    
+    //Getters y Setters
     public int getIdHorario() {
         return idHorario;
     }
-    //Getters y Setters
     public void setIdHorario(int idHorario) {
         this.idHorario = idHorario;
     }
