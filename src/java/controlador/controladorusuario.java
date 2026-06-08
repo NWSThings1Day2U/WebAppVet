@@ -50,6 +50,11 @@ public class controladorusuario extends HttpServlet {
         usuarios usu = us.validar(nombreusu, contra);
 
         if (usu != null) {
+            if (usu.getEstadoCliente() != 1) { 
+                request.getSession().setAttribute("error", "Su cuenta está inhabilitada. Contacte al administrador.");
+                response.sendRedirect("index.jsp");
+                return;
+            }
             Cookie cUsuario = new Cookie("user_vet", nombreusu);
             cUsuario.setPath("/");
             if (recordar != null && recordar.equals("on")) {
@@ -79,7 +84,9 @@ public class controladorusuario extends HttpServlet {
                 response.sendRedirect("controladorpagina?pagina=inicio");
             }
         } else {
-            request.getSession().setAttribute("error", "Datos incorrectos, intente de nuevo!");
+            
+            request.getSession().setAttribute("error", "Usuario o contraseña incorrectos. Intente de nuevo.");
+            
             response.sendRedirect("index.jsp");
         }
     }
@@ -122,19 +129,9 @@ public class controladorusuario extends HttpServlet {
 
                 return;
             }
-            request.getSession().setAttribute(
-                    "idRecuperacion",
-                    idUsuario
-            );
-            request.getSession().setAttribute(
-                    "correoRecuperacion",
-                    correo
-            );
-            String correoOculto
-                    = correo.replaceAll(
-                            "(?<=.{2}).(?=[^@]*?@)",
-                            "*"
-                    );
+            request.getSession().setAttribute("idRecuperacion", idUsuario);
+            request.getSession().setAttribute("correoRecuperacion",correo);
+            String correoOculto = correo.replaceAll("(?<=.{2}).(?=[^@]*?@)", "*");
 
             request.getSession().setAttribute(
                     "correoOculto",

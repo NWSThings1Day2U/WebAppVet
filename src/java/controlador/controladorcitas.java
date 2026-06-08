@@ -18,7 +18,8 @@ import java.time.LocalTime;
 import modelo.citas;
 import modelo.clientes;
 import modelo.mascotas;
-import modelo.usuarios;
+import util.emailservicio;
+import util.ticketpdfservicio;
 
 @WebServlet(name = "controladorcitas", urlPatterns = {"/controladorcitas"})
 public class controladorcitas extends HttpServlet {
@@ -32,11 +33,16 @@ public class controladorcitas extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
         String accion = request.getParameter("accion");
         if (accion == null) {
             accion = "listar";
         }
+
+        if ("descargarTicket".equals(accion)) {
+            descargarTicketPDF(request, response);
+            return; 
+        }
+        response.setContentType("text/html;charset=UTF-8");
 
         switch (accion) {
             case "listar":
@@ -77,12 +83,63 @@ public class controladorcitas extends HttpServlet {
         }
     }
 
+    private void descargarTicketPDF(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String rol = (String) session.getAttribute("rol");
+
+        try {
+            String idParam = request.getParameter("id");
+            if (idParam == null || idParam.isEmpty()) {
+                session.setAttribute("mensajeError", "ID de cita no válido.");
+                redireccionarSegunRol(request, response, rol);
+                return;
+            }
+
+            int idCita = Integer.parseInt(idParam);
+            citas cita = dao.obtenerCitaCompleta(idCita);
+
+            if (cita == null) {
+                session.setAttribute("mensajeError", "No se encontró la cita solicitada para el ticket.");
+                redireccionarSegunRol(request, response, rol);
+                return;
+            }
+
+            response.reset();
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=Ticket_Cita_" + idCita + ".pdf");
+
+            java.io.OutputStream outCliente = response.getOutputStream();
+            jakarta.servlet.http.Cookie downloadCookie = new jakarta.servlet.http.Cookie("pdf_download_status", "success");
+            downloadCookie.setPath(request.getContextPath().isEmpty() ? "/" : request.getContextPath());
+            downloadCookie.setMaxAge(60);
+            downloadCookie.setHttpOnly(false);
+            response.addCookie(downloadCookie);
+            boolean exito = ticketpdfservicio.generarTicketCita(cita, outCliente, getServletContext());
+             
+            outCliente.flush();
+            outCliente.close();
+            return;
+
+        } catch (Exception e) {
+            System.err.println("--- ERROR CRÍTICO EN DESCARGA PDF ---");
+            e.printStackTrace();
+
+            if (!response.isCommitted()) {
+                response.reset();
+                String errorReal = (e.getMessage() != null) ? e.getMessage() : e.toString();
+                session.setAttribute("mensajeError", "Error al procesar el PDF: " + errorReal);
+                redireccionarSegunRol(request, response, rol);
+            }
+        }
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
+    
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -282,7 +339,7 @@ public class controladorcitas extends HttpServlet {
         }
         response.sendRedirect(request.getContextPath() + "/controladorcitas?accion=listar");
     }
-//reprogramar para vista cliente
+    //reprogramar para vista cliente
     private void reprogramarCita(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         String rol = (String) session.getAttribute("rol");
@@ -342,13 +399,93 @@ public class controladorcitas extends HttpServlet {
         try {
             int idCita = Integer.parseInt(request.getParameter("id"));
             String nuevoEstado = request.getParameter("estado");
-
+            HttpSession session = request.getSession();
+        
             boolean exito = dao.actualizarEstado(idCita, nuevoEstado);
 
             if (exito) {
-                request.getSession().setAttribute("mensajeExito", "Estado de la cita actualizado a " + nuevoEstado + ".");
+
+                switch (nuevoEstado) {
+
+                    case "CONFIRMADA":
+
+                    citas cita = dao.obtenerCitaCompleta(idCita);
+
+                    boolean correoEnviado = emailservicio.enviarConfirmacionCita(
+                                    cita.getCorreoCliente(),
+                                    cita.getCliente(),
+                                    cita.getMascota(),
+                                    cita.getFecha(),
+                                    cita.getHora(),
+                                    cita.getTipoAtencion()
+                            );
+
+                    if (correoEnviado) {
+
+                        request.getSession().setAttribute("mensajeEstado", "La cita fue confirmada y se notificó al cliente por correo." );
+
+                    } else {
+
+                        request.getSession().setAttribute("mensajeEstado","La cita fue confirmada, pero ocurrió un problema al enviar el correo.");
+
+                        request.getSession().setAttribute("tipoEstado", "warning");
+                    }
+
+                    request.getSession().setAttribute(
+                            "tituloEstado",
+                            "Cita Confirmada"
+                    );
+
+                    request.getSession().setAttribute(
+                            "tipoEstado",
+                            "success"
+                    );
+
+                    break;
+
+                    case "ATENDIDA":
+                        request.getSession().setAttribute("mensajeEstado",
+                                "La cita ya ha sido atendida correctamente.");
+                        request.getSession().setAttribute("tituloEstado",
+                                "Atención Completada");
+                        request.getSession().setAttribute("tipoEstado",
+                                "success");
+                        break;
+
+                    case "CANCELADA":
+                        request.getSession().setAttribute("mensajeEstado",
+                                "La cita fue cancelada.");
+                        request.getSession().setAttribute("tituloEstado",
+                                "Cita Cancelada");
+                        request.getSession().setAttribute("tipoEstado",
+                                "warning");
+                        break;
+
+                    case "PENDIENTE":
+                        request.getSession().setAttribute("mensajeEstado",
+                                "La cita quedó pendiente de atención.");
+                        request.getSession().setAttribute("tituloEstado",
+                                "Cita Pendiente");
+                        request.getSession().setAttribute("tipoEstado",
+                                "info");
+                        break;
+                    default:
+                        request.getSession().setAttribute("tipoAlerta", "success");
+                        request.getSession().setAttribute("tituloAlerta", "Estado Actualizado");
+                        request.getSession().setAttribute(
+                            "mensajeExito",
+                            "El estado de la cita fue actualizado."
+                        );
+                }
+
             } else {
-                request.getSession().setAttribute("mensajeError", "No se pudo cambiar el estado de la cita.");
+
+                request.getSession().setAttribute("tipoAlerta", "error");
+                request.getSession().setAttribute("tituloAlerta", "Error");
+                request.getSession().setAttribute(
+                    "mensajeError",
+                    "No se pudo actualizar el estado de la cita."
+                );
             }
         } catch (Exception e) {
             request.getSession().setAttribute("mensajeError", "Error de parámetros: " + e.getMessage());

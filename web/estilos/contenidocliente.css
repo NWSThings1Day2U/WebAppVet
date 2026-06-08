@@ -444,3 +444,120 @@ body {
     object-fit: contain;
     padding: 12px; 
 }
+/* ===== MODAL DETALLE CITA ===== */
+
+.modal-detalle-cita{
+    border-radius: 24px;
+    overflow: hidden;
+    border: none;
+    box-shadow: 0 10px 35px rgba(0,0,0,.15);
+}
+
+.modal-detalle-header{
+   background-color: #71C87B !important;
+  
+    color: white;
+    padding: 18px 25px;
+    border-bottom: none;
+}
+
+.modal-detalle-header .modal-title{
+    font-family: "Vollkorn", serif;
+    font-size: 1.4rem;
+}
+
+.detalle-mascota{
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detalle-icono{
+    width: 100px;
+    height: 100px;
+    margin: auto;
+    border-radius: 50%;
+    background: #e8f7ee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid #71C87B;
+}
+
+.detalle-icono img{
+    width: 70px;
+    height: 70px;
+}
+
+.nombre-mascota{
+    color: #198754;
+    font-family: "Vollkorn", serif;
+}
+
+.estado-atendida{
+    background: #E2F4E4;
+    color: #198754;
+    font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 50px;
+    font-size: .85rem;
+}
+
+.detalle-card{
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 15px;
+    padding: 14px;
+    height: 100%;
+    transition: .3s;
+}
+
+.detalle-card:hover{
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,.08);
+}
+
+.detalle-card label{
+    display: block;
+    color: #6c757d;
+    font-size: .82rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+
+.detalle-card label i{
+    color: #198754;
+    margin-right: 6px;
+}
+
+.detalle-valor{
+    color: #212529;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.detalle-motivo .detalle-valor{
+    min-height: 90px;
+    line-height: 1.6;
+}
+
+.btn-detalle-cerrar{
+    background: #198754;
+    color: white;
+    border-radius: 12px;
+    padding: 10px 22px;
+    font-weight: 600;
+    border: none;
+    transition: .3s;
+}
+
+.btn-detalle-cerrar:hover{
+    background: #157347;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.modal-footer{
+    padding: 20px;
+}

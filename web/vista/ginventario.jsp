@@ -106,9 +106,12 @@
                             <h3 class="fw-bold">Lista de Productos</h3>
                             <p class="text-muted">Gestión del inventario veterinario.</p>
                         </div>
-                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevoProducto">
-                            <i class="fa-solid fa-plus"></i> Nuevo Producto
-                        </button>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <input type="text" class="form-control" placeholder="Buscar producto..." style="width:230px;">
+                            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevoProducto">
+                                <i class="fa-solid fa-plus"></i> Nuevo Producto
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive">

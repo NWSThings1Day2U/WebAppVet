@@ -159,7 +159,7 @@
                                     <td><%= c.getFecha()%></td>
                                     <td><%= c.getHora()%></td>
                                     <td>
-                                        <form action="${pageContext.request.contextPath}/controladorcitas" method="POST" class="d-flex gap-2 align-items-center">
+                                        <form action="${pageContext.request.contextPath}/controladorcitas" method="POST" class="d-flex gap-2 align-items-center" onsubmit="return validarEnvioCorreo(this)">
                                             <input type="hidden" name="accion" value="actualizarEstado">
                                             <input type="hidden" name="id" value="<%= c.getIdCita()%>">
                                             <select name="estado" class="form-select form-select-sm">
@@ -173,133 +173,137 @@
                                             </button>
                                         </form>
                                     </td>
-                                  <td>
-                                    <div class="d-flex justify-content-center align-items-center gap-2">
+                                    <td>
+                                        <div class="d-flex justify-content-center align-items-center gap-2">
 
-                                        <div class="d-flex justify-content-center align-items-center" style="width: 36px; height: 36px;">
-                                            <% if (c.getEstado().equals("CONFIRMADA")) { %>
-                                                <button class="btn btn-sm text-white fw-bold d-flex align-items-center justify-content-center" 
-                                                        style="background-color: #0088FF; border-radius: 6px; width: 36px; height: 36px; padding: 0;">
-                                                    <i class="fa-solid fa-download"></i>
-                                                </button>
-                                            <% } else if (c.getEstado().equals("ATENDIDA")) { %>
+                                            <div class="d-flex justify-content-center align-items-center" style="width: 36px; height: 36px;">
+                                                <% if (c.getEstado().equals("CONFIRMADA")) { %>
+                                                <a href="${pageContext.request.contextPath}/controladorcitas?accion=descargarTicket&id=<%= c.getIdCita() %>" class="text-decoration-none" onclick="validarDescargaPDF(event)">                                                
+                                                        <button class="btn btn-sm text-white fw-bold d-flex align-items-center justify-content-center" 
+                                                        style="background-color: #0088FF; border-radius: 6px; width: 36px; height: 36px; padding: 0;" title="Descargar PDF">
+                                                            <i class="fa-solid fa-download"></i>
+                                                        </button>
+                                                    </a>
+                                                <% } else if (c.getEstado().equals("ATENDIDA")) { %>
+                                                <a href="${pageContext.request.contextPath}/detallecita?id=<%= c.getIdCita()%>" class="text-decoration-none">                                                
                                                 <button class="btn btn-sm fw-bold d-flex align-items-center justify-content-center" 
-                                                        style="color: #2E7D32; border: 2px solid #71C87B; background-color: #E2F4E4; border-radius: 6px; width: 36px; height: 36px; padding: 0;">
+                                                        style="color: #2E7D32; border: 2px solid #71C87B; background-color: #E2F4E4; border-radius: 6px; width: 36px; height: 36px; padding: 0;" title="Ver detalle cita">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </button>
-                                            <% } %>
+                                                </a>
+                                                <% } %>
+                                            </div>
+
+                                            <button class="btn btn-warning btn-sm d-flex align-items-center justify-content-center" 
+                                                    data-bs-toggle="modal" data-bs-target="#modalEditarCita<%= c.getIdCita() %>" onclick="cargarHorasEditar(<%= c.getIdCita() %>, '<%= c.getHora() %>')"
+                                                    style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </button>
+
+                                            <button class="btn btn-danger btn-sm d-flex align-items-center justify-content-center" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar<%= c.getIdCita()%>"
+                                                    style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
+                                                <i class="fa-solid fa-calendar-xmark"></i>
+                                            </button>
+
                                         </div>
-
-                                        <button class="btn btn-warning btn-sm d-flex align-items-center justify-content-center" 
-                                                data-bs-toggle="modal" data-bs-target="#modalEditarCita<%= c.getIdCita() %>" onclick="cargarHorasEditar(<%= c.getIdCita() %>, '<%= c.getHora() %>')"
-                                                style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
-                                            <i class="fa-solid fa-pencil"></i>
-                                        </button>
-
-                                        <button class="btn btn-danger btn-sm d-flex align-items-center justify-content-center" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar<%= c.getIdCita()%>"
-                                                style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
-                                            <i class="fa-solid fa-calendar-xmark"></i>
-                                        </button>
-
-                                    </div>
-                                </td>
+                                    </td>
 
 
                                 </tr>
 
-                                <div class="modal fade" id="modalEliminar<%= c.getIdCita() %>" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-danger text-white">
-                                                <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Deseas cancelar la cita?</h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>¿Estás completamente seguro de que deseas cancelar la cita Nro. <strong><%= c.getIdCita() %></strong> del cliente <strong><%= c.getCliente() %></strong>?</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                <a href="${pageContext.request.contextPath}/controladorcitas?accion=eliminar&id=<%= c.getIdCita() %>" class="btn btn-danger fw-semibold">Cancelar Cita</a>
-                                            </div>
+                            <div class="modal fade" id="modalEliminar<%= c.getIdCita() %>" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title fw-bold"><i class="fa-solid fa-triangle-exclamation"></i> ¿Deseas cancelar la cita?</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>¿Estás completamente seguro de que deseas cancelar la cita Nro. <strong><%= c.getIdCita() %></strong> del cliente <strong><%= c.getCliente() %></strong>?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <a href="${pageContext.request.contextPath}/controladorcitas?accion=eliminar&id=<%= c.getIdCita() %>" class="btn btn-danger fw-semibold">Cancelar Cita</a>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="modal fade" id="modalEditarCita<%= c.getIdCita() %>" tabindex="-1">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-warning-light text-white">
-                                                <h5 class="modal-title"><i class="fa-solid fa-pen-to-square me-2"></i> Editar / Reprogramar Cita #<%= c.getIdCita() %></h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <form action="${pageContext.request.contextPath}/controladorcitas" method="POST">
-                                                    <input type="hidden" name="accion" value="editar">
-                                                    <input type="hidden" name="txtIdCita" value="<%= c.getIdCita() %>">
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label class="form-label">Mascota</label>
-                                                            <select name="txtIdMascota" class="form-select" required>
-                                                                <% if (listaMascotas != null) { 
+                            <div class="modal fade" id="modalEditarCita<%= c.getIdCita() %>" tabindex="-1">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-warning-light text-white">
+                                            <h5 class="modal-title"><i class="fa-solid fa-pen-to-square me-2"></i> Editar / Reprogramar Cita #<%= c.getIdCita() %></h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="${pageContext.request.contextPath}/controladorcitas" method="POST">
+                                                <input type="hidden" name="accion" value="editar">
+                                                <input type="hidden" name="txtIdCita" value="<%= c.getIdCita() %>">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Mascota</label>
+                                                        <select name="txtIdMascota" class="form-select" required>
+                                                            <% if (listaMascotas != null) { 
                                                                      for(mascotas m : listaMascotas) { %>
-                                                                <option value="<%= m.getIdMascota() %>" <%= m.getIdMascota() == c.getIdMascota() ? "selected" : "" %>>
-                                                                    <%= m.getNombre() %> (Dueño: <%= m.getNombreCliente() %>)
-                                                                </option>
-                                                                <%  } 
+                                                            <option value="<%= m.getIdMascota() %>" <%= m.getIdMascota() == c.getIdMascota() ? "selected" : "" %>>
+                                                                <%= m.getNombre() %> (Dueño: <%= m.getNombreCliente() %>)
+                                                            </option>
+                                                            <%  } 
                                                                   } %>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label class="form-label">Tipo Atención</label>
-                                                            <select name="txtIdTipo" class="form-select" required>
-                                                                <option value="1" <%= c.getIdTipo() == 1 ? "selected" : "" %>>1. Vacunación</option>
-                                                                <option value="2" <%= c.getIdTipo() == 2 ? "selected" : "" %>>2. Cirugía</option>
-                                                                <option value="3" <%= c.getIdTipo() == 3 ? "selected" : "" %>>3. Consulta</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6 mb-3">
-                                                            <label class="form-label">Fecha</label>
-                                                            <input type="date" name="txtFecha" id="txtFechaEdit<%= c.getIdCita() %>" class="form-control" value="<%= c.getFecha() %>" min="<%= java.time.LocalDate.now() %>" required>
-                                                        </div>
-                                                        <div class="col-md-6 mb-3">
-                                                            <label class="form-label">Hora</label>
-                                                            <select name="txtHora" id="txtHoraEdit<%= c.getIdCita() %>" class="form-select" required>
-                                                                <option value="<%=c.getHora()%>" selected><%= c.getHora() %></option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Motivo</label>
-                                                        <textarea name="txtMotivo" class="form-control" rows="2"><%= c.getMotivo() %></textarea>
-                                                    </div>
-                                                    <div class="mb-3">
-                                                        <label class="form-label">Estado General</label>
-                                                        <select name="txtEstado" class="form-select">
-                                                            <option value="PENDIENTE" <%= c.getEstado().equals("PENDIENTE") ? "selected" : ""%>>PENDIENTE</option>
-                                                            <option value="CONFIRMADA" <%= c.getEstado().equals("CONFIRMADA") ? "selected" : ""%>>CONFIRMADA</option>
-                                                            <option value="ATENDIDA" <%= c.getEstado().equals("ATENDIDA") ? "selected" : ""%>>ATENDIDA</option>
-                                                            <option value="CANCELADA" <%= c.getEstado().equals("CANCELADA") ? "selected" : ""%>>CANCELADA</option>
                                                         </select>
                                                     </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                                        <button type="submit" class="btn btn-warning">Guardar Cambios</button>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Tipo Atención</label>
+                                                        <select name="txtIdTipo" class="form-select" required>
+                                                            <option value="1" <%= c.getIdTipo() == 1 ? "selected" : "" %>>1. Vacunación</option>
+                                                            <option value="2" <%= c.getIdTipo() == 2 ? "selected" : "" %>>2. Cirugía</option>
+                                                            <option value="3" <%= c.getIdTipo() == 3 ? "selected" : "" %>>3. Consulta</option>
+                                                        </select>
                                                     </div>
-                                                </form>
-                                            </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Fecha</label>
+                                                        <input type="date" name="txtFecha" id="txtFechaEdit<%= c.getIdCita() %>" class="form-control" value="<%= c.getFecha() %>" min="<%= java.time.LocalDate.now() %>" required>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="form-label">Hora</label>
+                                                        <select name="txtHora" id="txtHoraEdit<%= c.getIdCita() %>" class="form-select" required>
+                                                            <option value="<%=c.getHora()%>" selected><%= c.getHora() %></option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Motivo</label>
+                                                    <textarea name="txtMotivo" class="form-control" rows="2"><%= c.getMotivo() %></textarea>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label">Estado General</label>
+                                                    <select name="txtEstado" class="form-select">
+                                                        <option value="PENDIENTE" <%= c.getEstado().equals("PENDIENTE") ? "selected" : ""%>>PENDIENTE</option>
+                                                        <option value="CONFIRMADA" <%= c.getEstado().equals("CONFIRMADA") ? "selected" : ""%>>CONFIRMADA</option>
+                                                        <option value="ATENDIDA" <%= c.getEstado().equals("ATENDIDA") ? "selected" : ""%>>ATENDIDA</option>
+                                                        <option value="CANCELADA" <%= c.getEstado().equals("CANCELADA") ? "selected" : ""%>>CANCELADA</option>
+                                                    </select>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-warning">Guardar Cambios</button>
+                                                </div>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
-                                <% 
-                                        }
-                                    } else { 
-                                %>
-                                <tr>
-                                    <td colspan="7" class="text-center text-muted py-4">No se encontraron citas registradas.</td>
-                                </tr>
-                                <% } %>
+                            </div>
+                            <% 
+                                    }
+                                } else { 
+                            %>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">No se encontraron citas registradas.</td>
+                            </tr>
+                            <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -386,14 +390,15 @@
                 const fecha = new Date();
                 const opciones = {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'};
                 document.getElementById("fechaHora").innerHTML = fecha.toLocaleDateString('es-ES', opciones) + " | " + fecha.toLocaleTimeString();
-            }
-            actualizarFecha();
-            setInterval(actualizarFecha, 1000);
+                }
+                actualizarFecha();
+                setInterval(actualizarFecha, 1000);
         </script>
 
         <%
             String mensajeExito = (String) request.getSession().getAttribute("mensajeExito");
             String mensajeError = (String) request.getSession().getAttribute("mensajeError");
+            
             
             if (mensajeExito != null) {
         %>
@@ -415,7 +420,7 @@
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                
+
                 const clienteSelect = document.getElementById("txtIdCliente");
                 const mascotaSelect = document.getElementById("txtIdMascota");
                 const todasOpciones = Array.from(mascotaSelect.options);
@@ -436,7 +441,8 @@
 
                     mascotaSelect.disabled = false;
                     todasOpciones.forEach(op => {
-                        if (op.value === "") return;
+                        if (op.value === "")
+                            return;
                         if (op.dataset.cliente === idCliente) {
                             mascotaSelect.appendChild(op.cloneNode(true));
                         }
@@ -446,46 +452,46 @@
                 document.getElementById("txtFecha").addEventListener("change", function () {
                     let fecha = this.value;
                     fetch("${pageContext.request.contextPath}/controladorcitas?accion=horasDisponibles&fecha=" + fecha)
-                        .then(response => response.json())
-                        .then(data => {
-                            let combo = document.getElementById("txtHora");
-                            combo.innerHTML = '<option value="">Seleccione hora</option>';
-                            data.forEach(function (hora) {
-                                let option = document.createElement("option");
-                                option.value = hora;
-                                option.textContent = hora;
-                                combo.appendChild(option);
-                            });
-                        })
-                        .catch(error => console.error("ERROR:", error));
+                            .then(response => response.json())
+                            .then(data => {
+                                let combo = document.getElementById("txtHora");
+                                combo.innerHTML = '<option value="">Seleccione hora</option>';
+                                data.forEach(function (hora) {
+                                    let option = document.createElement("option");
+                                    option.value = hora;
+                                    option.textContent = hora;
+                                    combo.appendChild(option);
+                                });
+                            })
+                            .catch(error => console.error("ERROR:", error));
                 });
 
-                <% if (lista != null) { 
+            <% if (lista != null) { 
                     for(citas c : lista){ %>
-                    document.getElementById("txtFechaEdit<%= c.getIdCita() %>")
+                document.getElementById("txtFechaEdit<%= c.getIdCita() %>")
                         .addEventListener("change", function () {
                             let fecha = this.value;
                             fetch("${pageContext.request.contextPath}/controladorcitas?accion=horasDisponiblesEditar&fecha=" + fecha + "&idCita=<%= c.getIdCita() %>")
-                                .then(response => response.json())
-                                .then(data => {
-                                    let combo = document.getElementById("txtHoraEdit<%= c.getIdCita() %>");
-                                    combo.innerHTML = '<option value="">Seleccione hora</option>';
-                                    data.forEach(function (hora) {
-                                        let option = document.createElement("option");
-                                        option.value = hora;
-                                        option.textContent = hora;
-                                        combo.appendChild(option);
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        let combo = document.getElementById("txtHoraEdit<%= c.getIdCita() %>");
+                                        combo.innerHTML = '<option value="">Seleccione hora</option>';
+                                        data.forEach(function (hora) {
+                                            let option = document.createElement("option");
+                                            option.value = hora;
+                                            option.textContent = hora;
+                                            combo.appendChild(option);
+                                        });
                                     });
-                                });
                         });
-                <%  } 
+            <%  } 
                } %>
             });
 
             function cargarHorasEditar(idCita, horaActual) {
                 let combo = document.getElementById("txtHoraEdit" + idCita);
                 combo.innerHTML = "";
-                
+
                 let option = document.createElement("option");
                 option.value = horaActual;
                 option.textContent = horaActual;
@@ -493,7 +499,101 @@
                 combo.appendChild(option);
             }
         </script>
-        
-        
+
+        <%
+        String mensajeEstado = (String) session.getAttribute("mensajeEstado");
+        String tituloEstado = (String) session.getAttribute("tituloEstado");
+        String tipoEstado = (String) session.getAttribute("tipoEstado");
+
+        if (mensajeEstado != null) {
+        %>
+
+        <script>
+            Swal.fire({
+                icon: '<%= tipoEstado %>',
+                title: '<%= tituloEstado %>',
+                text: '<%= mensajeEstado %>',
+                confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#198754'
+            });
+        </script>
+
+        <%
+            session.removeAttribute("mensajeEstado");
+            session.removeAttribute("tituloEstado");
+            session.removeAttribute("tipoEstado");
+        }
+        %>
+        <script>
+            function validarEnvioCorreo(form) {
+
+                const estado = form.querySelector("select[name='estado']").value;
+
+                if (estado === "CONFIRMADA") {
+                    Swal.fire({
+                        title: 'Enviando correo...',
+                        html: 'Se esta notificando al cliente sobre la confirmacion de su cita.',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                }
+
+                return true;
+            }
+       function validarDescargaPDF(event) {
+            event.preventDefault();
+            const urlDescarga = event.currentTarget.href;
+
+            const pathApp = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1)) || "/";
+            document.cookie = "pdf_download_status=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=" + pathApp + ";";
+
+            Swal.fire({
+                title: 'Descargando PDF...',
+                html: 'Se está procesando y descargando el comprobante de la reserva.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            window.location.href = urlDescarga;
+
+            let tiempoTranscurrido = 0;
+
+            const timerCookie = setInterval(function() {
+                tiempoTranscurrido += 500;
+
+                const cookieExiste = document.cookie.split(';').some(item => item.trim().startsWith('pdf_download_status=success'));
+
+                if (cookieExiste) {
+                    clearInterval(timerCookie);
+
+                    document.cookie = "pdf_download_status=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=" + pathApp + ";";
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Descarga Exitosa!',
+                        text: 'El comprobante de reservación de cita se descargó correctamente.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } 
+                else if (tiempoTranscurrido >= 10000) {
+                    clearInterval(timerCookie);
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Descarga finalizada',
+                        text: 'Verifique su carpeta de descargas locales.',
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#0088FF'
+                    });
+                }
+            }, 500);
+        }
+        </script>
     </body>
 </html>

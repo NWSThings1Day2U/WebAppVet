@@ -750,6 +750,44 @@ public class citadao {
         return c;
     }
 
+    /*Sirve para obtener todos los datos de cita*/
+    public citas obtenerCitaCompleta(int idCita) {
+
+        citas c = null;
+
+        try {
+
+            cn = conexionvet_bd.probarConexion();
+
+            cs = cn.prepareCall("{CALL sp_obtener_cita_completa(?)}");
+            cs.setInt(1, idCita);
+
+            rs = cs.executeQuery();
+
+            if (rs.next()) {
+
+                c = new citas();
+
+                c.setIdCita(rs.getInt("id_cita"));
+                c.setCliente(rs.getString("cliente"));
+                c.setCorreoCliente(rs.getString("correo"));
+                c.setMascota(rs.getString("mascota"));
+                c.setFecha(rs.getString("fecha"));
+                c.setHora(rs.getString("hora"));
+                c.setMotivo(rs.getString("motivo"));
+                c.setFechaRegistro(rs.getString("fecharegistro"));
+                c.setTipoAtencion(rs.getString("tipo_atencion"));
+
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+
+        return c;
+    }
     private void closeResources() {
         try {
             if (rs != null) {

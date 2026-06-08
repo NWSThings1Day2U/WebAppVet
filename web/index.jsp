@@ -83,6 +83,17 @@
         <!-- SweetAlert -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <jsp:include page="/componentes/mensajes.jsp" /> 
-
+<%
+    String msgError = (String) session.getAttribute("error");
+    if (msgError != null) {
+%>
+    <div class="alert alert-danger">
+        <%= msgError %>
+    </div>
+<% 
+        // Es vital removerlo para que no se quede pegado al recargar la página
+        session.removeAttribute("error"); 
+    }
+%>
     </body>
 </html>

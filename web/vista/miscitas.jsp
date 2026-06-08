@@ -171,15 +171,21 @@
                                             <i class="fa-solid fa-xmark me-1"></i> Cancelar
                                         </button>
                                         <% } else if (estado.equals("confirmada")) { %>
-                                        <button class="btn py-2.5 w-100 text-white fw-bold" style="background-color: #0088FF; border-radius: 12px; font-size: 0.95rem;">
-                                            Ticket <i class="fa-solid fa-download ms-1"></i>
-                                        </button>
+                                        <a href="${pageContext.request.contextPath}/controladorcitas?accion=descargarTicket&id=<%= c.getIdCita() %>" 
+                                            class="btn py-2.5 w-100 text-white fw-bold d-flex align-items-center justify-content-center" 
+                                            style="background-color: #0088FF; border-radius: 12px; font-size: 0.95rem; text-decoration: none;" 
+                                            onclick="validarDescargaPDF(event)"> 
+                                             Ticket <i class="fa-solid fa-download ms-2"></i>
+                                         </a>
                                         <button class="btn py-2.5 w-100 text-white fw-bold" style="background-color: #D32F2F; border-radius: 12px; font-size: 0.95rem;"
                                                 onclick="confirmarCancelar(<%= c.getIdCita() %>)">
                                             <i class="fa-solid fa-xmark me-1"></i> Cancelar
                                         </button>
                                         <% } else if (estado.equals("atendida")) { %>
-                                        <button class="btn py-2.5 w-100 fw-bold border-2" style="color: #2E7D32; border: 2px solid #71C87B; background-color: #E2F4E4; border-radius: 12px; font-size: 0.95rem;">
+                                        <button class="btn py-2.5 w-100 fw-bold border-2"
+                                                style="color: #2E7D32; border: 2px solid #71C87B; background-color: #E2F4E4; border-radius: 12px; font-size: 0.95rem;"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalDetalle<%= c.getIdCita() %>">
                                             <i class="fa-solid fa-eye me-1"></i> Revisar Detalles
                                         </button>
                                         <% } else { %>
@@ -227,7 +233,168 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>             
+                        </div>  
+                        <div class="modal fade" id="modalDetalle<%= c.getIdCita() %>" tabindex="-1">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content modal-detalle-cita">
+
+                                    <div class="modal-header modal-detalle-header">
+                                        <h5 class="modal-title fw-bold">
+                                            <i class="fa-solid fa-file-medical me-2"></i>
+                                            Detalle de Cita #<%= c.getIdCita() %>
+                                        </h5>
+
+                                        <button type="button"
+                                                class="btn-close btn-close-white"
+                                                data-bs-dismiss="modal">
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body p-4">
+
+                                        <div class="detalle-mascota text-center mb-4">
+
+                                            <div class="detalle-icono">
+                                                                <img src="${pageContext.request.contextPath}/recursos/icon.png" style="height: 75px; width: 75px; object-fit: contain;" alt="Mascota"/>
+                                            </div>
+
+                                            <h4 class="mt-3 fw-bold nombre-mascota">
+                                                <%= nombreMascota %>
+                                            </h4>
+
+
+                                        </div>
+
+                                        <div class="row g-3">
+
+                                            <div class="col-md-6">
+                                                <div class="detalle-card">
+                                                    <label>
+                                                        <i class="fa-solid fa-hashtag"></i>
+                                                        Código
+                                                    </label>
+
+                                                    <div class="detalle-valor">
+                                                        #<%= c.getIdCita() %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="detalle-card">
+                                                    <label>
+                                                        <i class="fa-solid fa-user"></i>
+                                                        Cliente
+                                                    </label>
+
+                                                    <div class="detalle-valor">
+                                                        <%= c.getCliente() %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="detalle-card">
+                                                    <label>
+                                                        <i class="fa-solid fa-paw"></i>
+                                                        Mascota
+                                                    </label>
+
+                                                    <div class="detalle-valor">
+                                                        <%= nombreMascota %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="detalle-card">
+                                                    <%  
+                                                        String tipo ="nada";
+                                                        int valor = c.getIdTipo();
+                                                        switch (valor){
+                                                        case 1:
+                                                            tipo = "Vacunación";
+                                                            break;
+                                                        case 2:
+                                                            tipo = "Cirugia";
+                                                            break;
+                                                        case 3:
+                                                            tipo ="Consulta";
+                                                            break;
+
+                                                        default:
+                                                            tipo ="Ingrese un tipo válido";
+                                                    }
+
+                                                    %>
+                                                    <label>
+                                                        <i class="fa-solid fa-stethoscope"></i>
+                                                        Servicio
+                                                    </label>
+
+                                                    <div class="detalle-valor">
+                                                        <%= tipo %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="detalle-card">
+                                                    <label>
+                                                        <i class="fa-solid fa-calendar-day"></i>
+                                                        Fecha
+                                                    </label>
+
+                                                    <div class="detalle-valor">
+                                                        <%= c.getFecha() %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <div class="detalle-card">
+                                                    <label>
+                                                        <i class="fa-solid fa-clock"></i>
+                                                        Hora
+                                                    </label>
+
+                                                    <div class="detalle-valor">
+                                                        <%= c.getHora() %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-12">
+                                                <div class="detalle-card detalle-motivo">
+                                                    <label>
+                                                        <i class="fa-solid fa-notes-medical"></i>
+                                                        Motivo de Consulta
+                                                    </label>
+
+                                                    <div class="detalle-valor">
+                                                        <%= c.getMotivo() %>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer border-0">
+                                        <button type="button"
+                                                class="btn btn-detalle-cerrar"
+                                                data-bs-dismiss="modal">
+
+                                            <i class="fa-solid fa-check me-2"></i>
+                                            Entendido
+
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>                
                         <% 
                                 }
                             } else { 
@@ -338,6 +505,56 @@
                                     <% } %>
 
             });
+            function validarDescargaPDF(event) {
+            event.preventDefault();
+            const urlDescarga = event.currentTarget.href;
+
+            const pathApp = window.location.pathname.substring(0, window.location.pathname.indexOf('/', 1)) || "/";
+            document.cookie = "pdf_download_status=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=" + pathApp + ";";
+
+            Swal.fire({
+                title: 'Descargando PDF...',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            window.location.href = urlDescarga;
+
+            let tiempoTranscurrido = 0;
+
+            const timerCookie = setInterval(function() {
+                tiempoTranscurrido += 500;
+
+                const cookieExiste = document.cookie.split(';').some(item => item.trim().startsWith('pdf_download_status=success'));
+
+                if (cookieExiste) {
+                    clearInterval(timerCookie);
+
+                    document.cookie = "pdf_download_status=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=" + pathApp + ";";
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡Descarga Exitosa!',
+                        text: 'El comprobante de reservación de cita se descargó correctamente.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } 
+                else if (tiempoTranscurrido >= 10000) {
+                    clearInterval(timerCookie);
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Descarga finalizada',
+                        text: 'Verifique su carpeta de descargas locales.',
+                        confirmButtonText: 'Entendido',
+                        confirmButtonColor: '#0088FF'
+                    });
+                }
+            }, 500);
+        }
         </script>
 
         <c:if test="${not empty sessionScope.mensajeExito}">

@@ -161,16 +161,22 @@
                                     </td>
 
                                     <td>
-                                        <a href="${pageContext.request.contextPath}/detalleventa?id=<%= v.getIdVenta()%>"
-                                           class="btn btn-primary btn-sm">
-                                            <i class="fa-solid fa-eye"></i>
-                                        </a>
-                                        <button class="btn btn-danger btn-sm"
-                                                title="Anular Venta"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#modalEliminar<%= v.getIdVenta() %>">
-                                            <i class="fa-solid fa-trash"></i>
-                                        </button>
+                                       <div class="d-flex align-items-center justify-content-center gap-2">
+                                            <a href="${pageContext.request.contextPath}/detalleventa?id=<%= v.getIdVenta()%>" class="text-decoration-none">        
+                                                <button class="btn btn-sm fw-bold d-flex align-items-center justify-content-center" 
+                                                        style="color: #105341; border: 2px solid #2CA587; background-color: #E6F6F3; border-radius: 6px; width: 36px; height: 36px; padding: 0;" 
+                                                        title="Ver detalle venta">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </button>
+                                            </a>
+
+                                            <button class="btn btn-danger btn-sm"
+                                                    title="Anular Venta"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#modalEliminar<%= v.getIdVenta() %>">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </td>
 
                                 </tr>

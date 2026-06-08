@@ -14,8 +14,37 @@ public class citas {
     private String hora;
     private String motivo;
     private String estado;
-
+    private String correoCliente;
+    private String tipoAtencion;
+    private String fechaRegistro;
+    public citas() {
+    }
     // GETTERS Y SETTERS
+
+    public String getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(String fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
+
+    public String getCorreoCliente() {
+        return correoCliente;
+    }
+
+    public void setCorreoCliente(String correoCliente) {
+        this.correoCliente = correoCliente;
+    }
+
+    public String getTipoAtencion() {
+        return tipoAtencion;
+    }
+
+    public void setTipoAtencion(String tipoAtencion) {
+        this.tipoAtencion = tipoAtencion;
+    }
+    
     public int getIdCita() {
         return idCita;
     }
