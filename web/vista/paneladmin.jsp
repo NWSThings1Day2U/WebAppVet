@@ -63,7 +63,7 @@
                     <div class="col-xl-3 col-sm-6">
                         <div class="card-dashboard">
                             <div>
-                                <h6>Total Citas</h6>
+                                <h6>Total Citas - Mes</h6>
                                 <h2>${totalCitas}</h2>
                             </div>
                             <i class="fa-solid fa-calendar-check icon-card text-success"></i>

@@ -629,12 +629,9 @@ public class citadao {
     public int contarCitas() {
         int total = 0;
         try {
-            String sql
-                    = "SELECT COUNT(*) total FROM citas";
-            PreparedStatement ps
-                    = cn.prepareStatement(sql);
-            ResultSet rs
-                    = ps.executeQuery();
+            String sql= "SELECT COUNT(*) total FROM citas";
+            PreparedStatement ps = cn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 total = rs.getInt("total");
             }
