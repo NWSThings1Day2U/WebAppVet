@@ -73,7 +73,7 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Nombre de Usuario: </label>
                                         <input type="text" class="form-control " name="nombreUsuario" 
-                                               value="${datosUsuario.nombreusuario}" readonly ${not empty sessionScope.error ? '' : 'disabled'}>
+                                               value="${datosUsuario.nombreusuario}" readonly ${not empty sessionScope.error ? '' : 'disabled'} disabled>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">ID: </label>

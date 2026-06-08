@@ -115,26 +115,26 @@
             }
         %>
         
-<c:if test="${not empty sessionScope.mensajeExito}">
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Éxito',
-            text: '${sessionScope.mensajeExito}'
-        });
-    </script>
-    <c:remove var="mensajeExito" scope="session"/>
-</c:if>
+    <c:if test="${not empty sessionScope.mensajeExito}">
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: '${sessionScope.mensajeExito}'
+            });
+        </script>
+        <c:remove var="mensajeExito" scope="session"/>
+    </c:if>
 
-<c:if test="${not empty sessionScope.mensajeError}">
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: '${sessionScope.mensajeError}'
-        });
-    </script>
-    <c:remove var="mensajeError" scope="session"/>
-</c:if>
+    <c:if test="${not empty sessionScope.mensajeError}">
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '${sessionScope.mensajeError}'
+            });
+        </script>
+        <c:remove var="mensajeError" scope="session"/>
+    </c:if>
     </body>
 </html>

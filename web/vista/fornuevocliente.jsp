@@ -278,7 +278,7 @@
                 cancelButtonText: 'Revisar datos'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    form.submit(); // Envía de forma nativa todo el formulario unificado
+                    form.submit(); 
                 }
             });
         });
@@ -288,7 +288,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         // Buscamos los elementos estrictamente dentro del contenedor 'formClienteNuevo'
-        // Esto evita que se confunda con inputs de otros formularios que se llamen igual
         const contenedorForm = document.getElementById('formClienteNuevo');
         if (!contenedorForm) return;
 
@@ -296,13 +295,11 @@
         const comboHora = contenedorForm.querySelector("#txtHora");
 
         if (inputFecha && comboHora) {
-            // Escuchamos 'input' y 'change' para máxima compatibilidad
             ['input', 'change'].forEach(eventType => {
                 inputFecha.addEventListener(eventType, function () {
                     let fecha = this.value;
                     
-                    // VALIDACIÓN CRUCIAL: Si la fecha viene vacía, nula o incompleta,
-                    // limpiamos el combo de horas inmediatamente y frenamos la ejecución.
+                    
                     if (!fecha || fecha.trim() === "" || fecha.length < 10) {
                         console.log("Fecha incompleta o vacía. No se enviará petición al servidor.");
                         comboHora.innerHTML = '<option value="">Selecciona hora</option>';
@@ -311,7 +308,6 @@
 
                     console.log("Enviando fecha válida al controlador:", fecha);
 
-                    // Realizamos la petición AJAX controlada
                     fetch("${pageContext.request.contextPath}/controladorcitas?accion=horasDisponibles&fecha=" + fecha)
                         .then(response => {
                             if (!response.ok) {
@@ -322,10 +318,8 @@
                         .then(data => {
                             console.log("Horas devueltas por el controlador:", data);
                             
-                            // Limpiamos opciones previas
                             comboHora.innerHTML = '<option value="">Selecciona hora</option>';
                             
-                            // Si el controlador no devolvió horarios
                             if (!data || data.length === 0) {
                                 let option = document.createElement("option");
                                 option.value = "";
@@ -334,7 +328,6 @@
                                 return;
                             }
 
-                            // Poblamos las horas de forma segura
                             data.forEach(function (hora) {
                                 let option = document.createElement("option");
                                 option.value = hora;
