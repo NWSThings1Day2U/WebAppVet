@@ -16,6 +16,9 @@ public class mascotas {
     
     //GETTERS Y SETTERS
 
+    public mascotas() {
+    }
+
     public int getIdMascota() {
         return idMascota;
     }
