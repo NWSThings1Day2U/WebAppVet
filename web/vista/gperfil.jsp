@@ -54,45 +54,44 @@
                         </div>
                     </div>
                  </div>
-                <!-- 06-06-26 08:46 pm nuevo cambio para subir img -->
+                
                 <div class="perfil-card">
                 <div class="row g-0 h-100">
-                    
-                    <form action="controladorperfil"id="formPerfil" method="POST" enctype="multipart/form-data">
-                        <div class="row g-0 h-100">
-                            <!-- FOTO -->
-                            <div class="col-md-5">
-                                <div class="text-center p-4">
-                                    <img id="previewImagen"
-                                         src="${pageContext.request.contextPath}/recursos/${sessionScope.imagen}"
-                                         alt="Foto de perfil"
-                                         class="img-fluid shadow"
-                                         style="
-                                            width:280px;
-                                            height:280px;
-                                            object-fit:cover;
-                                            object-position:center;
-                                            border-radius:50%;
-                                            border:4px solid #f1f1f1;
-                                                                 ">
-                                    <div id="contenedorImagen"
-                                         class="mt-4"
-                                         style="display:none;">
-                                        <label class="form-label fw-bold">
-                                            Cambiar foto de perfil
-                                        </label>
-                                        <input
-                                            type="file"
-                                            class="form-control"
-                                            id="imagenPerfil"
-                                            name="imagenPerfil"
-                                            accept="image/*">
-                                    </div>
-                                </div>
+                    <!-- img perfil 11-06-26 -->
+                    <div class="col-md-5 d-flex flex-column justify-content-center align-items-center">
+                            <img id="previewImagen"
+                                 src="${pageContext.request.contextPath}/recursos/${sessionScope.imagen}"
+                                 alt="Foto Perfil"
+                                 class="shadow"
+                                 style="
+                                    width:320px;
+                                    height:320px;
+                                    object-fit:cover;
+                                    object-position:center;
+                                    border-radius:50%;
+                                    border:5px solid #f1f1f1;
+                                                     ">
+                            <div id="contenedorImagen"
+                                 class="text-center mt-3"
+                                 style="display:none;">
+                                <label class="form-label fw-bold">
+                                    Cambiar foto de perfil
+                                </label>
+                                <input type="file"
+                                       id="imagenPerfil"
+                                       name="imagenPerfil"
+                                       form="formPerfil">
                             </div>
-                            <!-- DATOS -->
-                            <div class="col-md-7">
-                        <div class="card-body p-4 m-4"> 
+                        </div>                 
+                             
+                    <div class="col-md-7">
+                        <div class="card-body p-4 m-4">
+                            
+                            <form action="controladorperfil"
+                                  method="POST"
+                                  enctype="multipart/form-data"
+                                  id="formPerfil">
+                            
                             <div class="row mb-4 align-items-center">
                                 <div class="col-auto">
                                     <div class="d-flex align-items-center justify-content-center icon-perfil-vet" >
@@ -105,15 +104,13 @@
                                         Información Personal
                                     </h4>
                                 </div>
-                            </div>
-                            <!-- 06-06-26 08:46 pm nuevo cambio para subir img -->       
-                                
+                            </div>                                                
+
                                 <div class="row mb-4">
                                     <div class="col-md-6">
-                                        
                                         <label class="form-label">Nombre de Usuario: </label>
                                         <input type="text" class="form-control " name="nombreUsuario" 
-                                               value="${datosUsuario.nombreusuario}" ${not empty sessionScope.error ? '' : 'disabled'}>
+                                               value="${datosUsuario.nombreusuario}" readonly ${not empty sessionScope.error ? '' : 'disabled'}>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">ID: </label>
@@ -185,53 +182,51 @@
                                     <i class="fa-solid fa-pencil me-2"></i> Editar información
                                 </button>
 
-                                <button type="submit" id="btnGuardar" class="btn btn-vet-principal w-100 mb-2"   
-                                        style="display:none;">
+                                <button type="submit" id="btnGuardar" class="btn btn-vet-principal w-100 mb-2" 
+                                        style="display: ${not empty sessionScope.error ? 'block' : 'none'};">
                                     <i class="fa-solid fa-floppy-disk me-2"></i> Guardar cambios
                                 </button>
-                                <!-- 06-06-26 08:46 nuevo btn cancel --> 
+                                    
                                 <button type="button" id="btnCancelar" class="btn btn-outline-secondary w-100 mb-2"
-                                    style="display:none;"> <i class="fa-solid fa-xmark me-2"></i> Cancelar
+                                        style="display:none;">
+                                    <i class="fa-solid fa-xmark me-2"></i> Cancelar
                                 </button>
                                     
-                            
-                    <script>
-                            document.getElementById('btnEditar').addEventListener('click', function () {
-
-                            document.querySelectorAll('.editable').forEach(campo => {
-                                campo.disabled = false;
-                            });
-
-                            document.getElementsByName('nombreUsuario')[0].disabled = false;
-
-                            document.getElementById('seccionPassword').style.display = 'block';
-
-                            document.getElementById('contenedorImagen').style.display = 'block';
-
-                            document.getElementById('btnGuardar').style.display = 'block';
-
-                            document.getElementById('btnCancelar').style.display = 'block';
-
-                            document.getElementById('btnEditar').style.display = 'none';
-                                });
-                            
-                            document.getElementById('btnCancelar').addEventListener('click', function () {
-
-                                location.reload();
-                            });
-                            
-                            document.getElementById('imagenPerfil').addEventListener('change', function (e) {
-
-                                const archivo = e.target.files[0];
-                                if (!archivo) return;
-                                const lector = new FileReader();
-                                lector.onload = function (ev) {
+                            </form>
+                            <script>
+                                document.getElementById('btnEditar').addEventListener('click', function () {
                                     
-                            document.getElementById('previewImagen').src = 
-                                    ev.target.result;
-                                };
-                                lector.readAsDataURL(archivo);
-                            });                                                        
+                                    document.querySelectorAll('.editable').forEach(campo => {
+                                        campo.disabled = false;
+                                    });
+                                    document.getElementsByName('nombreUsuario')[0].disabled = false;
+
+                                    document.getElementById('seccionPassword').style.display = 'block';
+
+                                    document.getElementById('contenedorImagen').style.display = 'block';
+
+                                    document.getElementById('btnGuardar').style.display = 'block';
+
+                                    document.getElementById('btnCancelar').style.display = 'block';
+
+                                    document.getElementById('btnEditar').style.display = 'none';
+                                });
+                                
+                                document.getElementById('btnCancelar').addEventListener('click', function () {
+                                    location.reload();
+                                });
+                                
+                                document.getElementById('imagenPerfil').addEventListener('change', function (e) {
+                                    const archivo = e.target.files[0];
+                                    if (!archivo) return;
+                                    const lector = new FileReader();
+                                    lector.onload = function (ev) {
+                                        document.getElementById('previewImagen').src =
+                                                ev.target.result;
+                                    };
+                                    lector.readAsDataURL(archivo);
+                                });
+                                
                                 function setupPasswordToggle(buttonId, inputId, iconId) {
                                     const btn = document.getElementById(buttonId);
                                     const input = document.getElementById(inputId);
@@ -251,14 +246,13 @@
                                         });
                                     }
                                 }
+
                                 setupPasswordToggle('togglePassword1', 'reg_pass', 'eyeIcon1');
                                 setupPasswordToggle('togglePassword2', 'reg_pass_conf', 'eyeIcon2');
-                    </script>
-                    
+                            </script>
                         </div>
                     </div>
                 </div>
-                    </form>
             </div>
             </div>
         </main>

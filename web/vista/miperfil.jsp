@@ -46,58 +46,64 @@
                 <p class="text-center p-vet">Administra tu información personal y mascotas</p>
             </div>
             <div class="perfil-card ">
-                <form action="controladorperfil" id="formPerfil" method="POST" class="needs-validation" enctype="multipart/form-data" novalidate>
                 <div class="row g-0 h-100">
-                    <div class="col-md-5">
-                                <div class="text-center p-4">
-                                    <img id="previewImagen"
-                                         src="${pageContext.request.contextPath}/recursos/${sessionScope.imagen}"
-                                         alt="Foto de perfil"
-                                         class="img-fluid shadow"
-                                         style="
-                                            width:280px;
-                                            height:280px;
-                                            object-fit:cover;
-                                            object-position:center;
-                                            border-radius:50%;
-                                            border:4px solid #f1f1f1;
-                                                                 ">
-                                    <div id="contenedorImagen"
-                                         class="mt-4"
-                                         style="display:none;">
-                                        <label class="form-label fw-bold">
-                                            Cambiar foto de perfil
-                                        </label>
-                                        <input
-                                            type="file"
-                                            class="form-control"
-                                            id="imagenPerfil"
-                                            name="imagenPerfil"
-                                            accept="image/*">
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- cambio img perfil 11-06-26 -->
+                    <div class="col-md-5 d-flex flex-column justify-content-center align-items-center">
+                        <img id="previewImagen"
+                             src="${pageContext.request.contextPath}/recursos/${sessionScope.imagen}"
+                             alt="Foto Perfil"
+                             class="shadow"
+                             style="
+                                width:320px;
+                                height:320px;
+                                object-fit:cover;
+                                object-position:center;
+                                border-radius:50%;
+                                border:5px solid #f1f1f1;
+                                                 ">
+                        
+                        <div id="contenedorImagen"
+                             class="text-center mt-3"
+                             style="display:none;">
+                            <label class="form-label fw-bold">
+                                Cambiar foto de perfil
+                            </label>
+                            <input type="file"
+                                   id="imagenPerfil"
+                                   name="imagenPerfil"
+                                   form="formPerfil">
+                        </div>
+                    </div>
+                             
                     <div class="col-md-7">
                         <div class="card-body p-4 m-4">
+
+                        <!-- cambio img perfil 11-06-26 -->
+                        <form action="controladorperfil"
+                              method="POST"
+                              enctype="multipart/form-data"
+                              id="formPerfil">
+
                             <div class="row mb-4 align-items-center">
                                 <div class="col-auto">
                                     <div class="d-flex align-items-center justify-content-center icon-perfil-vet" >
                                         <i class="fa-solid fa-user fs-5"></i>
                                     </div>
-                                </div>
+                                </div>             
 
-                                <div class="col">
-                                    <h4 class="m-0 subtitulo-vet">
-                                        Información Personal
-                                    </h4>
-                                </div>
-                            </div>
+                        <div class="col">
+                            <h4 class="m-0 subtitulo-vet">
+                                Información Personal
+                            </h4>
+                        </div>
+                    </div>                          
 
+                                    
                                 <div class="row mb-4">
                                     <div class="col-md-6">
                                         <label class="form-label">Nombre de Usuario: </label>
                                         <input type="text" class="form-control " name="nombreUsuario" 
-                                               value="${datosUsuario.nombreusuario}"  ${not empty sessionScope.error ? '' : 'disabled'} disabled>
+                                               value="${datosUsuario.nombreusuario}" readonly ${not empty sessionScope.error ? '' : 'disabled'} disabled>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">ID: </label>
@@ -169,46 +175,49 @@
                                         style="display: ${not empty sessionScope.error ? 'block' : 'none'};">
                                     <i class="fa-solid fa-floppy-disk me-2"></i> Guardar cambios
                                 </button>
-                                    <button type="button" id="btnCancelar" class="btn btn-outline-secondary w-100 mb-2"
-                                    style="display:none;"> <i class="fa-solid fa-xmark me-2"></i> Cancelar
+                                    <!-- cambio img perfil 11-06-26 -->
+                                <button type="button" id="btnCancelar" class="btn btn-outline-secondary w-100 mb-2"
+                                        style="display:none;">
+                                    <i class="fa-solid fa-xmark me-2"></i> Cancelar
                                 </button>
-                            <script>
-                                document.getElementById('btnEditar').addEventListener('click', function () {
-
-                            document.querySelectorAll('.editable').forEach(campo => {
-                                campo.disabled = false;
-                            });
-
-                            document.getElementsByName('nombreUsuario')[0].disabled = false;
-
-                            document.getElementById('seccionPassword').style.display = 'block';
-
-                            document.getElementById('contenedorImagen').style.display = 'block';
-
-                            document.getElementById('btnGuardar').style.display = 'block';
-
-                            document.getElementById('btnCancelar').style.display = 'block';
-
-                            document.getElementById('btnEditar').style.display = 'none';
-                                });
-                            
-                            document.getElementById('btnCancelar').addEventListener('click', function () {
-
-                                location.reload();
-                            });
-                            
-                            document.getElementById('imagenPerfil').addEventListener('change', function (e) {
-
-                                const archivo = e.target.files[0];
-                                if (!archivo) return;
-                                const lector = new FileReader();
-                                lector.onload = function (ev) {
                                     
-                            document.getElementById('previewImagen').src = 
-                                    ev.target.result;
-                                };
-                                lector.readAsDataURL(archivo);
-                            });            
+                            </form>
+                            <script>                              
+                                document.getElementById('btnEditar')
+                                .addEventListener('click', function () {
+                                    document.querySelectorAll('.editable')
+                                    .forEach(campo => {
+                                        campo.disabled = false;
+                                    });
+                                    document.getElementsByName('nombreUsuario')[0]
+                                    .disabled = false;
+                                    document.getElementById('seccionPassword')
+                                    .style.display = 'block';
+                                    document.getElementById('contenedorImagen')
+                                    .style.display = 'block';
+                                    document.getElementById('btnGuardar')
+                                    .style.display = 'block';
+                                    document.getElementById('btnCancelar')
+                                    .style.display = 'block';
+                                    this.style.display = 'none';
+                                });
+                                
+                                document.getElementById('btnCancelar')
+                                .addEventListener('click', function () {
+                                    location.reload();
+                                });
+                                
+                                document.getElementById('imagenPerfil')
+                                .addEventListener('change', function(e){
+                                    const archivo = e.target.files[0];
+                                    if(!archivo) return;
+                                    const lector = new FileReader();
+                                    lector.onload = function(ev){
+                                        document.getElementById('previewImagen')
+                                        .src = ev.target.result;
+                                    };
+                                    lector.readAsDataURL(archivo);
+                                });
 
                                 function setupPasswordToggle(buttonId, inputId, iconId) {
                                     const btn = document.getElementById(buttonId);
@@ -237,7 +246,7 @@
                             </script>
                         </div>
                     </div>
-                </div></form>
+                </div>
             </div>
             <div class="perfil-card p-5">
                 <div class="row g-0 h-100"> 
