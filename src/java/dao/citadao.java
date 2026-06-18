@@ -5,6 +5,13 @@ import modelo.citas;
 
 import java.sql.*;
 import java.time.DayOfWeek;
+import static java.time.DayOfWeek.FRIDAY;
+import static java.time.DayOfWeek.MONDAY;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
+import static java.time.DayOfWeek.THURSDAY;
+import static java.time.DayOfWeek.TUESDAY;
+import static java.time.DayOfWeek.WEDNESDAY;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -201,56 +208,35 @@ public class citadao {
 
     //Generar horarios 
     public List<String> obtenerHorasDisponibles(String fecha) {
-
         List<String> disponibles = new ArrayList<>();
         List<String> ocupadas = obtenerHorasOcupadas(fecha);
         try {
-
             LocalDate f = LocalDate.parse(fecha);
             LocalDate hoy = LocalDate.now();
             LocalTime horaActual = LocalTime.now();
             DayOfWeek day = f.getDayOfWeek();
-
             String dia = convertirDia(day);
-
             horariodao hdao = new horariodao();
-
             horarios horario = hdao.obtenerHorarioDia(dia);
             if (horario == null) {
-
                 return disponibles;
             }
-
             LocalTime inicio = LocalTime.parse(horario.getHoraInicio());
-
             LocalTime fin = LocalTime.parse(horario.getHoraFin());
-
             int duracion = horario.getDuracionMinutos();
-
             while (inicio.isBefore(fin)) {
-
                 String hora = inicio.toString();
-
                 boolean horaValida = true;
-
                 if (f.equals(hoy)) {
-
                     if (inicio.isBefore(horaActual)) {
                         horaValida = false;
                     }
-
                 }
-
                 if (horaValida && !ocupadas.contains(hora)) {
-
                     disponibles.add(hora);
-
                 }
-
                 inicio = inicio.plusMinutes(duracion);
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -259,43 +245,30 @@ public class citadao {
     }
 
     public List<String> obtenerHorasOcupadas(String fecha) {
-
         List<String> ocupadas = new ArrayList<>();
-
         try {
-
             cn = conexionvet_bd.probarConexion();
             cs = cn.prepareCall("{call sp_horas_ocupadas_fecha(?)}");
-
             cs.setString(1, fecha);
-
             rs = cs.executeQuery();
-
             while (rs.next()) {
-
                 ocupadas.add(
                         rs.getString("hora")
                 );
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             closeResources();
         }
-
         return ocupadas;
     }
 
     public boolean horaDisponible(
             String fecha,
             String hora) {
-
         try {
-
             cn = conexionvet_bd.probarConexion();
-
             ps = cn.prepareStatement(
                     "SELECT COUNT(*) total "
                     + "FROM citas "
@@ -305,30 +278,19 @@ public class citadao {
             );
             ps.setString(1, fecha);
             ps.setString(2, hora);
-
             rs = ps.executeQuery();
-
             if (rs.next()) {
-
                 return rs.getInt("total") == 0;
-
             }
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
         }
-
         return false;
     }
 
     public boolean horaDisponibleEditar(int idCita, String fecha, String hora) {
-
         try {
-
             cn = conexionvet_bd.probarConexion();
-
             ps = cn.prepareStatement(
                     "SELECT COUNT(*) total "
                     + "FROM citas "
@@ -337,29 +299,18 @@ public class citadao {
                     + "AND estado IN ('PENDIENTE','CONFIRMADA') "
                     + "AND id_cita <> ?"
             );
-
             ps.setString(1, fecha);
             ps.setString(2, hora);
             ps.setInt(3, idCita);
-
             rs = ps.executeQuery();
-
             if (rs.next()) {
-
                 return rs.getInt("total") == 0;
-
             }
-
         } catch (Exception e) {
-
             e.printStackTrace();
-
         } finally {
-
             closeResources();
-
         }
-
         return false;
     }
 
@@ -785,6 +736,62 @@ public class citadao {
 
         return c;
     }
+    /*nuev metodo 11-06-26*/
+    public Map<String, Boolean> obtenerAgendaDia(String fecha) {
+
+        Map<String, Boolean> agenda = new LinkedHashMap<>();
+
+        List<String> disponibles = obtenerHorasDisponibles(fecha);
+        List<String> ocupadas = obtenerHorasOcupadas(fecha);
+
+        for (String h : disponibles) {
+            agenda.put(h, true);
+        }
+        for (String h : ocupadas) {
+            agenda.put(h, false);
+        }
+        return agenda;
+    }
+    /*obtener citas d semana 15-06-26*/
+    public List<citas> obtenerCitasSemana(
+            String fechaInicio,
+            String fechaFin) {
+        List<citas> lista = new ArrayList<>();
+        try {
+            cn = conexionvet_bd.probarConexion();
+            String sql
+                    = "SELECT c.fecha, c.hora, c.estado, c.motivo, "
+                    + "m.nombre AS mascota, "
+                    + "cl.nombre_completo AS cliente, "
+                    + "t.nombre AS tipo_atencion "
+                    + "FROM citas c "
+                    + "INNER JOIN mascotas m ON c.id_mascota = m.id_mascota "
+                    + "INNER JOIN clientes cl ON c.id_cliente = cl.id_cliente "
+                    + "INNER JOIN tipo_atencion t ON c.id_tipo = t.id_tipo "
+                    + "WHERE c.fecha BETWEEN ? AND ?";
+            ps = cn.prepareStatement(sql);
+            ps.setString(1, fechaInicio);
+            ps.setString(2, fechaFin);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                citas c = new citas();
+                c.setFecha(rs.getString("fecha"));
+                c.setHora(rs.getString("hora"));
+                c.setEstado(rs.getString("estado"));
+                c.setMotivo(rs.getString("motivo"));
+                c.setMascota(rs.getString("mascota"));
+                c.setCliente(rs.getString("cliente"));
+                c.setTipoAtencion(rs.getString("tipo_atencion"));
+                lista.add(c);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return lista;
+    }
+    
     private void closeResources() {
         try {
             if (rs != null) {

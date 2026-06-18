@@ -561,3 +561,362 @@ body {
 .modal-footer{
     padding: 20px;
 }
+
+/*========== ESTILO AGENDA MEDICO 15-06-26============*/
+.agenda-veterinario{
+background:linear-gradient(
+180deg,
+#ffffff 0%,
+#f8fafc 100%
+);
+border-radius:30px;
+padding:35px;
+box-shadow:
+0 15px 40px rgba(0,0,0,.08);
+border:none;
+}
+
+.agenda-scroll{
+    max-height:650px;
+    overflow-y:auto;
+    overflow-x:auto;
+    margin-top:15px;
+    border-radius:18px;
+}
+
+/*========ENCABEZADO========= */
+.agenda-header{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:25px;
+margin-bottom:25px;
+}
+
+.agenda-header span{
+font-size:18px;
+font-weight:700;
+color:#2d3748;
+}
+
+.btn-nav{
+border:none;
+background:transparent;
+color:#d97706;
+font-size:22px;
+transition:.3s;
+}
+
+.btn-nav:hover{
+color:#ea580c;
+transform:scale(1.15);
+}
+
+/* =======TABLA========== */
+.tabla-agenda{
+width:100%;
+border-collapse:separate;
+border-spacing:0;
+overflow:hidden;
+border-radius:18px;
+}
+
+.tabla-agenda th{
+background:#d97706;
+color:white;
+text-align:center;
+padding:14px;
+font-size:15px;
+font-weight:700;
+}
+
+.tabla-agenda thead th{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:#d97706;
+}
+
+.tabla-agenda td{
+border:1px solid #d9e8dc;
+height:85px;
+min-width:110px;
+vertical-align:top;
+padding:4px;
+background:#ffffff;
+}
+
+.tabla-agenda tr:hover td{
+background:#fafafa;
+}
+
+/* ========HORA========== */
+.tabla-agenda td:first-child{
+font-weight:700;
+color:#2d3748;
+text-align:center;
+background:#fafafa;
+}
+
+/* ======DÍA ACTUAL======== */
+.dia-actual{
+background:#eefbf2 !important;
+}
+.dia-actual-header{
+background:#198754 !important;
+}
+
+/* ======TARJETAS DE CITA======== */
+.cita-confirmada,
+.cita-pendiente,
+.cita-atendida,
+.cita-cancelada{
+
+    width:100%;
+    min-height:70px;
+    padding:6px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+}
+
+.cita-confirmada,
+.cita-pendiente,
+.cita-atendida,
+.cita-cancelada{
+
+border-radius:14px;
+padding:10px;
+font-size:12px;
+cursor:pointer;
+transition:.3s;
+backdrop-filter:blur(8px);
+
+}
+
+.cita-click strong,
+.cita-click small,
+.cita-click span{
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    width:100%;
+}
+
+/* Pendiente */
+.cita-pendiente{
+background:rgba(243,156,18,.15);
+border:1px solid rgba(243,156,18,.3);
+border-left:5px solid #f39c12;
+}
+
+/* Confirmada */
+.cita-confirmada{
+background:rgba(39,174,96,.15);
+border:1px solid rgba(39,174,96,.3);
+border-left:5px solid #27ae60;
+}
+
+/* Atendida */
+.cita-atendida{
+background:rgba(59,130,246,.15);
+border:1px solid rgba(59,130,246,.3);
+border-left:5px solid #3b82f6;
+}
+
+/* Cancelada */
+.cita-cancelada{
+background:rgba(231,76,60,.15);
+border:1px solid rgba(231,76,60,.3);
+border-left:5px solid #e74c3c;
+}
+
+/*======TEXTO ESTADO====== */
+.estado-texto{
+display:inline-block;
+margin-top:4px;
+font-size:10px;
+font-weight:700;
+}
+
+/*=====LEYENDA MODERNA====== */
+.agenda-legend{
+margin-top:30px;
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:20px;
+padding-top:20px;
+border-top:1px solid #e2e8f0;
+}
+
+.agenda-legend span{
+padding:12px 20px;
+border-radius:50px;
+font-size:13px;
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+}
+
+.badge-pendiente{
+background:#f39c12;
+}
+
+.badge-confirmada{
+background:#27ae60;
+}
+
+.badge-atendida{
+background:#3b82f6;
+}
+
+.badge-cancelada{
+background:#e74c3c;
+}
+
+/*=====MODAL===== */
+.modal-content{
+border:none;
+border-radius:25px;
+overflow:hidden;
+box-shadow:
+0 20px 50px rgba(0,0,0,.15);
+}
+
+.modal-header{
+background:linear-gradient(
+135deg,
+#d97706,
+#f59e0b
+);
+color:white;
+}
+
+.modal-title{
+color:#2d3748;
+font-weight:700;
+}
+
+.card-resumen{
+position:relative;
+overflow:hidden;
+border:none;
+border-radius:22px;
+padding:25px;
+text-align:center;
+background:#fff;
+transition:.3s;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.card-resumen:hover{
+transform:translateY(-6px);
+}
+
+.card-resumen h2{
+font-size:38px;
+font-weight:800;
+margin:0;
+}
+
+.card-resumen span{
+font-size:14px;
+color:#64748b;
+}
+
+.resumen-icon{
+font-size:28px;
+margin-bottom:10px;
+color:#d97706;
+}
+
+.tabla-agenda td{
+    border:1px solid #d9e8dc;
+    height:65px;
+    min-width:120px;
+    vertical-align:top;
+    padding:4px;
+    background:#ffffff;
+    position:relative;
+}
+
+.tabla-agenda{
+    width:100%;
+    table-layout:fixed;
+    border-collapse:separate;
+    border-spacing:0;
+}
+
+.agenda-filtros{
+    display:flex;
+    justify-content:center;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-bottom:30px; /* más espacio */
+    margin-top:15px;
+}
+
+.btn-filtro{
+    border:none;
+    padding:10px 18px;
+    border-radius:30px;
+    font-weight:600;
+    transition:.3s;
+    cursor:pointer;
+}
+
+.btn-filtro:hover{
+    transform:translateY(-2px);
+}
+
+.btn-filtro.active{
+    background:#d97706;
+    color:white;
+    box-shadow:0 4px 12px rgba(217,119,6,.35);
+}
+
+.ocultar-cita{
+    display:none !important;
+}
+
+.nombre-mascota{
+    font-size:12px;
+    font-weight:600;
+    text-align:center;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+
+    width:100%;
+}
+
+.estado-texto{
+    display:none;
+}
+
+.tabla-agenda td:first-child,
+.tabla-agenda th:first-child{
+    position:sticky;
+    left:0;
+    z-index:90;
+}
+
+.tabla-agenda th:first-child{
+    z-index:110;
+    background:#d97706;
+    color:white;
+}
+
+.hora-cita{
+    font-size:11px;
+    font-weight:700;
+}
+
+.nombre-mascota{
+    font-size:13px;
+    font-weight:600;
+}

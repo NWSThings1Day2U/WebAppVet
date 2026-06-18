@@ -5,6 +5,8 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import java.time.LocalDate;
+import java.util.List;
 import modelo.citas;
 
 /**
@@ -86,24 +88,77 @@ public class controladorpagina extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
-    private void inicio(HttpServletRequest request, HttpServletResponse response)
+/*modif caledar med 15-06-26*/
+    private void inicio(HttpServletRequest request,
+            HttpServletResponse response)
             throws ServletException, IOException {
+
         request.setAttribute("paginaActual", "inicio");
         HttpSession session = request.getSession();
-
-        Integer idUsuario = (Integer) session.getAttribute("id");
-
+        Integer idUsuario
+                = (Integer) session.getAttribute("id");
         citadao dao = new citadao();
+        citas proxima
+                = dao.obtenerProximaCitaCliente(idUsuario);
+        request.setAttribute(
+                "proximaCita",
+                proxima
+        );
+        dao.mascotadao daoMascota
+                = new dao.mascotadao();
 
-        citas proxima =dao.obtenerProximaCitaCliente(idUsuario);
-
-        request.setAttribute("proximaCita",proxima);
-        dao.mascotadao daoMascota = new dao.mascotadao(); 
-        java.util.List<modelo.mascotas> listaMascotas = daoMascota.listarMascotasPorCliente(idUsuario);
-    
-        request.setAttribute("misMascotas", listaMascotas);
-        request.getRequestDispatcher(paginicio).forward(request, response);
+        java.util.List<modelo.mascotas> listaMascotas
+                = daoMascota.listarMascotasPorCliente(idUsuario);
+        request.setAttribute(
+                "misMascotas",
+                listaMascotas
+        );
+        // CALENDARIO
+        String fechaHoy
+                = java.time.LocalDate.now().toString();
+        request.setAttribute(
+                "horasDisponibles",
+                dao.obtenerHorasDisponibles(fechaHoy)
+        );
+        request.setAttribute(
+                "horasOcupadas",
+                dao.obtenerHorasOcupadas(fechaHoy)
+        );
+        // SEMANA
+        LocalDate hoy = LocalDate.now();
+        String semanaParam = request.getParameter("semana");
+        LocalDate inicioSemana;
+        if (semanaParam != null) {
+            inicioSemana = LocalDate.parse(semanaParam);
+        } else {
+            inicioSemana = hoy.with(
+                    java.time.DayOfWeek.MONDAY
+            );
+        }
+        LocalDate finSemana
+                = inicioSemana.plusDays(6);
+        request.setAttribute(
+                "inicioSemana",
+                inicioSemana
+        );
+        request.setAttribute(
+                "finSemana",
+                finSemana
+        );
+        
+        List<citas> agendaSemana
+                = dao.obtenerCitasSemana(
+                        inicioSemana.toString(),
+                        finSemana.toString()
+                );
+        request.setAttribute(
+                "agendaSemana",
+                agendaSemana
+        );
+        // FORWARD
+        request.getRequestDispatcher(
+                paginicio
+        ).forward(request, response);
     }
 
     private void agendarcitas(HttpServletRequest request, HttpServletResponse response)
