@@ -51,6 +51,14 @@
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/contenidoadmin.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/esadmin.css">
+        <style>
+            .resaltado-busqueda{
+                background-color: #6B8E23 !important;
+                color: white !important;
+                font-weight: bold;
+                transition: all .2s ease;
+            }
+        </style>
     </head>
     <body>
         <%
@@ -125,7 +133,7 @@
                             <p class="text-muted mb-0">Visualiza y administra las citas registradas.</p>
                         </div>
                         <div class="d-flex gap-2 flex-wrap">
-                            <input type="text" class="form-control" placeholder="Buscar cita..." style="width:230px;">
+                            <input type="text" id="txtBuscarCita" class="form-control"  placeholder="Buscar cliente o mascota..." style="width:230px;">
                             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevaCita">
                                 <i class="fa-solid fa-calendar-plus"></i> Nueva Cita
                             </button>
@@ -150,7 +158,7 @@
                                     if (lista != null && !lista.isEmpty()) {
                                         for (citas c : lista) {
                                 %>
-                                <tr>
+                                <tr class="fila-cita" data-id="<%= c.getIdCita() %>" data-cliente="<%= c.getCliente().toLowerCase() %>" data-mascota="<%= c.getMascota().toLowerCase() %>">
                                     <td>#<%= c.getIdCita()%></td>
                                     <td><strong><%= c.getCliente()%></strong></td>
                                     <td>
@@ -162,7 +170,12 @@
                                         <form action="${pageContext.request.contextPath}/controladorcitas" method="POST" class="d-flex gap-2 align-items-center" onsubmit="return validarEnvioCorreo(this)">
                                             <input type="hidden" name="accion" value="actualizarEstado">
                                             <input type="hidden" name="id" value="<%= c.getIdCita()%>">
-                                            <select name="estado" class="form-select form-select-sm">
+                                            <select name="estado" 
+                                                    class="form-select form-select-sm" 
+                                                    onchange="cambiarColorEstado(this)"
+                                                    data-estado="<%= c.getEstado() %>"
+                                                    style=" font-weight: bold;">
+
                                                 <option value="PENDIENTE" <%= c.getEstado().equals("PENDIENTE") ? "selected" : ""%>>PENDIENTE</option>
                                                 <option value="CONFIRMADA" <%= c.getEstado().equals("CONFIRMADA") ? "selected" : ""%>>CONFIRMADA</option>
                                                 <option value="ATENDIDA" <%= c.getEstado().equals("ATENDIDA") ? "selected" : ""%>>ATENDIDA</option>
@@ -174,38 +187,69 @@
                                         </form>
                                     </td>
                                     <td>
-                                        <div class="d-flex justify-content-center align-items-center gap-2">
 
-                                            <div class="d-flex justify-content-center align-items-center" style="width: 36px; height: 36px;">
-                                                <% if (c.getEstado().equals("CONFIRMADA")) { %>
-                                                <a href="${pageContext.request.contextPath}/controladorcitas?accion=descargarTicket&id=<%= c.getIdCita() %>" class="text-decoration-none" onclick="validarDescargaPDF(event)">                                                
-                                                        <button class="btn btn-sm text-white fw-bold d-flex align-items-center justify-content-center" 
-                                                        style="background-color: #0088FF; border-radius: 6px; width: 36px; height: 36px; padding: 0;" title="Descargar PDF">
-                                                            <i class="fa-solid fa-download"></i>
-                                                        </button>
-                                                    </a>
-                                                <% } else if (c.getEstado().equals("ATENDIDA")) { %>
-                                                <a href="${pageContext.request.contextPath}/detallecita?id=<%= c.getIdCita()%>" class="text-decoration-none">                                                
-                                                <button class="btn btn-sm fw-bold d-flex align-items-center justify-content-center" 
-                                                        style="color: #2E7D32; border: 2px solid #71C87B; background-color: #E2F4E4; border-radius: 6px; width: 36px; height: 36px; padding: 0;" title="Ver detalle cita">
-                                                    <i class="fa-solid fa-eye"></i>
-                                                </button>
+                                        <% if (c.getEstado().equals("CANCELADA")) { %>
+
+                                            <span class="badge bg-secondary px-3 py-2">
+                                                Sin acciones disponibles
+                                            </span>
+
+                                        <% } else if (c.getEstado().equals("ATENDIDA")) { %>
+
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a href="${pageContext.request.contextPath}/detallecita?id=<%= c.getIdCita()%>" class="text-decoration-none">
+                                                    <button class="btn btn-sm fw-bold d-flex align-items-center justify-content-center"
+                                                            style="color: #2E7D32; border: 2px solid #71C87B; background-color: #E2F4E4; border-radius: 6px; width: 36px; height: 36px; padding: 0;"
+                                                            title="Ver detalle cita">
+                                                        <i class="fa-solid fa-eye"></i>
+                                                    </button>
                                                 </a>
-                                                <% } %>
                                             </div>
 
-                                            <button class="btn btn-warning btn-sm d-flex align-items-center justify-content-center" 
-                                                    data-bs-toggle="modal" data-bs-target="#modalEditarCita<%= c.getIdCita() %>" onclick="cargarHorasEditar(<%= c.getIdCita() %>, '<%= c.getHora() %>')"
-                                                    style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
-                                                <i class="fa-solid fa-pencil"></i>
-                                            </button>
+                                        <% } else { %>
 
-                                            <button class="btn btn-danger btn-sm d-flex align-items-center justify-content-center" title="Eliminar" data-bs-toggle="modal" data-bs-target="#modalEliminar<%= c.getIdCita()%>"
-                                                    style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
-                                                <i class="fa-solid fa-calendar-xmark"></i>
-                                            </button>
+                                            <div class="d-flex justify-content-center align-items-center gap-2">
 
-                                        </div>
+                                                <div class="d-flex justify-content-center align-items-center" style="width: 36px; height: 36px;">
+
+                                                    <% if (c.getEstado().equals("CONFIRMADA")) { %>
+
+                                                        <a href="${pageContext.request.contextPath}/controladorcitas?accion=descargarTicket&id=<%= c.getIdCita() %>"
+                                                           class="text-decoration-none"
+                                                           onclick="validarDescargaPDF(event)">
+
+                                                            <button class="btn btn-sm text-white fw-bold d-flex align-items-center justify-content-center"
+                                                                    style="background-color: #0088FF; border-radius: 6px; width: 36px; height: 36px; padding: 0;"
+                                                                    title="Descargar PDF">
+                                                                <i class="fa-solid fa-download"></i>
+                                                            </button>
+
+                                                        </a>
+
+                                                    <% } %>
+
+                                                </div>
+
+                                                <button class="btn btn-warning btn-sm d-flex align-items-center justify-content-center"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalEditarCita<%= c.getIdCita() %>"
+                                                        onclick="cargarHorasEditar(<%= c.getIdCita() %>, '<%= c.getHora() %>')"
+                                                        style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
+                                                    <i class="fa-solid fa-pencil"></i>
+                                                </button>
+
+                                                <button class="btn btn-danger btn-sm d-flex align-items-center justify-content-center"
+                                                        title="Eliminar"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#modalEliminar<%= c.getIdCita()%>"
+                                                        style="width: 36px; height: 36px; padding: 0; border-radius: 6px;">
+                                                    <i class="fa-solid fa-calendar-xmark"></i>
+                                                </button>
+
+                                            </div>
+
+                                        <% } %>
+
                                     </td>
 
 
@@ -304,7 +348,14 @@
                                 <td colspan="7" class="text-center text-muted py-4">No se encontraron citas registradas.</td>
                             </tr>
                             <% } %>
+                            
                             </tbody>
+                            <tr id="filaSinResultados" style="display:none;">
+                                <td colspan="7" class="text-center py-4 text-muted fw-bold">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    No se encontraron resultados.
+                                </td>
+                            </tr>
                         </table>
                     </div>
                 </div>                
@@ -594,6 +645,77 @@
                 }
             }, 500);
         }
+        
+        function cambiarColorEstado(selectElement) {
+            selectElement.classList.remove('select-pendiente', 'select-confirmada', 'select-atendida', 'select-cancelada');
+
+            const valor = selectElement.value;
+
+            if (valor === 'PENDIENTE') {
+                selectElement.classList.add('select-pendiente');
+            } else if (valor === 'CONFIRMADA') {
+                selectElement.classList.add('select-confirmada');
+            } else if (valor === 'ATENDIDA') {
+                selectElement.classList.add('select-atendida');
+            } else if (valor === 'CANCELADA') {
+                selectElement.classList.add('select-cancelada');
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const selectsEstado = document.querySelectorAll("select[name='estado']");
+            selectsEstado.forEach(select => {
+                cambiarColorEstado(select);
+            });
+        });
         </script>
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const txtBuscar = document.getElementById("txtBuscarCita");
+    const filaSinResultados = document.getElementById("filaSinResultados");
+
+    txtBuscar.addEventListener("input", function () {
+
+        const texto = this.value.toLowerCase().trim();
+
+        const filas = document.querySelectorAll(".fila-cita");
+
+        let encontrados = 0;
+
+        filas.forEach(fila => {
+
+            fila.classList.remove("resaltado-busqueda");
+
+            const id = fila.dataset.id.toLowerCase();
+            const cliente = fila.dataset.cliente;
+            const mascota = fila.dataset.mascota;
+
+            const coincide =
+                    id.includes(texto) ||
+                    cliente.includes(texto) ||
+                    mascota.includes(texto);
+
+            if (coincide) {
+                fila.style.display = "";
+                encontrados++;
+
+                if (texto !== "") {
+                    fila.classList.add("resaltado-busqueda");
+                }
+
+            } else {
+                fila.style.display = "none";
+            }
+
+        });
+
+        filaSinResultados.style.display =
+                encontrados === 0 ? "" : "none";
+
+    });
+
+});
+</script>
     </body>
 </html>

@@ -202,7 +202,7 @@
                         <div class="modal fade" id="modalReprogramar<%= c.getIdCita() %>" data-bs-backdrop="static" tabindex="-1" aria-labelledby="modalReprogramarLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content" style="border-radius: 20px;">
-                                    <div class="modal-header border-0 bg-light" style="border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                                    <div class="modal-header border-0 bg-light" style="border-top-left-radius: 20px; border-top-right-radius: 20px; ">
                                         <h5 class="modal-title fw-bold text-dark font-vollkorn">
                                             <i class="fa-solid fa-clock shadow-sm p-2 rounded-3 bg-white text-success me-2"></i> Reprogramar Cita: <%= nombreMascota %>
                                         </h5>

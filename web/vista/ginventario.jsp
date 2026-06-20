@@ -39,6 +39,12 @@
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/contenidoadmin.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/esadmin.css">
+        <style>
+            .resaltado-busqueda{
+                background-color: #DDE8C8 !important; 
+                transition: all .2s ease;
+            }
+        </style>
     </head>
     <body>
         <%
@@ -107,7 +113,7 @@
                             <p class="text-muted">Gestión del inventario veterinario.</p>
                         </div>
                         <div class="d-flex gap-2 flex-wrap">
-                            <input type="text" class="form-control" placeholder="Buscar producto..." style="width:230px;">
+                            <input type="text" id="txtBuscarProducto" class="form-control" placeholder="Buscar por ID o nombre..."  style="width:230px;">
                             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevoProducto">
                                 <i class="fa-solid fa-plus"></i> Nuevo Producto
                             </button>
@@ -134,7 +140,7 @@
                             <tbody>
                                 <% if (lista != null && !lista.isEmpty()) {
                                     for (productos p : lista) {%>
-                                <tr>
+                                <tr class="fila-producto" data-id="<%= p.getIdProducto() %>" data-nombre="<%= p.getNombre().toLowerCase() %>">
                                     <td>#<%= p.getIdProducto()%></td>
                                     <td><%= p.getNombre()%></td>
                                     <td>
@@ -175,6 +181,12 @@
                                     <td colspan="11" class="text-center">No hay productos registrados en el inventario.</td>
                                 </tr>
                                 <% } %>
+                                <tr id="filaSinResultados" style="display:none;">
+                                    <td colspan="11" class="text-center py-4 text-muted fw-bold">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                        No se encontraron resultados.
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -359,5 +371,52 @@
                 request.getSession().removeAttribute("mensajeError");
             }
         %>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const txtBuscar = document.getElementById("txtBuscarProducto");
+                const filaSinResultados = document.getElementById("filaSinResultados");
+
+                txtBuscar.addEventListener("input", function () {
+
+                    const texto = this.value.toLowerCase().trim();
+
+                    const filas = document.querySelectorAll(".fila-producto");
+
+                    let encontrados = 0;
+
+                    filas.forEach(fila => {
+
+                        fila.classList.remove("resaltado-busqueda");
+
+                        const id = fila.dataset.id;
+                        const nombre = fila.dataset.nombre;
+
+                        const coincide =
+                                id.includes(texto) ||
+                                nombre.includes(texto);
+
+                        if (coincide) {
+
+                            fila.style.display = "";
+                            encontrados++;
+
+                            if (texto !== "") {
+                                fila.classList.add("resaltado-busqueda");
+                            }
+
+                        } else {
+                            fila.style.display = "none";
+                        }
+
+                    });
+
+                    filaSinResultados.style.display =
+                            encontrados === 0 ? "" : "none";
+
+                });
+
+            });
+            </script>
     </body>
 </html>

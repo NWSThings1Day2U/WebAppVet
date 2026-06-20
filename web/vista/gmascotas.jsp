@@ -56,6 +56,12 @@
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/contenidoadmin.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/esadmin.css">
+        <style>
+            .fila-encontrada{
+                background-color:#dfe8c5 !important;
+                transition:0.2s;
+            }
+        </style>
     </head>
     <body>
         <%
@@ -106,7 +112,7 @@
                             <p class="text-muted mb-0">Visualiza y administra todas las mascotas registradas.</p>
                         </div>
                         <div class="d-flex gap-2 flex-wrap">
-                            <input type="text" class="form-control" placeholder="Buscar mascota..." style="width:230px;">
+                            <input type="text" id="txtBuscarMascota" class="form-control" placeholder="Buscar mascota..." style="width:230px;">
                             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevaMascota">
                                 <i class="fa-solid fa-paw"></i> Nueva Mascota
                             </button>
@@ -129,7 +135,7 @@
                                     <th class="text-center">Acciones</th>
                                 </tr>
                             </thead >
-                            <tbody>
+                            <tbody id="tablaMascotas">
                                 <% 
                                     if (lista != null && !lista.isEmpty()) {
                                         for (mascotas m : lista) {
@@ -252,7 +258,14 @@
                                 
                                 
                                 <% } %>
+                                <tr id="filaSinResultados" style="display:none;">
+                                    <td colspan="10" class="text-center py-4 text-muted fw-bold">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                        No se encontraron resultados.
+                                    </td>
+                                </tr>
                             </tbody>
+                            
                         </table>
                     </div>
                 </div>                
@@ -435,5 +448,59 @@
             }
             setInterval(actualizarFecha, 1000);
         </script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+
+                const buscador = document.getElementById("txtBuscarMascota");
+                const filas = document.querySelectorAll("#tablaMascotas tr:not(#filaSinResultados)");
+                const mensaje = document.getElementById("filaSinResultados");
+
+                buscador.addEventListener("input", function () {
+
+                    const texto = this.value.toLowerCase().trim();
+                    let encontrados = 0;
+
+                    filas.forEach(fila => {
+
+                        fila.classList.remove("fila-encontrada");
+
+                        const contenido = fila.textContent.toLowerCase();
+
+                        if (contenido.includes(texto)) {
+
+                            fila.style.display = "";
+                            encontrados++;
+
+                            if (texto !== "") {
+                                fila.classList.add("fila-encontrada");
+                            }
+
+                        } else {
+
+                            fila.style.display = "none";
+                        }
+
+                    });
+
+                    if (texto !== "" && encontrados === 0) {
+                        mensaje.style.display = "";
+                    } else {
+                        mensaje.style.display = "none";
+                    }
+
+                    if (texto === "") {
+
+                        filas.forEach(fila => {
+                            fila.style.display = "";
+                            fila.classList.remove("fila-encontrada");
+                        });
+
+                        mensaje.style.display = "none";
+                    }
+
+                });
+
+            });
+            </script>
     </body>
 </html>

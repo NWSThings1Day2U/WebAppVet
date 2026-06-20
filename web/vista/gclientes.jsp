@@ -29,6 +29,14 @@
 
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/contenidoadmin.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/esadmin.css">
+        <style>
+            .resaltado-busqueda{
+                background-color: #6B8E23 !important;
+                color: white !important;
+                font-weight: bold;
+                transition: all .2s ease;
+            }
+        </style>
     </head>
     <body>
         <%
@@ -105,7 +113,7 @@
                             <p class="text-muted mb-0">Visualiza y administra todos los clientes registrados.</p>
                         </div>
                         <div class="d-flex gap-2 flex-wrap">
-                            <input type="text" class="form-control" placeholder="Buscar cliente..." style="width:230px;">
+                            <input type="text" id="txtBuscarCliente" class="form-control" placeholder="Buscar cliente..." style="width:230px;">
                             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalNuevoCliente">
                                 <i class="fa-solid fa-user-plus"></i> Nuevo Cliente
                             </button>
@@ -131,7 +139,10 @@
                                     if (lista != null && !lista.isEmpty()) {
                                         for (clientes c : lista) {
                                 %>
-                                <tr>
+                                <tr class="fila-cliente" data-id="<%= c.getIdCliente() %>" data-nombre="<%= c.getNombreCompleto().toLowerCase() %>"
+                                    data-dni="<%= c.getDni().toLowerCase() %>"
+                                    data-correo="<%= c.getCorreo().toLowerCase() %>"
+                                    data-telefono="<%= c.getTelefono() != null ? c.getTelefono().toLowerCase() : "" %>">
                                     <td>#<%= c.getIdCliente()%></td>
                                     <td><strong><%= c.getNombreCompleto()%></strong></td>
                                     <td>
@@ -241,7 +252,14 @@
                                     <td colspan="7" class="text-center text-muted py-4">No se encontraron clientes registrados en la clínica veterinaria.</td>
                                 </tr>
                                 <% } %>
+                                
                             </tbody>
+                            <tr id="filaSinResultados" style="display:none;">
+                                    <td colspan="8" class="text-center py-4 text-muted fw-bold">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                        No se encontraron resultados.
+                                    </td>
+                                </tr>
                         </table>
                     </div>
                 </div>
@@ -353,6 +371,58 @@
             }
         %>
         
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
 
+            const txtBuscar = document.getElementById("txtBuscarCliente");
+            const filaSinResultados = document.getElementById("filaSinResultados");
+
+            txtBuscar.addEventListener("input", function () {
+
+                const texto = this.value.toLowerCase().trim();
+
+                const filas = document.querySelectorAll(".fila-cliente");
+
+                let encontrados = 0;
+
+                filas.forEach(fila => {
+
+                    fila.classList.remove("resaltado-busqueda");
+
+                    const id = fila.dataset.id;
+                    const nombre = fila.dataset.nombre;
+                    const dni = fila.dataset.dni;
+                    const correo = fila.dataset.correo;
+                    const telefono = fila.dataset.telefono;
+
+                    const coincide =
+                            id.includes(texto) ||
+                            nombre.includes(texto) ||
+                            dni.includes(texto) ||
+                            correo.includes(texto) ||
+                            telefono.includes(texto);
+
+                    if (coincide) {
+
+                        fila.style.display = "";
+                        encontrados++;
+
+                        if (texto !== "") {
+                            fila.classList.add("resaltado-busqueda");
+                        }
+
+                    } else {
+                        fila.style.display = "none";
+                    }
+
+                });
+
+                filaSinResultados.style.display =
+                        encontrados === 0 ? "" : "none";
+
+            });
+
+        });
+        </script>
     </body>
 </html>

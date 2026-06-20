@@ -215,32 +215,3 @@ body {
     height: 45px;
     border-radius: 10px;
 }
-/* Ajuste para el contenedor de Título + Filtros */
-.header-mascotas-container {
-    display: flex;
-    flex-wrap: wrap; /* Permite que los elementos bajen a la siguiente fila en móviles */
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-}
-
-/* Ajuste para el grupo de botones y selects */
-.controles-mascotas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    width: 100%;
-}
-
-/* En pantallas grandes (MD en adelante), ocupan el ancho necesario */
-@media (min-width: 768px) {
-    .controles-mascotas {
-        width: auto;
-    }
-}
-
-/* Asegurar que el select no se expanda de forma extraña */
-.select-custom-vet {
-    min-width: 200px;
-}

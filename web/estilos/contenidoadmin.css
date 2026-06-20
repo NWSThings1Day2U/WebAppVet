@@ -161,3 +161,7 @@
 .bg-warning-light .btn-close:hover {
     opacity: 1;
 }
+.select-pendiente { background-color: #ffca28 !important; color: #000; }
+.select-confirmada { background-color: #91C3F0 !important; color: #fff; }
+.select-atendida { background-color: #71C87B !important; color: #fff; }
+.select-cancelada { background-color: #A0A0A0 !important; color: #fff; }
