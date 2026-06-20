@@ -2,7 +2,26 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ page import="modelo.citas" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.DayOfWeek" %>
+<%
+    citas proxima =(citas) request.getAttribute("proximaCita");
+%>
+<!-- rango d semana 15-06-26 -->
+<%@ page import="java.time.LocalDate" %>
 
+<%
+    LocalDate inicioSemana = (LocalDate) request.getAttribute("inicioSemana");
+    LocalDate finSemana = (LocalDate) request.getAttribute("finSemana");
+    LocalDate semanaAnterior  = inicioSemana.minusWeeks(1);
+    LocalDate semanaSiguiente = inicioSemana.plusWeeks(1);
+%>
+
+<%
+    java.time.LocalDate lunes = inicioSemana;
+%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -126,7 +145,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <div class="row g-4 mb-4">
                     <div class="col-xl-7 col-lg-12">
                         <div class="tabla-panel">
@@ -383,7 +402,227 @@
                         </div>
                     </div>
                 </div>
+                <div class="row g-4 mb-2">
+                                <div class="tarjeta-horario-vet mt-5">
+                    <h2 class="text-start titulo-vet fs-3 mb-4 mt-5" style="color: #333 !important;">
+                        Agenda del Médico Veterinario:</h2>    
+                    <!-- calendar vis 11-06-26 -->
+                    
+                    <div class="agenda-veterinario " >
 
+                        <div class="agenda-header">
+                            <a class="btn-nav"
+                               href="controladorseccion?seccion=inicio&semana=<%= semanaAnterior%>">
+                                <i class="fa-solid fa-arrow-left"></i>
+                            </a>
+                            <span>
+                                Semana:
+                                <%= inicioSemana%>
+                                al
+                                <%= finSemana%>
+                            </span>
+                            <a class="btn-nav"
+                               href="controladorseccion?seccion=inicio&semana=<%= semanaSiguiente%>">
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                                
+                           <div class="row g-4 mb-4">
+                               <div class="col-md-3">
+                                   <div class="card card-resumen">
+                                       <i class="fa-solid fa-calendar-days resumen-icon"></i>
+                                       <h2>${totalSemana}</h2>
+                                       <span>Citas Semana</span>
+                                   </div>
+                               </div>
+                               <div class="col-md-3">
+                                   <div class="card card-resumen card-confirmada">
+                                       <i class="fa-solid fa-circle-check resumen-icon"></i>
+                                       <h2>${totalConfirmadas}</h2>
+                                       <span>Confirmadas</span>
+                                   </div>
+                               </div>
+                               <div class="col-md-3">
+                                   <div class="card card-resumen card-pendiente">
+                                       <i class="fa-solid fa-clock resumen-icon"></i>
+                                       <h2>${totalPendientes}</h2>
+                                       <span>Pendientes</span>
+                                   </div>
+                               </div>
+                               <div class="col-md-3">
+                                   <div class="card card-resumen card-atendida">
+                                       <i class="fa-solid fa-stethoscope resumen-icon"></i>
+                                       <h2>${totalAtendidas}</h2>
+                                       <span>Atendidas</span>
+                                   </div>
+                               </div>
+                           </div>
+
+                           <div class="agenda-filtros">
+                               <button class="btn-filtro active"
+                                       data-estado="TODAS">
+                                   Todas
+                               </button>
+                               <button class="btn-filtro"
+                                       data-estado="PENDIENTE">
+                                   Pendientes
+                               </button>
+                               <button class="btn-filtro"
+                                       data-estado="CONFIRMADA">
+                                   Confirmadas
+                               </button>
+                               <button class="btn-filtro"
+                                       data-estado="ATENDIDA">
+                                   Atendidas
+                               </button>
+                               <button class="btn-filtro"
+                                       data-estado="CANCELADA">
+                                   Canceladas
+                               </button>
+                           </div>                                               
+                                
+                           <%
+                               java.util.List<String> horas = new java.util.ArrayList<>();
+                               for (int h = 9; h <= 17; h++) {
+                                   horas.add(String.format("%02d:00", h));
+                                   if (h < 17) {
+                                       horas.add(String.format("%02d:30", h));
+                                   }
+                               }
+                               request.setAttribute("horasAgenda", horas);
+                           %>                                                                                            
+                           
+                        <div class="agenda-scroll">   
+                           
+                        <table class="tabla-agenda">
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Lunes</th>
+                                    <th>Martes</th>
+                                    <th>Miércoles</th>
+                                    <th>Jueves</th>
+                                    <th>Viernes</th>
+                                    <th>Sábado</th>
+                                    <th>Domingo</th>
+                                </tr>
+                            </thead>
+                            
+            <tbody>
+                <c:forEach var="hora" items="${horasAgenda}">
+                    <tr>
+                        <td>${hora}</td>
+                        <%
+                            for (int d = 0; d < 7; d++) {
+                                java.time.LocalDate fechaColumna
+                                        = lunes.plusDays(d);
+                                request.setAttribute(
+                                        "fechaColumna",
+                                        fechaColumna.toString()
+                                );
+                        %>
+                        <td>
+                            <c:forEach var="cita" items="${agendaSemana}">
+                                <c:if test="${cita.fecha eq fechaColumna
+                                  && fn:startsWith(cita.hora,hora)}">
+                                    <c:set var="claseEstado" value="cita-pendiente"/>
+                                    <c:choose>
+                                        <c:when test="${cita.estado=='PENDIENTE'}">
+                                            <c:set var="claseEstado"
+                                                   value="cita-pendiente"/>
+                                        </c:when>
+                                        <c:when test="${cita.estado=='CONFIRMADA'}">
+                                            <c:set var="claseEstado"
+                                                   value="cita-confirmada"/>
+                                        </c:when>
+                                        <c:when test="${cita.estado=='ATENDIDA'}">
+                                            <c:set var="claseEstado"
+                                                   value="cita-atendida"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:set var="claseEstado"
+                                                   value="cita-cancelada"/>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <div class="${claseEstado} cita-click" 
+                                         data-fecha="${cita.fecha}"
+                                         data-hora="${cita.hora}"
+                                         data-mascota="${cita.mascota}"
+                                         data-tipo="${cita.tipoAtencion}"
+                                         data-estado="${cita.estado}"
+                                         data-motivo="${cita.motivo}"
+                                         data-estadofiltro="${cita.estado}">
+
+                                        <strong>${cita.hora}</strong>
+
+                                        <span class="nombre-mascota">
+                                            ${cita.mascota}
+                                        </span>
+                                        
+                                    </div>
+                                </c:if>
+                            </c:forEach>
+                        </td>
+                        <%
+                            }
+                        %>
+                    </tr>
+                </c:forEach>
+                            </tbody>
+                                
+                            </table>
+                        </div> 
+                           
+                   <div class="modal fade"
+                        id="modalCita"
+                        tabindex="-1">
+                       <div class="modal-dialog">
+                           <div class="modal-content">
+                               <div class="modal-header">
+                                   <h5 class="modal-title">
+                                       Detalle de la cita
+                                   </h5>
+                                   <button
+                                       type="button"
+                                       class="btn-close"
+                                       data-bs-dismiss="modal">
+                                   </button>
+                               </div>
+                               <div class="modal-body">
+                                   <p>
+                                       <strong>Mascota:</strong>
+                                       <span id="mMascota"></span>
+                                   </p>
+                                   <p>
+                                       <strong>Fecha:</strong>
+                                       <span id="mFecha"></span>
+                                   </p>
+                                   <p>
+                                       <strong>Hora:</strong>
+                                       <span id="mHora"></span>
+                                   </p>
+                                   <p>
+                                       <strong>Tipo:</strong>
+                                       <span id="mTipo"></span>
+                                   </p>
+                                   <p>
+                                       <strong>Estado:</strong>
+                                       <span id="mEstado"></span>
+                                   </p>
+                                   <p>
+                                       <strong>Motivo:</strong>
+                                       <span id="mMotivo"></span>
+                                   </p>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+                          
+                        </div>
+                    
+                </div>    
+                    
+                </div>                        
             </div> 
 
 
@@ -539,8 +778,67 @@
                     1000
                     );
             actualizarFechaHora();
+            
         </script>
-
+<script>
+            document.addEventListener("DOMContentLoaded",()=>{
+            document.querySelectorAll(".cita-click")
+            .forEach(cita=>{
+            cita.addEventListener("click",()=>{
+                document.getElementById("mMascota")
+                        .innerText=
+                        cita.dataset.mascota;
+                document.getElementById("mFecha")
+                        .innerText=
+                        cita.dataset.fecha;
+                document.getElementById("mHora")
+                        .innerText=
+                        cita.dataset.hora;
+                document.getElementById("mTipo")
+                        .innerText=
+                        cita.dataset.tipo;
+                document.getElementById("mEstado")
+                        .innerText=
+                        cita.dataset.estado;
+                document.getElementById("mMotivo")
+                        .innerText=
+                        cita.dataset.motivo;
+                new bootstrap.Modal(
+                    document.getElementById("modalCita")
+                ).show();
+            });
+            });
+            });
+        </script>
+        
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const botones = document.querySelectorAll(".btn-filtro");
+                botones.forEach(btn => {
+                    btn.addEventListener("click", () => {
+                        // Quitar activo de todos
+                        botones.forEach(b =>
+                            b.classList.remove("active")
+                        );
+                        // Activar botón seleccionado
+                        btn.classList.add("active");
+                        const estado = btn.dataset.estado;
+                        document
+                            .querySelectorAll(".cita-click")
+                            .forEach(cita => {
+                                if (
+                                    estado === "TODAS" ||
+                                    cita.dataset.estadofiltro === estado
+                                ) {
+                                    cita.style.display = "flex";
+                                } else {
+                                    cita.style.display = "none";
+                                }
+                            });
+                    });
+                });
+            });
+        </script>
         <jsp:include page="/componentes/mensajes.jsp" /> 
     </body>
 </html>

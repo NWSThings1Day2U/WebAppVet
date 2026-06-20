@@ -9,6 +9,9 @@ import dao.clientedao;
 import dao.mascotadao;
 import dao.productodao;
 import dao.ventasdao;
+import java.time.LocalDate;
+import java.util.List;
+import modelo.citas;
 /**
  *
  * @author USUARIO
@@ -140,6 +143,68 @@ public class controladorseccion extends HttpServlet {
         request.setAttribute("mascotasRegistradas",mdao.contarMascotas());
         request.setAttribute("totalVentas",vdao.contarVentas());
         request.setAttribute("productosVendidos", vdao.productosVendidosMes());
+        
+        HttpSession session = request.getSession();
+        Integer idUsuario
+                = (Integer) session.getAttribute("id");
+        citadao dao = new citadao();
+        citas proxima
+                = dao.obtenerProximaCitaCliente(idUsuario);
+        request.setAttribute(
+                "proximaCita",
+                proxima
+        );
+        dao.mascotadao daoMascota
+                = new dao.mascotadao();
+
+        java.util.List<modelo.mascotas> listaMascotas
+                = daoMascota.listarMascotasPorCliente(idUsuario);
+        request.setAttribute(
+                "misMascotas",
+                listaMascotas
+        );
+        // CALENDARIO
+        String fechaHoy
+                = java.time.LocalDate.now().toString();
+        request.setAttribute(
+                "horasDisponibles",
+                dao.obtenerHorasDisponibles(fechaHoy)
+        );
+        request.setAttribute(
+                "horasOcupadas",
+                dao.obtenerHorasOcupadas(fechaHoy)
+        );
+        // SEMANA
+        LocalDate hoy = LocalDate.now();
+        String semanaParam = request.getParameter("semana");
+        LocalDate inicioSemana;
+        if (semanaParam != null) {
+            inicioSemana = LocalDate.parse(semanaParam);
+        } else {
+            inicioSemana = hoy.with(
+                    java.time.DayOfWeek.MONDAY
+            );
+        }
+        LocalDate finSemana
+                = inicioSemana.plusDays(6);
+        request.setAttribute(
+                "inicioSemana",
+                inicioSemana
+        );
+        request.setAttribute(
+                "finSemana",
+                finSemana
+        );
+        
+        List<citas> agendaSemana
+                = dao.obtenerCitasSemana(
+                        inicioSemana.toString(),
+                        finSemana.toString()
+                );
+        request.setAttribute(
+                "agendaSemana",
+                agendaSemana
+        );
         request.getRequestDispatcher(paginicio).forward(request, response);
     }
 
