@@ -1,6 +1,8 @@
 package controlador;
 
 import dao.citadao;
+import dao.clientedao;
+import dao.mascotadao;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -95,8 +97,7 @@ public class controladorpagina extends HttpServlet {
 
         request.setAttribute("paginaActual", "inicio");
         HttpSession session = request.getSession();
-        Integer idUsuario
-                = (Integer) session.getAttribute("id");
+        Integer idUsuario = (Integer) session.getAttribute("id");
         citadao dao = new citadao();
         citas proxima
                 = dao.obtenerProximaCitaCliente(idUsuario);
@@ -155,10 +156,16 @@ public class controladorpagina extends HttpServlet {
                 "agendaSemana",
                 agendaSemana
         );
+        request.setAttribute("listaClientes",new clientedao().listarClientesPorUsuario(idUsuario));
+
+        request.setAttribute("listaMascotas",new mascotadao().listarMascotas());
+        request.setAttribute("listaCitas", dao.listarCitasPorCliente(idUsuario));
+        List<citas> historial =
+        dao.obtenerHistorialInicio(idUsuario);
+
+        request.setAttribute(  "historialCitas",historial);
         // FORWARD
-        request.getRequestDispatcher(
-                paginicio
-        ).forward(request, response);
+        request.getRequestDispatcher( paginicio).forward(request, response);
     }
 
     private void agendarcitas(HttpServletRequest request, HttpServletResponse response)

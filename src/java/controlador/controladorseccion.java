@@ -222,6 +222,7 @@ public class controladorseccion extends HttpServlet {
 
     private void citas(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
+        
         request.getRequestDispatcher("/controladorcitas?accion=listar").forward(request, response);
     }
 

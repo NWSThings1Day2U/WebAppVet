@@ -753,9 +753,7 @@ public class citadao {
         return agenda;
     }
     /*obtener citas d semana 15-06-26*/
-    public List<citas> obtenerCitasSemana(
-            String fechaInicio,
-            String fechaFin) {
+    public List<citas> obtenerCitasSemana(String fechaInicio,String fechaFin) {
         List<citas> lista = new ArrayList<>();
         try {
             cn = conexionvet_bd.probarConexion();
@@ -791,7 +789,57 @@ public class citadao {
         }
         return lista;
     }
-    
+    public List<citas> obtenerHistorialInicio(int idUsuario) {
+
+        List<citas> lista = new ArrayList<>();
+
+        try {
+
+            cn = conexionvet_bd.probarConexion();
+
+            String sql =
+                "SELECT c.id_cita, " +
+                "m.nombre AS nombre_mascota, " +
+                "c.fecha, " +
+                "c.hora, " +
+                "c.estado, " +
+                "c.fecha_registro " +
+                "FROM citas c " +
+                "INNER JOIN mascotas m ON c.id_mascota = m.id_mascota " +
+                "INNER JOIN clientes cl ON c.id_cliente = cl.id_cliente " +
+                "WHERE (cl.id_usuario = ? " +
+                "OR cl.id_cliente_responsable = ?) " +
+                "ORDER BY c.fecha_registro DESC " +
+                "LIMIT 5";
+
+            ps = cn.prepareStatement(sql);
+
+            ps.setInt(1, idUsuario);
+            ps.setInt(2, idUsuario);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                citas c = new citas();
+
+                c.setIdCita(rs.getInt("id_cita"));
+                c.setMascota(rs.getString("nombre_mascota"));
+                c.setFecha(rs.getString("fecha"));
+                c.setHora(rs.getString("hora"));
+                c.setEstado(rs.getString("estado"));
+
+                lista.add(c);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+
+        return lista;
+    }
     private void closeResources() {
         try {
             if (rs != null) {

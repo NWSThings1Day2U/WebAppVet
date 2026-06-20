@@ -63,6 +63,7 @@
                     </h1>
                     <p class="text-muted mb-4">¿Cómo podemos ayudar a tu mascota hoy?</p>
                 </div>
+                        
                 <div class="buscarmas-vet">
                     <form class="mb-4" id="formBuscarMascota">
                         <div class="input-group buscador-mascota">
@@ -201,7 +202,79 @@
                     </div>
                 </div>
                 
-                        
+                <div class="historialcitas-vet mt-5 mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h2 class="titulo-vet fs-3 mb-0" style="color: #333 !important;">Historial de Citas Recientes:</h2>
+                        <a href="controladorpagina?pagina=miscitas" class="text-decoration-none fw-bold" style="color: #336600;">
+                            Ver más <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-4 align-items-center">
+                        <!-- commentario -->
+                        <c:forEach var="cita" items="${historialCitas}">
+                            <div class="card shadow-sm p-3"
+                            style="
+                            width:190px;
+                            border-radius:15px;
+                            <c:choose>
+                                <c:when test='${cita.estado eq "PENDIENTE"}'>
+                                    border:2px solid #EBB12C;
+                                </c:when>
+                                <c:when test='${cita.estado eq "CONFIRMADA"}'>
+                                    border:2px solid #91C3F0;
+                                </c:when>
+                                <c:when test='${cita.estado eq "ATENDIDA"}'>
+                                    border:2px solid #71C87B;
+                                </c:when>
+                                <c:when test='${cita.estado eq "CANCELADA"}'>
+                                    border:2px solid #A0A0A0;
+                                </c:when>
+                            </c:choose>">
+
+                                <h6 class="fw-bold text-success">
+                                    ${cita.mascota}
+                                </h6>
+
+                                <small class="text-muted">
+                                    ${cita.fecha}
+                                </small>
+
+                                <small class="text-muted d-block">
+                                    ${cita.hora}
+                                </small>
+
+                                <span class="badge mt-2 px-3 py-2"
+                                    style="
+                                    <c:choose>
+                                        <c:when test='${cita.estado eq "PENDIENTE"}'>
+                                            background:#FCEFCE;color:#EBB12C;
+                                        </c:when>
+                                        <c:when test='${cita.estado eq "CONFIRMADA"}'>
+                                            background:#E1EFFB;color:#91C3F0;
+                                        </c:when>
+                                        <c:when test='${cita.estado eq "ATENDIDA"}'>
+                                            background:#E2F4E4;color:#71C87B;
+                                        </c:when>
+                                        <c:when test='${cita.estado eq "CANCELADA"}'>
+                                            background:#EAEAEA;color:#A0A0A0;
+                                        </c:when>
+                                        <c:otherwise>
+                                            background:#F8F9FA;color:#6C757D;
+                                        </c:otherwise>
+                                    </c:choose>
+                                    font-weight:600;border-radius:20px;">
+                                  ${cita.estado}
+                              </span>
+
+                            </div>
+                        </c:forEach>
+
+                        <c:if test="${empty historialCitas}">
+                            <p class="text-muted small italic m-0"><i class="fa-solid fa-info-circle me-1"></i> Aún no tienes historial de citas .</p>
+                        </c:if>
+                    </div>
+                </div>        
                 <div class="mis-mascotas-vet mt-5 mb-5">
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h2 class="titulo-vet fs-3 mb-0" style="color: #333 !important;">Mis Mascotas:</h2>
