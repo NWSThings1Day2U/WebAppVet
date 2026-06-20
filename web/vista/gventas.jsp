@@ -4,7 +4,7 @@
 <%@page import="dao.clientedao"%>
 <%@page import="modelo.clientes"%>
 <%@page import="dao.productodao"%>
-<%@page import="modelo.productos"%>
+<%@page import="modelo.*"%>
 
 <%
     clientedao clienteDao = new clientedao();
@@ -18,6 +18,8 @@
     ventasdao dao = new ventasdao();
     List<ventas> lista = dao.listarVentas();
     double ventasHoy = dao.totalVentasHoy();
+    
+    
 %>
 
 
@@ -259,12 +261,10 @@
                                 data-bs-dismiss="modal">
                         </button>
                     </div>
-                    <form action="${pageContext.request.contextPath}/controladorventas"
-                          method="POST">
+                    <form action="${pageContext.request.contextPath}/controladorventas"  method="POST">
                         <div class="modal-body">
-                            <input type="hidden"
-                                   name="accion"
-                                   value="guardar">
+                            <input type="hidden" name="accion" value="guardar">
+                            <input type="hidden" id="detalleJson" name="detalleJson">
                             <div class="row">
                                 <div class="col-md-5 mb-3">
                                     <label class="form-label">Nombre de cliente</label>
@@ -296,7 +296,7 @@
                                     <select id="producto"
                                             name="IdProducto"
                                             class="form-select"
-                                            required>
+                                            >
                                         <option value=""
                                                 selected
                                                 disabled>
@@ -336,7 +336,7 @@
                                            name="cantidad"
                                            class="form-control"
                                            min="1"
-                                           required>
+                                           >
                                 </div>
                                 <!-- btn agregar
                                 <div class="col-md-2 mb-3 d-flex align-items-end">
@@ -365,6 +365,64 @@
                                            id="subtotalProducto"
                                            class="form-control"
                                            readonly>
+                                </div>
+                                <div class="row col" >
+                                <div class="col-md-4 mb-3 d-flex align-items-end">
+                                    <button type="button"
+                                            class="btn btn-outline-primary w-100"
+                                            onclick="agregarCarrito()">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                        Agregar al carrito
+                                    </button>
+                                </div> 
+                                <div class="col-md-4 mb-3 d-flex align-items-end">
+                                    <button type="button"
+                                        class="btn btn-outline-success w-100 position-relative"
+                                        onclick="mostrarCarrito()">
+                                        <i class="fa-solid fa-eye"></i>
+                                        
+                                        Mostrar carrito
+                                        <span id="badgeCarrito"
+                                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                              0
+                                          </span>
+                                    </button>
+                                </div> 
+                                <div class="col-md-4 mb-3 d-flex align-items-end">
+                                    <button type="button"
+                                            class="btn btn-outline-danger w-100"
+                                             onclick="vaciarCarrito()">
+                                        <i class="fa-solid fa-bucket"></i>
+                                        Vaciar carrito
+                                    </button>
+                                </div>
+                                </div>
+                                <div id="contenedorCarrito" style="display:none;">
+
+                                    <hr>
+
+                                    <h5 class="fw-bold">
+                                        <i class="fa-solid fa-cart-shopping"></i>
+                                        Carrito
+                                    </h5>
+
+                                    <table class="table table-bordered table-hover">
+
+                                        <thead>
+                                            <tr>
+                                                <th>Producto</th>
+                                                <th>Precio</th>
+                                                <th>Cantidad</th>
+                                                <th>Subtotal</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id="tbodyCarrito">
+                                        </tbody>
+
+                                    </table>
+
                                 </div>
 
                                 <!-- inic tbl temporal de carrito -->
@@ -405,6 +463,7 @@
                 </div>
             </div>
         </div>
+                                   
         <!-- Bootstrap y alertify -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
@@ -472,9 +531,267 @@
             document
                     .getElementById("cantidad")
                     .addEventListener("input", calcularVenta);
+            
+            function calcularTotalCarrito(){
+
+    let subtotalGeneral = 0;
+
+    carrito.forEach(item => {
+
+        subtotalGeneral += item.precio * item.cantidad;
+
+    });
+
+    let descuento = subtotalGeneral * 0.05;
+
+    let total = subtotalGeneral - descuento;
+
+    document.getElementById("total").value =
+        total.toFixed(2);
+}
         </script>
 
+        <script>
+            let carrito = [];
 
+                function agregarCarrito(){
+
+                let select = document.getElementById("producto");
+
+                if(select.selectedIndex <= 0){
+
+                    alertify.error("Seleccione un producto");
+
+                    return;
+                }
+
+                let cantidad =
+                    parseInt(document.getElementById("cantidad").value);
+
+                if(isNaN(cantidad) || cantidad <= 0){
+
+                    alertify.error("Ingrese una cantidad válida");
+
+                    return;
+                }
+
+                let stock =
+                    parseInt(document.getElementById("stock").value);
+
+                if(cantidad > stock){
+
+                    alertify.error("La cantidad supera el stock disponible");
+
+                    return;
+                }
+
+                let opcion =
+                    select.options[select.selectedIndex];
+
+                let item = {
+
+                    idProducto: parseInt(select.value),
+
+                    nombre: opcion.text,
+
+                    precio: parseFloat(
+                        document.getElementById("precio").value
+                    ),
+
+                    cantidad: cantidad
+                };
+                let existe = carrito.find(p => p.idProducto == item.idProducto);
+
+                if(existe){
+
+                    existe.cantidad += item.cantidad;
+
+                    actualizarTablaCarrito();
+
+                    actualizarBadge();
+                    calcularTotalCarrito();
+                    limpiarCampos();
+
+                    alertify.success(
+                        "Cantidad actualizada en el carrito"
+                    );
+
+                    return;
+                }
+                carrito.push(item);
+
+                actualizarTablaCarrito();
+
+                actualizarBadge();
+                calcularTotalCarrito();
+                limpiarCampos();
+
+                alertify.success("Producto agregado");
+            }
+            function actualizarTablaCarrito(){
+
+    let html = "";
+
+    carrito.forEach((p,index)=>{
+
+        let subtotal = p.precio * p.cantidad;
+
+        console.log("Producto:", p);
+
+        html += `
+<tr>
+    <td>\${p.nombre}</td>
+    <td>S/ \${Number(p.precio).toFixed(2)}</td>
+    <td>\${p.cantidad}</td>
+    <td>S/ \${subtotal.toFixed(2)}</td>
+
+    <td>
+        <button
+            type="button"
+            class="btn btn-success btn-sm"
+            onclick="editarItem(\${index})">
+            <i class="fa fa-pen"></i>
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            onclick="eliminarItem(\${index})">
+            <i class="fa fa-trash"></i>
+        </button>
+    </td>
+</tr>
+`;
+    });
+
+    console.log(html);
+
+    document.getElementById("tbodyCarrito").innerHTML = html;
+}
+
+function eliminarItem(index){
+
+    carrito.splice(index,1);
+
+    actualizarTablaCarrito();
+
+    actualizarBadge();
+
+    calcularTotalCarrito();
+}
+            function editarItem(index){
+
+    let item = carrito[index];
+
+    console.log(item);
+
+    let select =
+        document.getElementById("producto");
+
+    select.value =
+        String(item.idProducto);
+
+    select.dispatchEvent(
+        new Event("change")
+    );
+
+    document.getElementById("cantidad").value =
+        item.cantidad;
+
+    calcularVenta();
+
+    carrito.splice(index,1);
+
+    actualizarTablaCarrito();
+
+    actualizarBadge();
+    calcularTotalCarrito();
+    alertify.success(
+        "Producto cargado para edición"
+    );
+}
+            function vaciarCarrito(){
+
+    carrito = [];
+
+    actualizarTablaCarrito();
+
+    actualizarBadge();
+
+    document.getElementById("total").value = "";
+
+    document.getElementById("contenedorCarrito")
+            .style.display = "none";
+
+    alertify.success("Carrito vaciado");
+}
+            document.querySelector("form").addEventListener("submit", function(){
+
+                document.getElementById("detalleJson").value =
+                    JSON.stringify(carrito);
+
+            });
+            function mostrarCarrito(){
+
+    let contenedor =
+        document.getElementById("contenedorCarrito");
+
+    if(carrito.length === 0){
+
+        alertify.warning("El carrito está vacío");
+        return;
+    }
+
+    contenedor.style.display = "block";
+
+    contenedor.scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+function actualizarBadge(){
+
+    let badge =
+        document.getElementById("badgeCarrito");
+
+    badge.textContent = carrito.length;
+
+    badge.style.display =
+        carrito.length > 0
+        ? "inline-block"
+        : "none";
+}
+function limpiarCampos(){
+
+    document.getElementById("producto").selectedIndex = 0;
+
+    document.getElementById("stock").value = "";
+
+    document.getElementById("cantidad").value = "";
+
+    document.getElementById("precio").value = "";
+
+    document.getElementById("subtotalProducto").value = "";
+}
+document.querySelector("form")
+.addEventListener("submit", function(e){
+
+    if(carrito.length === 0){
+
+        e.preventDefault();
+
+        alertify.error(
+            "Debe agregar al menos un producto"
+        );
+
+        return;
+    }
+
+    document.getElementById("detalleJson").value =
+        JSON.stringify(carrito);
+});
+
+        </script>
 
         
     </body>

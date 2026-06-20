@@ -172,7 +172,7 @@ public class ventasdao {
         double total = 0;
 
         try {
-
+            cn = conexionvet_bd.probarConexion();
             String sql
                     = "SELECT IFNULL(SUM(total),0) total FROM ventas";
 
