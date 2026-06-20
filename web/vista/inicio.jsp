@@ -12,20 +12,17 @@
 %>
 <!-- rango d semana 15-06-26 -->
 <%@ page import="java.time.LocalDate" %>
-                    <%
-                        LocalDate inicioSemana
-                                = (LocalDate) request.getAttribute("inicioSemana");
-                        LocalDate finSemana
-                                = (LocalDate) request.getAttribute("finSemana");
-                        LocalDate semanaAnterior
-                                = inicioSemana.minusWeeks(1);
-                        LocalDate semanaSiguiente
-                                = inicioSemana.plusWeeks(1);
-                    %>
 
-                    <%
-                        java.time.LocalDate lunes = inicioSemana;
-                    %>
+<%
+    LocalDate inicioSemana = (LocalDate) request.getAttribute("inicioSemana");
+    LocalDate finSemana = (LocalDate) request.getAttribute("finSemana");
+    LocalDate semanaAnterior  = inicioSemana.minusWeeks(1);
+    LocalDate semanaSiguiente = inicioSemana.plusWeeks(1);
+%>
+
+<%
+    java.time.LocalDate lunes = inicioSemana;
+%>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -50,13 +47,14 @@
         <!-- CSS -->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/escliente.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/contenidocliente.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/esbusqueda.css">
     </head>
     <body>       
         <%
             request.setAttribute("paginaActual", "inicio");
         %>
         <jsp:include page="../componentes/encabezado.jsp" />
-        <main class="container mt-5 pt-4 contenido-cli" style="margin-top: 180px; margin-bottom: 150px;">
+        <main class="container mt-5 pt-4 contenido-cli" style="margin-top: 180px; margin-bottom: 50px;">
             <div class="container-fluid">
                 <div class="bien-mensaje-vet">
                     <h1 class="text-start titulo-vet fs-2 mb-2" style="color: #333;">¡Hola, 
@@ -66,18 +64,29 @@
                     <p class="text-muted mb-4">¿Cómo podemos ayudar a tu mascota hoy?</p>
                 </div>
                 <div class="buscarmas-vet">
-                    <form class="d-flex mb-4" action="controladorbuscar" method="GET" >
-                        <input type="hidden" name="buscar" value="lupa">
-                        <div class="input-group">
-                            <button class="input-group-text border-end-0" style="background: #ffffff !important; color: rgb(210, 213, 217);" type="submit">
+                    <form class="mb-4" id="formBuscarMascota">
+                        <div class="input-group buscador-mascota">
+                            <span class="input-group-text">
                                 <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
-                            <input class="form-control border-start-0" name="termino" type="search" placeholder="Buscar mascota...">
+                            </span>
 
+                            <input
+                                class="form-control"
+                                id="txtBuscarMascota"
+                                type="search"
+                                placeholder="Buscar mascota por nombre..."
+                            >
+
+                            <button class="btn btn-buscar-mascota" type="submit">
+                                Buscar
+                            </button>
                         </div>
                     </form>
                 </div>
-
+                <div id="resultados" class="tarjetas-busqueda-vet mt-5" style="display:none;">
+                    <div class="row row-cols-1 row-cols-md-3 g-4" id="contenedorResultados">
+                    </div>
+                </div>        
                 <div class="tarjetas-servicio-vet mt-5 ">
                     <h2 class="text-start titulo-vet fs-3 mb-4" style="color: #333 !important;">Servicios Veterinarios:</h2>
                     <div class="tarjeta mb-5">
@@ -193,11 +202,13 @@
                 </div>
                 <div class="tarjeta-horario-vet mt-5">
                     <h2 class="text-start titulo-vet fs-3 mb-4" style="color: #333 !important;">
-                        Agenda del Médico Veterinario:</h2>         
+                        Agenda del Médico Veterinario:</h2>    
+                    
+                    
                 </div>    
                     <!-- calendar vis 11-06-26 -->
                     
-                    <div class="agenda-veterinario">
+                    <div class="agenda-veterinario " style="margin-bottom: 60px;">
 
                         <div class="agenda-header">
                             <a class="btn-nav"
@@ -490,7 +501,18 @@
                 </div>        
 
             </div>        
-
+            <div id="datosMascotas" style="display:none;">
+                <c:forEach var="mascota" items="${misMascotas}">
+                    <div class="mascota-data"
+                         data-id="${mascota.idMascota}"
+                         data-nombre="${mascota.nombre}"
+                         data-especie="${mascota.especie}"
+                         data-raza="${mascota.raza}"
+                         data-sexo="${mascota.sexo}">
+                    </div>
+                </c:forEach>
+            </div>  
+                                
         </main>
         <!-- Bootstrap y alertify -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -555,7 +577,121 @@
                 });
             });
         </script>
-        
+        <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const form = document.getElementById("formBuscarMascota");
+            const txtBuscar = document.getElementById("txtBuscarMascota");
+            const contenedor = document.getElementById("contenedorResultados");
+            const resultados = document.getElementById("resultados");
+
+            form.addEventListener("submit", function(e) {
+
+                e.preventDefault();
+
+                const termino = txtBuscar.value.trim().toLowerCase();
+
+                contenedor.innerHTML = "";
+
+                if (termino === "") {
+                    resultados.style.display = "none";
+                    return;
+                }
+
+                const mascotas = document.querySelectorAll(".mascota-data");
+
+                let encontrados = 0;
+
+                mascotas.forEach(m => {
+
+                    const nombre = (m.dataset.nombre || "").toLowerCase();
+
+                    if (nombre.includes(termino)) {
+
+                        encontrados++;
+
+                        const sexoTexto =
+                            m.dataset.sexo === "M"
+                                ? "Macho"
+                                : m.dataset.sexo === "F"
+                                    ? "Hembra"
+                                    : m.dataset.sexo;
+
+                        contenedor.innerHTML +=
+                            '<div class="col">' +
+                                '<div class="card tarjeta-mascota-buscada border-0">' +
+
+                                    '<div class="card-body">' +
+
+                                        '<div class="d-flex align-items-center mb-3">' +
+
+                                            '<div class="avatar-busqueda">' +
+                                                '<i class="fa-solid fa-paw"></i>' +
+                                            '</div>' +
+
+                                            '<div class="ms-3">' +
+                                                '<h5 class="mb-0 mascota-nombre">' +
+                                                    m.dataset.nombre +
+                                                '</h5>' +
+
+                                                '<small class="text-muted">' +
+                                                    'Mascota registrada' +
+                                                '</small>' +
+                                            '</div>' +
+
+                                        '</div>' +
+
+                                        '<div class="datos-mascota">' +
+
+                                            '<p>' +
+                                                '<i class="fa-solid fa-dog"></i>' +
+                                                '<strong> Especie:</strong> ' +
+                                                (m.dataset.especie || 'No registrada') +
+                                            '</p>' +
+
+                                            '<p>' +
+                                                '<i class="fa-solid fa-paw"></i>' +
+                                                '<strong> Raza:</strong> ' +
+                                                (m.dataset.raza || 'No registrada') +
+                                            '</p>' +
+
+                                            '<p>' +
+                                                '<i class="fa-solid fa-venus-mars"></i>' +
+                                                '<strong> Sexo:</strong> ' +
+                                                sexoTexto +
+                                            '</p>' +
+
+                                        '</div>' +
+
+                                        '<a href="controladorpagina?pagina=miperfil" ' +
+                                           'class="btn btn-ver-mascota">' +
+                                            'Ver más ' +
+                                            '<i class="fa-solid fa-arrow-right ms-1"></i>' +
+                                        '</a>' +
+
+                                    '</div>' +
+
+                                '</div>' +
+                            '</div>';
+                    }
+                });
+
+                if (encontrados === 0) {
+
+                    contenedor.innerHTML =
+                        '<div class="col-12">' +
+                            '<div class="alert alert-warning text-center">' +
+                                '<i class="fa-solid fa-circle-exclamation"></i> ' +
+                                'No se encontró ninguna mascota con ese nombre.' +
+                            '</div>' +
+                        '</div>';
+                }
+
+                resultados.style.display = "block";
+            });
+
+        });
+        </script>
         <jsp:include page="/componentes/mensajes.jsp" /> 
         <jsp:include page="/componentes/personalizar.jsp" /> 
 

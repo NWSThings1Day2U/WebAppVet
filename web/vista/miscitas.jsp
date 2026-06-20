@@ -32,7 +32,7 @@
         %>
         <jsp:include page="../componentes/encabezado.jsp" />
 
-        <main class="container mt-5 pt-4 contenido-cli" style="margin-top: 180px; margin-bottom: 150px;">
+        <main class="container mt-5 pt-4 contenido-cli" style="margin-top: 180px; margin-bottom: 50px;">
             <div class="container-fluid">
                 <div class="bien-mensaje-vet">
                     <h2 class="text-center titulo-vet">Mis Citas</h2>

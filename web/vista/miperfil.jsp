@@ -40,7 +40,7 @@
         %>
         <!-- header -->
         <jsp:include page="../componentes/encabezado.jsp" />
-        <main class="container mt-5 pt-4" style="margin-top: 180px; margin-bottom: 150px;"> 
+        <main class="container mt-5 pt-4" style="margin-top: 180px; margin-bottom: 70px;"> 
             <div class="bien-mensaje-vet">
                 <h2 class="text-center titulo-vet">Mi Perfil</h2>
                 <p class="text-center p-vet">Administra tu información personal y mascotas</p>
