@@ -578,8 +578,9 @@
                         tabindex="-1">
                        <div class="modal-dialog">
                            <div class="modal-content">
-                               <div class="modal-header">
-                                   <h5 class="modal-title">
+                               <div class="modal-header" style="background:linear-gradient(135deg, #d97706,#f59e0b );color:white;"> 
+                                       
+                                   <h5 class="modal-title" style="color:#2d3748; font-weight:700;">
                                        Detalle de la cita
                                    </h5>
                                    <button

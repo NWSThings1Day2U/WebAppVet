@@ -181,7 +181,7 @@
                                         style="display: ${not empty sessionScope.error ? 'none' : 'block'};">
                                     <i class="fa-solid fa-pencil me-2"></i> Editar información
                                 </button>
-
+                                <div class="d-flex gap-2 w-100 mb-2">    
                                 <button type="submit" id="btnGuardar" class="btn btn-vet-principal w-100 mb-2" 
                                         style="display: ${not empty sessionScope.error ? 'block' : 'none'};">
                                     <i class="fa-solid fa-floppy-disk me-2"></i> Guardar cambios
@@ -191,7 +191,7 @@
                                         style="display:none;">
                                     <i class="fa-solid fa-xmark me-2"></i> Cancelar
                                 </button>
-                                    
+                                </div>
                             </form>
                             <script>
                                 document.getElementById('btnEditar').addEventListener('click', function () {

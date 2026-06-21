@@ -390,19 +390,7 @@ box-shadow:
 0 20px 50px rgba(0,0,0,.15);
 }
 
-.modal-header{
-background:linear-gradient(
-135deg,
-#d97706,
-#f59e0b
-);
-color:white;
-}
 
-.modal-title{
-color:#2d3748;
-font-weight:700;
-}
 
 .card-resumen{
 position:relative;
