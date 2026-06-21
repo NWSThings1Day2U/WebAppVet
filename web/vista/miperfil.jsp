@@ -9,7 +9,12 @@
     List<mascotas> listaMascotas = (List<mascotas>) request.getAttribute("listaMascotas");
     
 %>
+<%
+    Boolean editando = (Boolean) session.getAttribute("perfil_editando");
+    String errorPerfil = (String) session.getAttribute("perfil_error");
 
+    boolean modoEdicion = (editando != null && editando);
+%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -64,7 +69,7 @@
                         
                         <div id="contenedorImagen"
                              class="text-center mt-3"
-                             style="display:none;">
+                             style="display: <%= modoEdicion ? "block" : "none" %>;">
                             <label class="form-label fw-bold">
                                 Cambiar foto de perfil
                             </label>
@@ -103,7 +108,7 @@
                                     <div class="col-md-6">
                                         <label class="form-label">Nombre de Usuario: </label>
                                         <input type="text" class="form-control " name="nombreUsuario" 
-                                               value="${datosUsuario.nombreusuario}"  ${not empty sessionScope.error ? '' : 'disabled'} disabled>
+                                               value="${datosUsuario.nombreusuario}"  <%= modoEdicion ? "" : "disabled" %> >
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">ID: </label>
@@ -116,7 +121,7 @@
                                         <label class="form-label">Nombre completo: </label>
                                         <input type="text" class="form-control  editable" name="nombreCompleto" 
                                                value="${datosUsuario.nombrecompleto}" required 
-                                               ${not empty sessionScope.error ? '' : 'disabled'}>
+                                               <%= modoEdicion ? "" : "disabled" %>>
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">DNI: </label>
@@ -129,25 +134,25 @@
                                         <label class="form-label">Nro. Telefónico: </label>
                                         <input type="text" class="form-control editable" name="telefono" 
                                                value="${datosUsuario.telefono}" required 
-                                               ${not empty sessionScope.error ? '' : 'disabled'} pattern="9\d{8}" maxlength="9" 
+                                               <%= modoEdicion ? "" : "disabled" %> pattern="9\d{8}" maxlength="9" 
                                                title="El teléfono debe empezar con 9 y tener 9 dígitos numéricos.">
                                     </div>
                                     <div class="col-md-6">
                                         <label class="form-label">Correo Electrónico: </label>
                                         <input type="email" class="form-control editable" name="correo" 
                                                value="${datosUsuario.correo}" required 
-                                               ${not empty sessionScope.error ? '' : 'disabled'} pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                               <%= modoEdicion ? "" : "disabled" %> pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
                                                title="Ingrese un correo electrónico válido (ejemplo@dominio.com)">
                                     </div>
                                 </div>
 
-                                <div id="seccionPassword" style="display: ${not empty sessionScope.error ? 'block' : 'none'};">
+                                <div id="seccionPassword" style="display: <%= modoEdicion ? "block" : "none" %>;">
                                     <div class="row mb-4">
                                         <div class="col-md-6">
                                             <label class="form-label" for="reg_pass">Nueva Contraseña: </label>
                                             <div class="input-group">
                                                 <input type="password" class="form-control editable" name="contrasena"  id="reg_pass" 
-                                                       minlength="6"  ${not empty sessionScope.error ? '' : 'disabled'}>
+                                                       minlength="6"  <%= modoEdicion ? "" : "disabled" %> >
                                                 <span class="input-group-text" id="togglePassword1" style="border-left: none; cursor: pointer;">
                                                     <i class="fa-regular fa-eye" id="eyeIcon1"></i>
                                                 </span>
@@ -157,7 +162,7 @@
                                             <label class="form-label" for="reg_pass_conf" >Confirmar Contraseña: </label>
                                             <div class="input-group">
                                                 <input type="password" class="form-control editable" name="confirmar_contrasena"  id="reg_pass_conf" 
-                                                       minlength="6"  ${not empty sessionScope.error ? '' : 'disabled'}>
+                                                       minlength="6" <%= modoEdicion ? "" : "disabled" %> >
                                                 <span class="input-group-text" id="togglePassword2" style="border-left: none; cursor: pointer;">
                                                     <i class="fa-regular fa-eye" id="eyeIcon2"></i>
                                                 </span>
@@ -167,19 +172,20 @@
                                 </div>
 
                                 <button type="button" id="btnEditar" class="btn btn-vet-principal w-100 mb-2" 
-                                        style="display: ${not empty sessionScope.error ? 'none' : 'block'};">
+                                        style="display: <%= modoEdicion ? "none" : "block" %>;">
                                     <i class="fa-solid fa-pencil me-2"></i> Editar información
                                 </button>
 
-                                <button type="submit" id="btnGuardar" class="btn btn-vet-principal w-100 mb-2" 
-                                        style="display: ${not empty sessionScope.error ? 'block' : 'none'};">
-                                    <i class="fa-solid fa-floppy-disk me-2"></i> Guardar cambios
-                                </button>
-                                    <!-- cambio img perfil 11-06-26 -->
-                                <button type="button" id="btnCancelar" class="btn btn-outline-secondary w-100 mb-2"
-                                        style="display:none;">
-                                    <i class="fa-solid fa-xmark me-2"></i> Cancelar
-                                </button>
+                                <div class="d-flex gap-2 w-100 mb-2">
+                                    <button type="submit" id="btnGuardar" class="btn btn-vet-principal w-100" style="display: <%= modoEdicion ? "block" : "none" %>;"> 
+                                        <i class="fa-solid fa-floppy-disk me-2"></i> Guardar cambios 
+                                    </button> 
+                                    <!-- cambio img perfil 11-06-26 --> 
+                                    <button type="button" id="btnCancelar" class="btn btn-outline-secondary w-100" style="display: <%= modoEdicion ? "block" : "none" %>;"> 
+                                        <i class="fa-solid fa-xmark me-2"></i> Cancelar 
+                                    </button>
+                                </div>
+
                                     
                             </form>
                             <script>                              
@@ -463,5 +469,8 @@
                 }
             });
         </script>
+        <%
+    session.removeAttribute("perfil_error");
+%>
     </body>
 </html>

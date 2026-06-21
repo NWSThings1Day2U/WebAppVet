@@ -221,7 +221,20 @@ public class controladorcitas extends HttpServlet {
                 }
             }
             String motivo = request.getParameter("txtMotivo");
+            if (motivo == null || motivo.trim().length() < 10) {
 
+                request.getSession().setAttribute(
+                    "mensajeError",
+                    "El motivo de la visita debe tener al menos 10 caracteres."
+                );
+
+                response.sendRedirect(
+                    request.getContextPath()
+                    + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
             citas c = new citas();
             c.setIdCliente(idCliente);
             c.setIdMascota(idMascota);
@@ -633,26 +646,157 @@ public class controladorcitas extends HttpServlet {
                 redireccionarSegunRol(request, response, rol);
                 return;
             }
+            
+            String nombre = request.getParameter("nombre");
+            String dni = request.getParameter("dni");
+            String correo = request.getParameter("correo");
+            String telefono = request.getParameter("telefono");
+            
+            if(nombre == null || !nombre.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,100}$")){
+            session.setAttribute("mensajeError", "Nombre inválido.");
+            redireccionarSegunRol(request, response, rol);
+            return;
+            }
 
+            if(dni == null || !dni.matches("\\d{8}")){
+                session.setAttribute("mensajeError", "DNI inválido.");
+                redireccionarSegunRol(request, response, rol);
+                return;
+            }
+
+            if(telefono == null || !telefono.matches("9\\d{8}")){
+                session.setAttribute("mensajeError", "Teléfono inválido.");
+                redireccionarSegunRol(request, response, rol);
+                return;
+            }
+
+            if(correo == null || !correo.trim().matches("^[A-Za-z0-9+_.-]+@(.+)$")){ // Mejorado con regex básico
+                session.setAttribute("mensajeError", "Correo inválido.");
+                redireccionarSegunRol(request, response, rol);
+                return;
+            }
+            
             clientes cli = new clientes();
-            cli.setNombreCompleto(request.getParameter("nombre"));
-            cli.setDni(request.getParameter("dni"));
-            cli.setCorreo(request.getParameter("correo"));
-            cli.setTelefono(request.getParameter("telefono"));
+            cli.setNombreCompleto(nombre);
+            cli.setDni(dni);
+            cli.setCorreo(correo);
+            cli.setTelefono(telefono);
             
             if (idUsuarioSession != null) {
                 cli.setIdClienteResponsable(idUsuarioSession);
             }
-            mascotas mas = new mascotas();
-            mas.setNombre(request.getParameter("mascota"));
-            mas.setEspecie(request.getParameter("txtEspecie"));
-            mas.setRaza(request.getParameter("txtRaza"));
+            
+            String nombreMascota = request.getParameter("mascota");
+            String especie = request.getParameter("txtEspecie");
+            String raza = request.getParameter("txtRaza");
             String pesoStr = request.getParameter("txtPeso");
-            double peso = (pesoStr != null && !pesoStr.isEmpty()) ? Double.parseDouble(pesoStr) : 0.0;
-            mas.setPeso(peso);
-            mas.setFechaNacimiento(request.getParameter("txtFechaNac"));
-            mas.setSexo(request.getParameter("txtSexo"));
+            String fechaNacimiento = request.getParameter("txtFechaNac");
+            String sexo = request.getParameter("txtSexo");
+            
+            if(nombreMascota == null || !nombreMascota.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]{2,50}$")){
 
+                 session.setAttribute(
+                     "mensajeError",
+                     "Nombre de mascota inválido."
+                 );
+
+                 redireccionarSegunRol(request,response,rol);
+                 return;
+             }
+            if(especie == null ||
+                !especie.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,50}$")){
+
+                 session.setAttribute(
+                     "mensajeError",
+                     "La especie ingresada es inválida."
+                 );
+
+                 redireccionarSegunRol(request,response,rol);
+                 return;
+             }
+            
+            if(raza == null || !raza.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]{2,50}$")){
+
+                 session.setAttribute(
+                     "mensajeError",
+                     "La raza ingresada es inválida."
+                 );
+
+                 redireccionarSegunRol(request,response,rol);
+                 return;
+             }
+            
+            double peso;
+
+            try {
+
+                peso = Double.parseDouble(pesoStr);
+
+                if(peso < 0.1 || peso > 150){
+
+                    session.setAttribute(
+                        "mensajeError",
+                        "Peso fuera del rango permitido."
+                    );
+
+                    redireccionarSegunRol(request,response,rol);
+                    return;
+                }
+
+            } catch(Exception e){
+
+                session.setAttribute(
+                    "mensajeError",
+                    "Peso inválido."
+                );
+
+                redireccionarSegunRol(request,response,rol);
+                return;
+            }
+            
+            if(fechaNacimiento == null || fechaNacimiento.isEmpty()){
+
+                session.setAttribute(
+                    "mensajeError",
+                    "Debe seleccionar una fecha de nacimiento."
+                );
+
+                redireccionarSegunRol(request,response,rol);
+                return;
+            }
+
+            LocalDate fechaNac = LocalDate.parse(fechaNacimiento);
+
+            if(fechaNac.isAfter(LocalDate.now())){
+
+                session.setAttribute(
+                    "mensajeError",
+                    "La fecha de nacimiento no puede ser futura."
+                );
+
+                redireccionarSegunRol(request,response,rol);
+                return;
+            }
+            
+            if(!"M".equals(sexo) && !"F".equals(sexo)){
+
+                session.setAttribute(
+                    "mensajeError",
+                    "Sexo inválido."
+                );
+
+                redireccionarSegunRol(request,response,rol);
+                return;
+            }
+            
+            mascotas mas = new mascotas();
+
+            mas.setNombre(nombreMascota);
+            mas.setEspecie(especie);
+            mas.setRaza(raza);
+            mas.setPeso(peso);
+            mas.setFechaNacimiento(fechaNacimiento);
+            mas.setSexo(sexo);
             citas cita = new citas();
             cita.setIdTipo(Integer.parseInt(request.getParameter("txtIdTipo")));
             cita.setFecha(fecha);

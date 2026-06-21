@@ -201,11 +201,11 @@ public class controladorperfil extends HttpServlet {
             }
 
             if (msgError != null) {
-                session.setAttribute("error", msgError);
-                session.setAttribute("editando", true);
-                response.sendRedirect("controladorperfil");
-                return;
-            }
+    session.setAttribute("perfil_editando", true);
+    session.setAttribute("perfil_error", msgError);
+    response.sendRedirect("controladorperfil");
+    return;
+}
 
             if (nomUsu == null) {
                 nomUsu = (String) session.getAttribute("usuario");
@@ -216,8 +216,11 @@ public class controladorperfil extends HttpServlet {
 
             if (ok) {
                 session.setAttribute("usuario", nomUsu);
-                session.setAttribute("success", "¡Perfil actualizado con éxito!");
-                session.setAttribute("imagen",nuevaImagen);
+session.setAttribute("success", "¡Perfil actualizado con éxito!");
+session.setAttribute("imagen", nuevaImagen);
+
+session.removeAttribute("perfil_editando");
+session.removeAttribute("perfil_error");
             } else {
                 session.setAttribute("error", "Error al guardar: El correo ya podría estar en uso.");
             }

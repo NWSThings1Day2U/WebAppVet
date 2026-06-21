@@ -31,8 +31,10 @@
                             <div class="col-md-6">
                                 <label class="form-label" for="nombrecompleto">Nombre Completo: </label>
                                 <input type="text" class="form-control" name="nombre" required id="nombrecompleto"
-                                       pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" placeholder="Ingresa tu nombre completo">
-                                <div class="invalid-feedback">Solo letras.</div>
+                                       pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]{3,100}$" placeholder="Ingresa tu nombre completo">
+                                <div class="invalid-feedback">
+                                    Ingrese entre 3 y 100 letras.
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label" for="correo">Correo Electrónico: </label> 
@@ -69,24 +71,38 @@
                             <div class="col-md-6">
                                 <label class="form-label" for="nombremascota">Nombre de Mascota: </label>
                                 <input type="text" class="form-control" name="mascota" required id="nombremascota"
-                                       pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" placeholder="Ingresa nombre de mascota">
-                                <div class="invalid-feedback">Solo letras.</div>
+                                       pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]{2,50}$" placeholder="Ingresa nombre de mascota">
+                                <div class="invalid-feedback">
+                                    Debe contener entre 2 y 50 caracteres.
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Especie</label>
-                                <input type="text" name="txtEspecie" class="form-control" placeholder="Ingresa especie" required>
+                                <input type="text" name="txtEspecie" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$" class="form-control" minlength="3" maxlength="50" placeholder="Ingresa especie" required>
+                                <div class="invalid-feedback">
+                                    Solo letras. Mínimo 3 caracteres.
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Raza</label>
-                                <input type="text" name="txtRaza" class="form-control" placeholder="Ingresa raza" required>
+                                <input type="text" name="txtRaza" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9 ]+$" class="form-control" minlength="2" maxlength="50" placeholder="Ingresa raza" required>
+                                <div class="invalid-feedback">
+                                    Ingrese una raza válida.
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Peso (kg)</label>
-                                <input type="number" step="0.01" name="txtPeso" class="form-control" placeholder="Ingresa peso" min="0.1" required>
+                                <input type="number" step="0.01" name="txtPeso" class="form-control" placeholder="Ingresa peso" min="0.1" max="150" required>
+                                <div class="invalid-feedback">
+                                    El peso debe estar entre 0.1 y 150 kg.
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Fecha de nacimiento</label>
                                 <input type="date" name="txtFechaNac" class="form-control" max="<%=java.time.LocalDate.now()%>" required>
+                                <div class="invalid-feedback">
+                                    Seleccione una fecha válida.
+                                </div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Sexo</label>
@@ -95,6 +111,9 @@
                                     <option value="F">Hembra</option>
                                     <option value="M">Macho</option>
                                 </select>
+                                    <div class="invalid-feedback">
+                                        Seleccione el sexo de la mascota.
+                                    </div>
                             </div>
                             <div class="col-12 mt-3 text-start">
                                 <button class="btn btn-vet-secundario1 btn-prev-step px-4" type="button" data-step="2">Anterior</button>
@@ -132,7 +151,10 @@
                             </div>
                             <div class="col-12 mb-3">
                                 <label class="form-label">Motivo de la Visita</label>
-                                <textarea name="txtMotivo" class="form-control" rows="2" required></textarea>
+                                <textarea name="txtMotivo" class="form-control" rows="2" minlength="10" maxlength="300" required></textarea>
+                                <div class="invalid-feedback">
+                                    El motivo debe tener entre 10 y 300 caracteres.
+                                </div>
                             </div>
                             <div class="col-12 mb-3">
                                 <div class="form-check">
@@ -163,126 +185,165 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('formClienteNuevo');
-        const steps = document.querySelectorAll('.stepper-step');
-        let currentStepIndex = 0;
 
-        function updateStepper(targetIndex) {
-            steps.forEach((step, index) => {
-                if (index < targetIndex) {
-                    step.classList.remove('active');
-                    step.classList.add('completed');
-                } else if (index === targetIndex) {
-                    step.classList.add('active');
-                    step.classList.remove('completed');
-                } else {
-                    step.classList.remove('active', 'completed');
-                }
-            });
-            currentStepIndex = targetIndex;
-        }
+    const form = document.getElementById('formClienteNuevo');
+    const steps = Array.from(document.querySelectorAll('.stepper-step'));
 
-        // Validar campos del contenedor actual antes de pasar al siguiente
-        function validarCamposDelPaso(stepIndex) {
-            const contenedorPaso = document.getElementById(`step-${stepIndex + 1}`);
-            const inputs = contenedorPaso.querySelectorAll('input, select, textarea');
-            let pasoValido = true;
+    let currentStep = 0;
 
-            inputs.forEach(input => {
-                if (!input.checkValidity()) {
-                    pasoValido = false;
-                    input.classList.add('is-invalid');
-                } else {
-                    input.classList.remove('is-invalid');
-                    input.classList.add('is-valid');
-                }
-            });
+    function updateStepper(targetIndex) {
 
-            return pasoValido;
-        }
+        steps.forEach((step, index) => {
 
-        // Manejo del botón Siguiente con Alerta de paso completado
-        document.querySelectorAll('.btn-next-step').forEach(button => {
-            button.addEventListener('click', () => {
-                if (validarCamposDelPaso(currentStepIndex)) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '¡Paso completado!',
-                        text: 'Datos validados correctamente. Continuemos.',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
+            step.classList.remove('active', 'completed');
 
-                    if (currentStepIndex < steps.length - 1) {
-                        updateStepper(currentStepIndex + 1);
-                    }
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Campos incompletos',
-                        text: 'Por favor, rellena todos los campos obligatorios correctamente antes de continuar.',
-                    });
-                }
-            });
-        });
-
-        // Manejo del botón Anterior
-        document.querySelectorAll('.btn-prev-step').forEach(button => {
-            button.addEventListener('click', () => {
-                if (currentStepIndex > 0) {
-                    updateStepper(currentStepIndex - 1);
-                }
-            });
-        });
-
-        // Procesar el botón final "Enviar"
-        document.getElementById('btnEnviarFormulario').addEventListener('click', function(e) {
-            e.preventDefault();
-                let formularioValido = true;
-                let pasoConError = -1;
-            for (let i = 0; i < steps.length; i++) {
-                if (!validarCamposDelPaso(i)) {
-                    formularioValido = false;
-                    if (pasoConError === -1) {
-                        pasoConError = i; 
-                    }
-                }
+            if (index < targetIndex) {
+                step.classList.add('completed');
             }
-            if (!validarCamposDelPaso(2)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error en paso 3',
-                    text: 'Por favor, selecciona una fecha, hora y acepta los términos.',
-                });
+
+            if (index === targetIndex) {
+                step.classList.add('active');
+            }
+        });
+
+        currentStep = targetIndex;
+    }
+
+    function validarPaso(stepIndex) {
+
+        const step = steps[stepIndex];
+        const fields = step.querySelectorAll('input, select, textarea');
+
+        let valido = true;
+
+        fields.forEach(field => {
+
+            // checkbox obligatorio (caso especial)
+            if (field.type === "checkbox") {
+                if (!field.checked) {
+                    field.classList.add("is-invalid");
+                    valido = false;
+                } else {
+                    field.classList.remove("is-invalid");
+                }
                 return;
             }
-            if (!formularioValido) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Campos incompletos o inválidos',
-                        text: 'Por favor, revisa todos los pasos del formulario. Hay datos obligatorios vacíos o mal formateados.',
-                    });
 
-                    updateStepper(pasoConError);
-                    return;
-                }
-            // Alerta de confirmación final antes del submit
+            // validación HTML5
+            if (!field.checkValidity()) {
+                field.classList.add("is-invalid");
+                field.classList.remove("is-valid");
+                valido = false;
+            } else {
+                field.classList.remove("is-invalid");
+                field.classList.add("is-valid");
+            }
+        });
+
+        return valido;
+    }
+
+    document.querySelectorAll('.btn-next-step').forEach((btn) => {
+
+        btn.addEventListener('click', () => {
+
+            const stepIndex = currentStep;
+
+            if (!validarPaso(stepIndex)) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Campos incompletos',
+                    text: 'Completa correctamente todos los campos antes de continuar.'
+                });
+
+                return;
+            }
+
             Swal.fire({
-                title: '¿Confirmas el registro?',
-                text: "Se guardarán los datos del nuevo dueño, su mascota y la cita programada.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#198754',
-                cancelButtonColor: '#dc3545',
-                confirmButtonText: 'Sí, registrar todo',
-                cancelButtonText: 'Revisar datos'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit(); 
-                }
+                icon: 'success',
+                title: 'Paso completado',
+                timer: 1200,
+                showConfirmButton: false
             });
+
+            if (stepIndex < steps.length - 1) {
+                updateStepper(stepIndex + 1);
+            }
         });
     });
+
+    document.querySelectorAll('.btn-prev-step').forEach((btn) => {
+
+        btn.addEventListener('click', () => {
+
+            if (currentStep > 0) {
+                updateStepper(currentStep - 1);
+            }
+        });
+    });
+
+    document.getElementById('btnEnviarFormulario').addEventListener('click', (e) => {
+
+        e.preventDefault();
+
+        let todoValido = true;
+        let pasoError = -1;
+
+        // validar TODOS los pasos
+        steps.forEach((_, index) => {
+            if (!validarPaso(index)) {
+                todoValido = false;
+                if (pasoError === -1) pasoError = index;
+            }
+        });
+
+        // validación extra checkbox términos
+        const terms = document.getElementById("checkTerms");
+        if (!terms.checked) {
+            todoValido = false;
+            pasoError = 2;
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Términos no aceptados',
+                text: 'Debes aceptar los términos y condiciones.'
+            });
+
+            return;
+        }
+
+        if (!todoValido) {
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Formulario incompleto',
+                text: 'Revisa los campos en todos los pasos.'
+            });
+
+            updateStepper(pasoError);
+            return;
+        }
+
+        // confirmación final
+        Swal.fire({
+            title: '¿Confirmar registro?',
+            text: "Se registrará cliente, mascota y cita",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, registrar',
+            cancelButtonText: 'Revisar'
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+
+    // inicial
+    updateStepper(0);
+});
 </script>
 
 <script>

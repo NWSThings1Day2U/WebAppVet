@@ -18,7 +18,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <div class="container">
     <h3 class="mt-3 mb-5">Registro de Cita: <span class="text-success">Cliente Antiguo</span></h3>
-    <form action="${pageContext.request.contextPath}/controladorcitas" method="POST">
+    <form id="formClienteAntiguo" action="${pageContext.request.contextPath}/controladorcitas" method="POST">
         <input type="hidden" name="accion" value="guardar">
         <div class="mb-4">
             <div class="row">
@@ -77,7 +77,10 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Motivo de la Visita</label>
-                <textarea name="txtMotivo" class="form-control" rows="2" required></textarea>
+                <textarea id="txtMotivo" name="txtMotivo" class="form-control" minlength="10" maxlength="300" rows="2" required></textarea>
+                <div class="invalid-feedback">
+                    El motivo debe tener entre 10 y 300 caracteres.
+                </div>
             </div>
             <div class="col-12">
                 <div class="form-check">
@@ -179,6 +182,97 @@
             });
 
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const form = document.getElementById("formClienteAntiguo");
+
+    form.addEventListener("submit", function(e){
+
+        const cliente = document.getElementById("txtIdCliente").value;
+        const mascota = document.getElementById("txtIdMascota").value;
+        const fecha = document.getElementById("txtFecha").value;
+        const hora = document.getElementById("txtHora").value;
+        const motivo = document.getElementById("txtMotivo").value.trim();
+        const check = document.getElementById("checkTerms").checked;
+
+        if(cliente === ""){
+            e.preventDefault();
+
+            Swal.fire({
+                icon:'warning',
+                title:'Cliente requerido',
+                text:'Seleccione un cliente.'
+            });
+
+            return;
+        }
+
+        if(mascota === ""){
+            e.preventDefault();
+
+            Swal.fire({
+                icon:'warning',
+                title:'Mascota requerida',
+                text:'Seleccione una mascota.'
+            });
+
+            return;
+        }
+
+        if(fecha === ""){
+            e.preventDefault();
+
+            Swal.fire({
+                icon:'warning',
+                title:'Fecha requerida',
+                text:'Seleccione una fecha.'
+            });
+
+            return;
+        }
+
+        if(hora === ""){
+            e.preventDefault();
+
+            Swal.fire({
+                icon:'warning',
+                title:'Hora requerida',
+                text:'Seleccione una hora.'
+            });
+
+            return;
+        }
+
+        if(motivo.length < 10){
+            e.preventDefault();
+
+            Swal.fire({
+                icon:'warning',
+                title:'Motivo inválido',
+                text:'El motivo debe tener al menos 10 caracteres.'
+            });
+
+            return;
+        }
+
+        if(!check){
+            e.preventDefault();
+
+            Swal.fire({
+                icon:'warning',
+                title:'Términos y condiciones',
+                text:'Debe aceptar los términos y condiciones.'
+            });
+
+            return;
+        }
+    });
+
+});
+</script>
+
 <c:if test="${not empty sessionScope.mensajeExito}">
     <script>
         Swal.fire({
