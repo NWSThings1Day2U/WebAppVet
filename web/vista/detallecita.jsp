@@ -22,10 +22,18 @@
         <link class="rounded-circle" rel="icon" href="recursos/logoveet.png">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/contenidoadmin.css">
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/esadmin.css">
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/detallepag.css"/>
     </head>
     <body>
-        <div class="container my-5">
+        <%
+           request.setAttribute("paginaActual", "citas");
+        %>
+
+        <jsp:include page="../componentes/encabezado.jsp" />
+        <main class="container mt-5 pt-4 contenido-admin" style="margin-top: 180px; margin-bottom: 150px;"> 
+        <div class="container my-5 ">
             <div class="row justify-content-center">
                 <div class="col-md-10 col-lg-8">
                     
@@ -131,8 +139,8 @@
                     
                 </div>
             </div>
-        </div>
-
+        </div></main>
+        <jsp:include page="/componentes/pie.jsp"/>                    
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

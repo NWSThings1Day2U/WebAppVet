@@ -439,6 +439,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>        
         <jsp:include page="/componentes/mensajes.jsp" />
+        <jsp:include page="/componentes/pie.jsp"/>
         <% if(session.getAttribute("mensajeExito") != null) { %>
             <script>alertify.success('<%= session.getAttribute("mensajeExito") %>');</script>
         <% session.removeAttribute("mensajeExito"); } %>

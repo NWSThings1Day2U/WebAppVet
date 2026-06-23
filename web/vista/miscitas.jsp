@@ -410,7 +410,7 @@
         <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <jsp:include page="/componentes/mensajes.jsp" /> 
-
+        <jsp:include page="/componentes/pie.jsp"/>
         <script>
             document.addEventListener("DOMContentLoaded", () => {
                 const botonesFiltro = document.querySelectorAll(".btn-filtro");

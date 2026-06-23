@@ -43,6 +43,7 @@
 
         <!-- CSS -->
         <link rel="stylesheet" href="${pageContext.request.contextPath}/estilos/estilos.css">
+        
     </head>
     <body>
         <%
@@ -74,8 +75,7 @@
         </main>
 
 
-
-        
+        <jsp:include page="/componentes/pie.jsp"/>
 
         <!-- Bootstrap y alertify -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -83,6 +83,8 @@
         <!-- SweetAlert -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <jsp:include page="/componentes/mensajes.jsp" /> 
+        
+
         <%
             String msgError = (String) session.getAttribute("error");
             if (msgError != null) {
@@ -94,5 +96,6 @@
                 session.removeAttribute("error"); 
             }
         %>
+        
     </body>
 </html>

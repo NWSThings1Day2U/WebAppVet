@@ -68,6 +68,7 @@
         <!-- SweetAlert -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <jsp:include page="/componentes/mensajes.jsp" /> 
+        <jsp:include page="/componentes/pie.jsp"/>
         <script>
             const btnAntiguo = document.getElementById('antiguo');
             const btnNuevo = document.getElementById('nuevo');

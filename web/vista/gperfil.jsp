@@ -262,6 +262,7 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <jsp:include page="/componentes/mensajes.jsp" />
+        <jsp:include page="/componentes/pie.jsp"/>
         <script>
             function actualizarFecha() {
                 const fecha = new Date();
