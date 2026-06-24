@@ -260,8 +260,7 @@ public class clientedao {
                     + "FROM clientes "
                     + "ORDER BY id_cliente DESC "
                     + "LIMIT 5";
-            PreparedStatement ps
-                    = cn.prepareStatement(sql);
+            PreparedStatement ps = cn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
                 clientes c = new clientes();
@@ -296,15 +295,12 @@ public class clientedao {
                     + "GROUP BY c.nombre_completo "
                     + "ORDER BY gastado DESC "
                     + "LIMIT 5";
-            PreparedStatement ps
-                    = cn.prepareStatement(sql);
+            PreparedStatement ps = cn.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
                 Object fila[] = new Object[2];
-                fila[0]
-                        = rs.getString("nombre_completo");
-                fila[1]
-                        = rs.getDouble("gastado");
+                fila[0]  = rs.getString("nombre_completo");
+                fila[1]  = rs.getDouble("gastado");
                 lista.add(fila);
             }
         } catch (Exception e) {
@@ -315,6 +311,56 @@ public class clientedao {
         return lista;
     }   
     
+    public boolean existeDni(String dni){
+
+        String sql = "SELECT COUNT(*) FROM clientes WHERE dni = ?";
+        PreparedStatement ps = null;
+
+        try {
+            cn = conexionvet_bd.probarConexion();
+            ps = cn.prepareStatement(sql);
+            ps.setString(1, dni);
+
+            rs = ps.executeQuery();
+
+            if(rs.next()){
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+             try { if(ps != null) ps.close(); } catch(Exception e){}
+            closeResources();
+        }
+
+        return false;
+    }
+    public boolean existeCorreo(String correo){
+
+        String sql = "SELECT COUNT(*) FROM clientes WHERE correo = ?";
+        PreparedStatement ps = null;
+
+        try {
+            cn = conexionvet_bd.probarConexion();
+            ps = cn.prepareStatement(sql);
+            ps.setString(1, correo);
+
+            rs = ps.executeQuery();
+
+            if(rs.next()){
+                return rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+             try { if(ps != null) ps.close(); } catch(Exception e){}
+           closeResources();
+        }
+
+        return false;
+    }
 
     private void closeResources() {
         try {

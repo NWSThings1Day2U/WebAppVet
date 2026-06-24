@@ -17,6 +17,28 @@ public class controladorcliente extends HttpServlet {
     private final clientedao dao = new clientedao();
     private final String pagClientes = "/vista/gclientes.jsp"; 
     private final mascotadao mDao = new mascotadao();
+    
+    private String validarCliente(String nombre, String dni, String correo, String telefono){
+
+        if(nombre == null || nombre.trim().isEmpty() || !nombre.trim().matches("^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,100}$")){
+             return "Nombre inválido.";
+         }
+
+        if(dni == null || !dni.matches("^[0-9]{8}$")){
+            return "DNI inválido.";
+        }
+
+        if(correo == null || !correo.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")){
+            return "Correo inválido.";
+        }
+
+        if(telefono != null && !telefono.isEmpty() && !telefono.matches("^9\\d{8}$")){
+            return "Teléfono inválido.";
+        }
+
+        return null;
+    }
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -73,7 +95,24 @@ public class controladorcliente extends HttpServlet {
         String dni = request.getParameter("txtDni");
         String correo = request.getParameter("txtCorreo");
         String telefono = request.getParameter("txtTelefono");
+        String error = validarCliente(nombre, dni, correo, telefono);
 
+        if(error != null){
+            request.getSession().setAttribute("mensajeError", error);
+            response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
+            return;
+        }
+        if (dao.existeDni(dni)) {
+            request.getSession().setAttribute("mensajeError", "El DNI ya está registrado.");
+            response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
+            return;
+        }
+
+        if (dao.existeCorreo(correo)) {
+            request.getSession().setAttribute("mensajeError", "El correo ya está registrado.");
+            response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
+            return;
+        }
         clientes c = new clientes();
         String responsable = request.getParameter("idClienteResponsable");
 
@@ -108,7 +147,13 @@ public class controladorcliente extends HttpServlet {
             String correo = request.getParameter("txtCorreo");
             String telefono = request.getParameter("txtTelefono");
             int estado = Integer.parseInt(request.getParameter("txtEstado"));
+            String error = validarCliente(nombre, dni, correo, telefono);
 
+            if(error != null){
+                request.getSession().setAttribute("mensajeError", error);
+                response.sendRedirect(request.getContextPath() + "/controladorseccion?seccion=clientes");
+                return;
+            }
             clientes c = new clientes();
             c.setIdCliente(id);
             c.setNombreCompleto(nombre);

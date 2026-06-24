@@ -41,14 +41,157 @@ public class controladorinventario extends HttpServlet {
     private void guardar(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             productos p = new productos();
-            p.setNombre(request.getParameter("nombre"));
-            p.setIdCategoria(Integer.parseInt(request.getParameter("id_categoria")));
-            p.setStock(Integer.parseInt(request.getParameter("stock")));
-            p.setStockMinimo(Integer.parseInt(request.getParameter("stock_minimo")));
-            p.setPrecio(Double.parseDouble(request.getParameter("precio")));
-            p.setFechaIngreso(request.getParameter("fecha_ingreso"));
-            p.setFechaVencimiento(request.getParameter("fecha_vencimiento"));
-            p.setProveedor(request.getParameter("proveedor"));
+            String nombre = request.getParameter("nombre");
+
+            if(nombre == null || nombre.trim().length() < 3){
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Nombre inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar"
+                );
+
+                return;
+            }
+            if(dao.existeProducto(nombre)){
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Ya existe un producto con ese nombre."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar"
+                );
+
+                return;
+            }
+            nombre = nombre.trim();
+            p.setNombre(nombre);
+            
+            int categoria = Integer.parseInt(request.getParameter("id_categoria"));
+
+            if(categoria < 1 || categoria > 3){
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Categoría inválida."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar"
+                );
+
+                return;
+            }
+            
+            p.setIdCategoria(categoria);
+            int stock =Integer.parseInt(request.getParameter("stock"));
+
+            if(stock < 0){
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Stock inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar"
+                );
+
+                return;
+            }
+            p.setStock(stock);
+            int stockMinimo = Integer.parseInt(request.getParameter("stock_minimo"));
+
+            if(stockMinimo < 0){
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Stock mínimo inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar"
+                );
+
+                return;
+            }
+            p.setStockMinimo(stockMinimo);
+            double precio = Double.parseDouble(request.getParameter("precio"));
+
+            if(precio <= 0){
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Precio inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar"
+                );
+
+                return;
+            }
+            p.setPrecio(precio);
+            String fechaIngreso = request.getParameter("fecha_ingreso");
+
+            String fechaVencimiento = request.getParameter("fecha_vencimiento");
+
+            if(
+                    fechaIngreso != null
+                    &&
+                    !fechaIngreso.isEmpty()
+                    &&
+                    fechaVencimiento != null
+                    &&
+                    !fechaVencimiento.isEmpty()
+                    &&
+                    fechaVencimiento.compareTo(
+                            fechaIngreso
+                    ) < 0
+                    ){
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "La fecha de vencimiento no puede ser menor a la fecha de ingreso."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar"
+                );
+
+                return;
+            }
+            p.setFechaIngreso(fechaIngreso);
+            p.setFechaVencimiento(fechaVencimiento);
+            String proveedor = request.getParameter("proveedor");
+
+            if(
+                    proveedor != null
+                    &&
+                    !proveedor.trim().isEmpty()
+                    &&
+                    !proveedor.matches(
+                            "^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\\s\\-.,]+$"
+                    )
+                    ){
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Proveedor inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar"
+                );
+
+                return;
+            }
+            p.setProveedor(proveedor);
 
             if (dao.insertarProducto(p)) {
                 request.getSession().setAttribute("mensajeExito", "Producto registrado correctamente.");
@@ -65,14 +208,154 @@ public class controladorinventario extends HttpServlet {
         try {
             productos p = new productos();
             p.setIdProducto(Integer.parseInt(request.getParameter("id_producto")));
-            p.setNombre(request.getParameter("nombre"));
-            p.setIdCategoria(Integer.parseInt(request.getParameter("id_categoria")));
-            p.setStock(Integer.parseInt(request.getParameter("stock")));
-            p.setStockMinimo(Integer.parseInt(request.getParameter("stock_minimo")));
-            p.setPrecio(Double.parseDouble(request.getParameter("precio")));
-            p.setFechaIngreso(request.getParameter("fecha_ingreso"));
-            p.setFechaVencimiento(request.getParameter("fecha_vencimiento"));
-            p.setProveedor(request.getParameter("proveedor"));
+            String nombre = request.getParameter("nombre");
+
+            if (nombre == null|| nombre.trim().length() < 3) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Nombre inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar");
+
+                return;
+            }
+
+            nombre = nombre.trim();
+
+            if (!nombre.matches(
+                    "^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\\s\\-.,]+$")) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Nombre con caracteres inválidos."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar");
+
+                return;
+            }
+
+            p.setNombre(nombre);
+
+            int categoria = Integer.parseInt(   request.getParameter("id_categoria"));
+
+            if (categoria < 1 || categoria > 3) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Categoría inválida."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar");
+
+                return;
+            }
+
+            p.setIdCategoria(categoria);
+
+            int stock = Integer.parseInt(
+                            request.getParameter("stock"));
+
+            if (stock < 0) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Stock inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar");
+
+                return;
+            }
+
+            p.setStock(stock);
+
+            int stockMinimo = Integer.parseInt(request.getParameter("stock_minimo"));
+
+            if (stockMinimo < 0) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Stock mínimo inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar");
+
+                return;
+            }
+
+            p.setStockMinimo(stockMinimo);
+
+            double precio =  Double.parseDouble(request.getParameter( "precio"));
+
+            if (precio <= 0) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Precio inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar");
+
+                return;
+            }
+
+            p.setPrecio(precio);
+
+            String fechaIngreso = request.getParameter(
+                            "fecha_ingreso");
+
+            String fechaVencimiento = request.getParameter(
+                            "fecha_vencimiento");
+
+            if (fechaIngreso != null
+                    && !fechaIngreso.isEmpty()
+                    && fechaVencimiento != null
+                    && !fechaVencimiento.isEmpty()
+                    && fechaVencimiento.compareTo(
+                            fechaIngreso) < 0) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "La fecha de vencimiento no puede ser menor a la fecha de ingreso."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar");
+
+                return;
+            }
+
+            p.setFechaIngreso(fechaIngreso);
+            p.setFechaVencimiento(fechaVencimiento);
+
+            String proveedor = request.getParameter("proveedor");
+
+            if (proveedor != null
+                    && !proveedor.trim().isEmpty()
+                    && !proveedor.matches(
+                            "^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\\s\\-.,]+$")) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Proveedor inválido."
+                );
+
+                response.sendRedirect(
+                        "controladorinventario?accion=listar");
+
+                return;
+            }
+
+            p.setProveedor(proveedor);
 
             if (dao.actualizarProducto(p)) {
                 request.getSession().setAttribute("mensajeExito", "Producto actualizado exitosamente.");

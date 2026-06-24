@@ -39,36 +39,133 @@ public class controladorventas extends HttpServlet {
                         detalleJson,
                         tipo
                     );
+                if(carrito == null || carrito.isEmpty()){
 
+                    request.getSession().setAttribute(
+                            "mensajeError",
+                            "Debe agregar al menos un producto."
+                    );
+
+                    response.sendRedirect(
+                            "controladorseccion?seccion=ventas"
+                    );
+
+                    return;
+                }
                 System.out.println(detalleJson);
                 ventas v = new ventas();
                 System.out.println("txtIdCliente = " + request.getParameter("txtIdCliente"));
-                v.setIdCliente(Integer.parseInt(request.getParameter("txtIdCliente")));
-                System.out.println("metodoPago = " + request.getParameter("metodoPago"));
-                v.setMetodoPago(request.getParameter("metodoPago"));
-                //System.out.println("idProducto = " + request.getParameter("IdProducto"));
-                //int idProducto = Integer.parseInt(request.getParameter("IdProducto"));
-               // System.out.println("cantidad = " + request.getParameter("cantidad"));
-                //int cantidad = Integer.parseInt(request.getParameter("cantidad"));
-                /**productodao pdao = new productodao();
-                productos prod = pdao.buscarPorId(idProducto);
-                if (prod == null) {
-                    response.getWriter().println("Producto no encontrado");
+                String idClienteStr = request.getParameter("txtIdCliente");
+
+                if(idClienteStr == null  || idClienteStr.trim().isEmpty()){
+
+                    request.getSession().setAttribute(
+                            "mensajeError",
+                            "Debe seleccionar un cliente."
+                    );
+
+                    response.sendRedirect(
+                            "controladorseccion?seccion=ventas"
+                    );
+
                     return;
                 }
 
-                if (cantidad > prod.getStock()) {
-                    response.getWriter().println("Stock insuficiente");
+                int idCliente =
+                        Integer.parseInt(idClienteStr);
+
+                if(idCliente <= 0){
+
+                    request.getSession().setAttribute(
+                            "mensajeError",
+                            "Cliente inválido."
+                    );
+
+                    response.sendRedirect(
+                            "controladorseccion?seccion=ventas"
+                    );
+
                     return;
-                }**/
+                }
 
-                //double precio = prod.getPrecio();
-                //double subtotal = (double) cantidad * precio;
+                v.setIdCliente(idCliente);
+                System.out.println("metodoPago = " + request.getParameter("metodoPago"));
+                String metodoPago = request.getParameter("metodoPago");
+
+                if(metodoPago == null
+                        || metodoPago.trim().isEmpty()){
+
+                    request.getSession().setAttribute(
+                            "mensajeError",
+                            "Seleccione un método de pago."
+                    );
+
+                    response.sendRedirect(
+                            "controladorseccion?seccion=ventas"
+                    );
+
+                    return;
+                }
+                
+                if( !metodoPago.equals("Efectivo") && !metodoPago.equals("Tarjeta") &&  !metodoPago.equals("Yape")
+                    && !metodoPago.equals("Plin")
+                ){
+                    request.getSession().setAttribute(
+                            "mensajeError",
+                            "Método de pago inválido."
+                    );
+
+                    response.sendRedirect(
+                            "controladorseccion?seccion=ventas"
+                    );
+
+                    return;
+                }
+
+                v.setMetodoPago(metodoPago);
                 double subtotal = 0;
-                //double descuento = subtotal * 0.05;
-                //double total = subtotal - descuento;
                 for(ItemCarrito item : carrito){
+                    if(item.getIdProducto() <= 0){
 
+                        request.getSession().setAttribute(
+                                "mensajeError",
+                                "Producto inválido."
+                        );
+
+                        response.sendRedirect(
+                                "controladorseccion?seccion=ventas"
+                        );
+
+                        return;
+                    }
+
+                    if(item.getCantidad() <= 0){
+
+                        request.getSession().setAttribute(
+                                "mensajeError",
+                                "Cantidad inválida."
+                        );
+
+                        response.sendRedirect(
+                                "controladorseccion?seccion=ventas"
+                        );
+
+                        return;
+                    }
+
+                    if(item.getPrecio() <= 0){
+
+                        request.getSession().setAttribute(
+                                "mensajeError",
+                                "Precio inválido."
+                        );
+
+                        response.sendRedirect(
+                                "controladorseccion?seccion=ventas"
+                        );
+
+                        return;
+                    }
                     subtotal += item.getPrecio()
                               * item.getCantidad();
 

@@ -20,7 +20,48 @@ public class controladormascota extends HttpServlet {
     private final mascotadao dao = new mascotadao();
     private final clientedao cDao = new clientedao(); 
     private final String pagMascotas = "/vista/gmascotas.jsp";
+    
+    private String validarMascota(HttpServletRequest request) {
 
+        String nombre = request.getParameter("txtNombre");
+        String especie = request.getParameter("txtEspecie");
+        String raza = request.getParameter("txtRaza");
+        String pesoStr = request.getParameter("txtPeso");
+        String fecha = request.getParameter("txtFechaNac");
+        String idCliente = request.getParameter("txtIdCliente");
+
+        if (nombre == null || nombre.trim().length() < 2) {
+            return "Nombre inválido";
+        }
+
+        if (especie == null || especie.trim().length() < 3) {
+            return "Especie inválida";
+        }
+
+        if (raza == null || raza.trim().length() < 2) {
+            return "Raza inválida";
+        }
+
+        try {
+            double peso = Double.parseDouble(pesoStr);
+            if (peso <= 0) return "Peso inválido";
+        } catch (Exception e) {
+            return "Peso inválido";
+        }
+
+        if (fecha == null || fecha.isEmpty()) {
+            return "Fecha de nacimiento obligatoria";
+        }
+
+        try {
+            Integer.parseInt(idCliente);
+        } catch (Exception e) {
+            return "Cliente inválido";
+        }
+
+        return null; // todo OK
+    }
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -61,6 +102,12 @@ public class controladormascota extends HttpServlet {
 
     private void guardar(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
+            String error = validarMascota(request);
+            if (error != null) {
+                request.getSession().setAttribute("mensajeError", error);
+                response.sendRedirect("controladormascota?accion=listar");
+                return;
+            }
             mascotas m = new mascotas();
             m.setIdCliente(Integer.parseInt(request.getParameter("txtIdCliente")));
             m.setNombre(request.getParameter("txtNombre"));
@@ -88,6 +135,12 @@ public class controladormascota extends HttpServlet {
 
     private void editar(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
+            String error = validarMascota(request);
+            if (error != null) {
+                request.getSession().setAttribute("mensajeError", error);
+                response.sendRedirect("controladormascota?accion=listar");
+                return;
+            }
             mascotas m = new mascotas();
             m.setIdMascota(Integer.parseInt(request.getParameter("txtId")));
             m.setIdCliente(Integer.parseInt(request.getParameter("txtIdCliente")));

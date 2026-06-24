@@ -227,11 +227,11 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="${pageContext.request.contextPath}/controladorinventario" method="POST">
+                            <form class="formEditarProducto" action="${pageContext.request.contextPath}/controladorinventario" method="POST">
                                 <input type="hidden" name="accion" value="editar"> <input type="hidden" name="id_producto" value="<%= p.getIdProducto()%>"> <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Nombre</label>
-                                        <input type="text" name="nombre" value="<%= p.getNombre()%>" class="form-control" required>
+                                        <input type="text" name="nombre" value="<%= p.getNombre()%>" class="form-control" maxlength="100" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Categoría</label>
@@ -245,15 +245,15 @@
                                 <div class="row">
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Stock</label>
-                                        <input type="number" name="stock" value="<%= p.getStock()%>" class="form-control" required>
+                                        <input type="number" name="stock" min="0" max="99999" value="<%= p.getStock()%>" class="form-control" required>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Stock Mínimo</label>
-                                        <input type="number" name="stock_minimo" value="<%= p.getStockMinimo()%>" class="form-control" required>
+                                        <input type="number" name="stock_minimo" min="0" max="99999" value="<%= p.getStockMinimo()%>" class="form-control" required>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Precio</label>
-                                        <input type="number" step="0.01" name="precio" value="<%= p.getPrecio()%>" class="form-control" required>
+                                        <input type="number" step="0.01" min="0.01" max="99999"  name="precio" value="<%= p.getPrecio()%>" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -263,11 +263,11 @@
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Fecha Vencimiento</label>
-                                        <input type="date" name="fecha_vencimiento" value="<%= p.getFechaVencimiento() != null ? p.getFechaVencimiento() : "" %>" class="form-control">
+                                        <input type="date" name="fecha_vencimiento" value="<%= p.getFechaVencimiento() != null ? p.getFechaVencimiento() : "" %>" class="form-control" >
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Proveedor</label>
-                                        <input type="text" name="proveedor" value="<%= p.getProveedor() != null ? p.getProveedor() : "" %>" class="form-control">
+                                        <input type="text" name="proveedor" maxlength="100" value="<%= p.getProveedor() != null ? p.getProveedor() : "" %>" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer pb-0 pe-0 border-0">
@@ -290,13 +290,13 @@
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="${pageContext.request.contextPath}/controladorinventario" method="POST">
+                            <form id="formNuevoProducto" action="${pageContext.request.contextPath}/controladorinventario" method="POST">
                                 <input type="hidden" name="accion" value="guardar">
                                 
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label>Nombre</label>
-                                        <input type="text" name="nombre" class="form-control" required>
+                                        <input type="text" name="nombre" id="nombreProducto" class="form-control" maxlength="100" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Categoría</label>
@@ -311,15 +311,15 @@
                                 <div class="row">
                                     <div class="col-md-4 mb-3">
                                         <label>Stock</label>
-                                        <input type="number" name="stock" class="form-control" required>
+                                        <input type="number" name="stock" min="0" max="99999" class="form-control" required>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>Stock Minimo</label>
-                                        <input type="number" name="stock_minimo" class="form-control" required>
+                                        <input type="number" name="stock_minimo" min="0" max="99999" class="form-control" required>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>Precio</label>
-                                        <input type="number" step="0.01" name="precio" class="form-control" required>
+                                        <input type="number" step="0.01" min="0.01" max="999999" name="precio" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -329,11 +329,11 @@
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>Fecha Vencimiento</label>
-                                        <input type="date" name="fecha_vencimiento" class="form-control">
+                                        <input type="date" name="fecha_vencimiento"  class="form-control">
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label>Proveedor</label>
-                                        <input type="text" name="proveedor" class="form-control">
+                                        <input type="text" name="proveedor" maxlength="100" class="form-control" required>
                                     </div>
                                 </div>
                                 <div class="modal-footer pb-0 pe-0 border-0">
@@ -417,6 +417,219 @@
                 });
 
             });
-            </script>
+            
+            document.addEventListener("DOMContentLoaded", function () {
+
+            const form = document.getElementById("formNuevoProducto");
+
+            form.addEventListener("submit", function (e) {
+
+                const nombre =  form.nombre.value.trim();
+
+                const categoria = form.id_categoria.value;
+
+                const stock =  parseInt(form.stock.value);
+
+                const stockMin = parseInt(form.stock_minimo.value);
+
+                const precio = parseFloat(form.precio.value);
+
+                const fechaIngreso = form.fecha_ingreso.value;
+
+                const fechaVencimiento = form.fecha_vencimiento.value;
+
+                const proveedor = form.proveedor.value.trim();
+
+                const regexTexto =  /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s\-.,]+$/;
+
+                if (nombre.length < 3) {
+
+                    e.preventDefault();
+
+                    alertify.error(
+                            "El nombre debe tener mínimo 3 caracteres"
+                            );
+
+                    return;
+                }
+
+                if (!regexTexto.test(nombre)) {
+
+                    e.preventDefault();
+
+                    alertify.error(
+                            "Nombre con caracteres inválidos"
+                            );
+
+                    return;
+                }
+
+                if (categoria === "") {
+
+                    e.preventDefault();
+
+                    alertify.error(
+                            "Seleccione una categoría"
+                            );
+
+                    return;
+                }
+
+                if (stock < 0) {
+
+                    e.preventDefault();
+
+                    alertify.error(
+                            "El stock no puede ser negativo"
+                            );
+
+                    return;
+                }
+
+                if (stockMin < 0) {
+
+                    e.preventDefault();
+
+                    alertify.error(
+                            "El stock mínimo no puede ser negativo"
+                            );
+
+                    return;
+                }
+
+                if (precio <= 0) {
+
+                    e.preventDefault();
+
+                    alertify.error(
+                            "El precio debe ser mayor a cero"
+                            );
+
+                    return;
+                }
+
+                if (
+                        fechaIngreso !== ""
+                        &&
+                        fechaVencimiento !== ""
+                        &&
+                        fechaVencimiento < fechaIngreso
+                        ) {
+
+                    e.preventDefault();
+
+                    alertify.error(
+                            "La fecha de vencimiento no puede ser anterior al ingreso"
+                            );
+
+                    return;
+                }
+
+                if (
+                        proveedor !== ""
+                        &&
+                        !regexTexto.test(proveedor)
+                        ) {
+
+                    e.preventDefault();
+
+                    alertify.error(
+                            "Proveedor contiene caracteres inválidos"
+                            );
+
+                }
+
+            });
+
+        });
+        
+        document.querySelectorAll(".formEditarProducto")
+.forEach(form => {
+
+    form.addEventListener("submit", function(e){
+
+        const nombre =
+                form.nombre.value.trim();
+
+        const stock =
+                parseInt(form.stock.value);
+
+        const stockMin =
+                parseInt(form.stock_minimo.value);
+
+        const precio =
+                parseFloat(form.precio.value);
+
+        const fechaIngreso =
+                form.fecha_ingreso.value;
+
+        const fechaVencimiento =
+                form.fecha_vencimiento.value;
+
+        if(nombre.length < 3){
+
+            e.preventDefault();
+
+            alertify.error(
+                    "Nombre inválido"
+                    );
+
+            return;
+        }
+
+        if(stock < 0){
+
+            e.preventDefault();
+
+            alertify.error(
+                    "Stock inválido"
+                    );
+
+            return;
+        }
+
+        if(stockMin < 0){
+
+            e.preventDefault();
+
+            alertify.error(
+                    "Stock mínimo inválido"
+                    );
+
+            return;
+        }
+
+        if(precio <= 0){
+
+            e.preventDefault();
+
+            alertify.error(
+                    "Precio inválido"
+                    );
+
+            return;
+        }
+
+        if(
+                fechaIngreso !== ""
+                &&
+                fechaVencimiento !== ""
+                &&
+                fechaVencimiento < fechaIngreso
+                ){
+
+            e.preventDefault();
+
+            alertify.error(
+                    "Fecha de vencimiento incorrecta"
+                    );
+
+        }
+
+    });
+
+});
+        
+        </script>
     </body>
 </html>

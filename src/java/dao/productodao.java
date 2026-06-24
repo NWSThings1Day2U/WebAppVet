@@ -282,7 +282,46 @@ public class productodao {
         } finally {
             closeResources();
         }
-    }                
+    }           
+    public boolean existeProducto(String nombre) {
+
+        boolean existe = false;
+
+        try {
+
+            cn = conexionvet_bd.probarConexion();
+
+            String sql =
+                    "SELECT COUNT(*) "
+                    + "FROM productos "
+                    + "WHERE UPPER(nombre)=UPPER(?) "
+                    + "AND activo='ACTIVO'";
+
+            PreparedStatement ps =
+                    cn.prepareStatement(sql);
+
+            ps.setString(1, nombre);
+
+            ResultSet rs =
+                    ps.executeQuery();
+
+            if (rs.next()) {
+
+                existe =
+                        rs.getInt(1) > 0;
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            closeResources();
+        }
+
+        return existe;
+    }
     private void closeResources() {
         try {
             if (rs != null) rs.close();

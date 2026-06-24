@@ -373,22 +373,22 @@
 
                                         <div class="row g-3 mb-3">
                                             <div class="col-md-4">
-                                                <label class="form-label text-muted small fw-bold">NOMBRE</label>
+                                                <label class="form-label text-muted small fw-bold">Nombre</label>
                                                 <input type="text" name="txtNombre" class="form-control py-2" placeholder="Ej. Max, Luna..." style="border-radius: 10px;" required>
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="form-label text-muted small fw-bold">ESPECIE</label>
+                                                <label class="form-label text-muted small fw-bold">Especie</label>
                                                 <input type="text" name="txtEspecie" class="form-control py-2" placeholder="Ej. Canino, Felino..." style="border-radius: 10px;" required>
                                             </div>
                                             <div class="col-md-4">
-                                                <label class="form-label text-muted small fw-bold">RAZA</label>
+                                                <label class="form-label text-muted small fw-bold">Raza</label>
                                                 <input type="text" name="txtRaza" class="form-control py-2" placeholder="Ej. Schnauzer, Persa..." style="border-radius: 10px;" required>
                                             </div>
                                         </div>
 
                                         <div class="row g-3 mb-3">
                                             <div class="col-md-6">
-                                                <label class="form-label text-muted small fw-bold">NOMBRE DE CLIENTE (DUEÑO)</label>
+                                                <label class="form-label text-muted small fw-bold">Nombre de Cliente (Dueño)</label>
                                                 <select name="txtIdCliente" id="modalTxtIdCliente" class="form-select py-2" style="border-radius: 10px;" required>
                                                     <option value="" selected disabled>Selecciona dueño</option>
                                                     <% if (listaClientes != null) {
@@ -399,7 +399,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label text-muted small fw-bold">SEXO</label>
+                                                <label class="form-label text-muted small fw-bold">Sexo</label>
                                                 <select name="txtSexo" class="form-select py-2" style="border-radius: 10px;" required>
                                                     <option value="" selected disabled>Selecciona sexo</option>
                                                     <option value="F">Hembra</option>
@@ -410,11 +410,11 @@
 
                                         <div class="row g-3">
                                             <div class="col-md-6">
-                                                <label class="form-label text-muted small fw-bold">PESO (KG)</label>
+                                                <label class="form-label text-muted small fw-bold">Peso (Kg)</label>
                                                 <input type="number" step="0.01" name="txtPeso" class="form-control py-2" placeholder="0.00" min="0" style="border-radius: 10px;" required>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label text-muted small fw-bold">FECHA DE NACIMIENTO</label>
+                                                <label class="form-label text-muted small fw-bold">Fecha de Nacimiento</label>
                                                 <input type="date" name="txtFechaNac" class="form-control py-2" max="<%= java.time.LocalDate.now() %>" style="border-radius: 10px;" required>
                                             </div>
                                         </div>

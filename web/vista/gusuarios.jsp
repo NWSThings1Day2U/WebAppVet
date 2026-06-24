@@ -211,8 +211,8 @@
                                                     <div class="mb-3">
                                                         <label class="form-label fw-semibold text-danger">Asignación de Rol:</label>
                                                         <select name="txtNuevoRol" class="form-select" required>
-                                                            <option value="1" <%= u.getRol().equalsIgnoreCase("Administrador") ? "selected" : "" %>>Administrador / Veterinario</option>
-                                                            <option value="2" <%= u.getRol().equalsIgnoreCase("Cliente") ? "selected" : "" %>>Cliente Registrado Web</option>
+                                                            <option value="1" <%= u.getRol().equalsIgnoreCase("admin") ? "selected" : "" %>>Administrador / Veterinario</option>
+                                                            <option value="2" <%= u.getRol().equalsIgnoreCase("cliente") ? "selected" : "" %>>Cliente Registrado Web</option>
                                                         </select>
                                                     </div>
                                                     

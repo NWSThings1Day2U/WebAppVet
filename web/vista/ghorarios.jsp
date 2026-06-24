@@ -82,8 +82,16 @@
                                 %>
 
                                 <tr>
-                                    <td><%= h.getDiaSemana() %></td>
-
+                                    <td>
+                                        <% 
+                                            String dia = h.getDiaSemana();
+                                            if (dia != null && !dia.isEmpty()) {
+                                                out.print(dia.substring(0, 1).toUpperCase() + dia.substring(1).toLowerCase());
+                                            } else {
+                                                out.print("");
+                                            }
+                                        %>
+                                    </td>
                                     <td><%= h.getHoraInicio() %></td>
 
                                     <td><%= h.getHoraFin() %></td>

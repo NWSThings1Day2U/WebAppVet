@@ -323,7 +323,7 @@
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Fecha de nacimiento</label>
-                                        <input type="date" name="txtFechaNac" class="form-control" required>
+                                        <input type="date" name="txtFechaNac" max="<%= java.time.LocalDate.now() %>" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
@@ -388,7 +388,7 @@
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Fecha de nacimiento</label>
-                                        <input type="date" name="txtFechaNac" id="editFechaNac" class="form-control" required>
+                                        <input type="date" name="txtFechaNac" id="editFechaNac"  max="<%= java.time.LocalDate.now() %>" class="form-control" required>
                                     </div>
                                     <div class="col-md-4 mb-3">
                                         <label class="form-label">Estado de la Mascota</label>
@@ -501,6 +501,89 @@
                 });
 
             });
+            
             </script>
+            <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const formCrear = document.querySelector("#modalNuevaMascota form");
+
+    formCrear.addEventListener("submit", function (e) {
+
+        let nombre = formCrear.txtNombre.value.trim();
+        let especie = formCrear.txtEspecie.value.trim();
+        let raza = formCrear.txtRaza.value.trim();
+        let peso = parseFloat(formCrear.txtPeso.value);
+        let fecha = formCrear.txtFechaNac.value;
+        let cliente = formCrear.txtIdCliente.value;
+
+        if (nombre.length < 2) {
+            alertify.error("El nombre debe tener al menos 2 caracteres");
+            e.preventDefault();
+            return;
+        }
+
+        if (especie.length < 3) {
+            alertify.error("Especie inválida");
+            e.preventDefault();
+            return;
+        }
+
+        if (raza.length < 2) {
+            alertify.error("Raza inválida");
+            e.preventDefault();
+            return;
+        }
+
+        if (isNaN(peso) || peso <= 0) {
+            alertify.error("Peso inválido");
+            e.preventDefault();
+            return;
+        }
+
+        if (!fecha) {
+            alertify.error("Debe seleccionar fecha de nacimiento");
+            e.preventDefault();
+            return;
+        }
+
+        if (!cliente) {
+            alertify.error("Debe seleccionar un dueño");
+            e.preventDefault();
+            return;
+        }
+
+    });
+
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const formEdit = document.querySelector("#modalEditarMascota form");
+
+    formEdit.addEventListener("submit", function (e) {
+
+        let nombre = formEdit.txtNombre.value.trim();
+        let especie = formEdit.txtEspecie.value.trim();
+        let raza = formEdit.txtRaza.value.trim();
+        let peso = parseFloat(formEdit.txtPeso.value);
+
+        if (nombre === "" || nombre.length < 2) {
+            alertify.error("Nombre inválido");
+            e.preventDefault();
+            return;
+        }
+
+        if (peso <= 0 || isNaN(peso)) {
+            alertify.error("Peso inválido");
+            e.preventDefault();
+            return;
+        }
+
+    });
+
+});
+</script>
     </body>
 </html>

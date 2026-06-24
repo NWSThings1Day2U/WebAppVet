@@ -183,27 +183,27 @@
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
-                                                <form action="${pageContext.request.contextPath}/controladorcliente?accion=editar" method="POST">
+                                                <form class="form-cliente-editar" action="${pageContext.request.contextPath}/controladorcliente?accion=editar" method="POST">
                                                     <input type="hidden" name="txtId" value="<%= c.getIdCliente() %>">
                                                     
                                                     <div class="row">
                                                         <div class="col-md-6 mb-3">
                                                             <label class="form-label fw-semibold">Nombre Completo</label>
-                                                            <input type="text" name="txtNombre" class="form-control" value="<%= c.getNombreCompleto() %>" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" required>
+                                                            <input type="text" name="txtNombre" class="form-control" value="<%= c.getNombreCompleto() %>" placeholder="Ingrese nombre y apellido" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,100}$" title="Solo letras y espacios. Mínimo 3 caracteres." maxlength="100" required>
                                                         </div>
                                                         <div class="col-md-6 mb-3">
                                                             <label class="form-label fw-semibold">DNI</label>
-                                                            <input type="text" name="txtDni" class="form-control" value="<%= c.getDni() %>"  maxlength="8" pattern="\d{8}" placeholder="Ingresa Dni (Ej. 913191312)" required>
+                                                            <input type="text" name="txtDni" class="form-control" value="<%= c.getDni() %>" title="DNI debe tener exactamente 8 dígitos" maxlength="8" pattern="[0-9]{8}" inputmode="numeric" placeholder="Ingrese número de documento" required>
                                                         </div>
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-md-6 mb-3">
                                                             <label class="form-label fw-semibold">Correo Electrónico</label>
-                                                            <input type="email" name="txtCorreo" class="form-control" value="<%= c.getCorreo() %>" required>
+                                                            <input type="email" name="txtCorreo" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" maxlength="100" title="Ingrese un correo válido" value="<%= c.getCorreo() %>" placeholder="Ingrese correo electrónico válido" required>
                                                         </div>
                                                         <div class="col-md-6 mb-3">
                                                             <label class="form-label fw-semibold">Teléfono</label>
-                                                            <input type="text" name="txtTelefono" class="form-control" value="<%= c.getTelefono() != null ? c.getTelefono() : "" %>"  maxlength="9" pattern="9\d{8}">
+                                                            <input type="text" name="txtTelefono" class="form-control" value="<%= c.getTelefono() != null ? c.getTelefono() : "" %>" placeholder="Ingrese teléfono de contacto"  maxlength="9" pattern="9[0-9]{8}" inputmode="numeric" title="Debe iniciar con 9 y tener 9 dígitos">
                                                         </div>
                                                     </div>
                                                     <div class="row">
@@ -265,7 +265,7 @@
                 </div>
             </div>
             
-            <div class="modal fade" id="modalNuevoCliente" tabindex="-1">
+            <div class="modal fade"  id="modalNuevoCliente" tabindex="-1">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header bg-success text-white">
@@ -275,15 +275,15 @@
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="${pageContext.request.contextPath}/controladorcliente?accion=guardar" method="POST">
+                            <form class="form-cliente-nuevo" action="${pageContext.request.contextPath}/controladorcliente?accion=guardar" method="POST">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold"  for="nombrecompleto">Nombre Completo</label>
-                                        <input type="text" name="txtNombre" class="form-control" placeholder="Ingrese nombre y apellido" pattern="^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$" id="nombrecompleto" required>
+                                        <input type="text" name="txtNombre" class="form-control" placeholder="Ingrese nombre y apellido" pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñ ]{3,100}$" title="Solo letras y espacios. Mínimo 3 caracteres." id="nombrecompleto" maxlength="100" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold" for="documentodeidentidad">DNI</label>
-                                        <input type="text" name="txtDni" class="form-control" id="documentodeidentidad" maxlength="8" pattern="\d{8}" placeholder="Ingrese número de documento" required>
+                                        <input type="text" name="txtDni" class="form-control" id="documentodeidentidad" maxlength="8" pattern="[0-9]{8}" inputmode="numeric" placeholder="Ingrese número de documento" title="DNI debe tener exactamente 8 dígitos" required>
                                     </div>
                                 </div> 
                                 <div class="row"><div class="col-md-12 mb-3">
@@ -313,11 +313,11 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-semibold">Correo Electrónico</label>
-                                        <input type="email" name="txtCorreo" class="form-control" placeholder="ejemplo@correo.com" required>
+                                        <input type="email" name="txtCorreo" class="form-control" pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" title="Ingrese un correo válido"  maxlength="100" placeholder="Ingrese correo electrónico válido" required>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-semibold">Teléfono / Celular</label>
-                                        <input type="text" name="txtTelefono" class="form-control" maxlength="9" pattern="9\d{8}" placeholder="Ingrese teléfono de contacto">
+                                        <label class="form-label fw-semibold">Teléfono</label>
+                                        <input type="text" name="txtTelefono" class="form-control" maxlength="9" pattern="9[0-9]{8}" inputmode="numeric" title="Debe iniciar con 9 y tener 9 dígitos" placeholder="Ingrese teléfono de contacto">
                                     </div>
                                 </div>
                                 <div class="modal-footer px-0 pb-0 mt-3">
@@ -420,6 +420,69 @@
                 filaSinResultados.style.display =
                         encontrados === 0 ? "" : "none";
 
+            });
+
+        });
+        
+        
+        document.addEventListener("DOMContentLoaded", function () {
+
+            function validarFormulario(form){
+
+                const nombre = form.querySelector('[name="txtNombre"]');
+                const dni = form.querySelector('[name="txtDni"]');
+                const correo = form.querySelector('[name="txtCorreo"]');
+                const telefono = form.querySelector('[name="txtTelefono"]');
+
+                const nombreVal = nombre?.value.trim();
+                const dniVal = dni?.value.trim();
+                const correoVal = correo?.value.trim();
+                const telefonoVal = telefono?.value.trim();
+
+                if(!nombreVal || nombreVal.length < 3){
+                    alertify.error("El nombre debe tener mínimo 3 caracteres.");
+                    nombre.focus();
+                    return false;
+                }
+
+                if(!/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(nombreVal)){
+                    alertify.error("El nombre solo puede contener letras.");
+                    nombre.focus();
+                    return false;
+                }
+
+                if(!/^[0-9]{8}$/.test(dniVal)){
+                    alertify.error("El DNI debe tener 8 dígitos.");
+                    dni.focus();
+                    return false;
+                }
+
+                const regexCorreo =
+                    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+                if(!regexCorreo.test(correoVal)){
+                    alertify.error("Correo inválido.");
+                    correo.focus();
+                    return false;
+                }
+
+                if(telefonoVal && !/^9\d{8}$/.test(telefonoVal)){
+                    alertify.error("El teléfono debe iniciar con 9 y tener 9 dígitos.");
+                    telefono.focus();
+                    return false;
+                }
+
+                return true;
+            }
+
+            document.querySelectorAll("form").forEach(form => {
+                form.addEventListener("submit", function(e){
+                    if(form.classList.contains("form-cliente-nuevo")){
+                        if(!validarFormulario(form)){
+                            e.preventDefault();
+                        }
+                    }
+                });
             });
 
         });

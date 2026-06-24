@@ -281,7 +281,7 @@
                                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="${pageContext.request.contextPath}/controladorcitas" method="POST">
+                                            <form class="formEditarCita" action="${pageContext.request.contextPath}/controladorcitas" method="POST">
                                                 <input type="hidden" name="accion" value="editar">
                                                 <input type="hidden" name="txtIdCita" value="<%= c.getIdCita() %>">
                                                 <div class="row">
@@ -320,7 +320,7 @@
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Motivo</label>
-                                                    <textarea name="txtMotivo" class="form-control" rows="2"><%= c.getMotivo() %></textarea>
+                                                    <textarea name="txtMotivo" class="form-control txtMotivoEditar" rows="2" minlength="10" maxlength="300" required><%= c.getMotivo() %></textarea>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Estado General</label>
@@ -369,7 +369,7 @@
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="${pageContext.request.contextPath}/controladorcitas" method="POST">
+                            <form id="formNuevaCita" action="${pageContext.request.contextPath}/controladorcitas" method="POST">
                                 <input type="hidden" name="accion" value="guardar">
                                 <div class="row">
                                     <div class="col-md-4 mb-3">
@@ -420,7 +420,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Motivo</label>
-                                    <textarea name="txtMotivo" class="form-control" rows="2"></textarea>
+                                    <textarea  id="txtMotivo" name="txtMotivo" class="form-control" rows="2" minlength="10" maxlength="300"></textarea>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -717,6 +717,249 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+document.addEventListener("DOMContentLoaded", function () {
+
+    const formNueva = document.getElementById("formNuevaCita");
+
+    formNueva.addEventListener("submit", function (e) {
+
+        const cliente = document.getElementById("txtIdCliente").value;
+        const mascota = document.getElementById("txtIdMascota").value;
+        const fecha = document.getElementById("txtFecha").value;
+        const hora = document.getElementById("txtHora").value;
+        const motivo = document.getElementById("txtMotivo").value.trim();
+
+        const tipo = document.querySelector(
+            "#modalNuevaCita select[name='txtIdTipo']"
+        ).value;
+
+        if (cliente === "") {
+
+            e.preventDefault();
+
+            Swal.fire({
+                icon: "warning",
+                title: "Cliente requerido",
+                text: "Seleccione un cliente."
+            });
+
+            return;
+        }
+
+        if (mascota === "") {
+
+            e.preventDefault();
+
+            Swal.fire({
+                icon: "warning",
+                title: "Mascota requerida",
+                text: "Seleccione una mascota."
+            });
+
+            return;
+        }
+
+        if (tipo === "") {
+
+            e.preventDefault();
+
+            Swal.fire({
+                icon: "warning",
+                title: "Tipo de atención",
+                text: "Seleccione un tipo de atención."
+            });
+
+            return;
+        }
+
+        if (fecha === "") {
+
+            e.preventDefault();
+
+            Swal.fire({
+                icon: "warning",
+                title: "Fecha requerida",
+                text: "Seleccione una fecha."
+            });
+
+            return;
+        }
+
+        if (hora === "") {
+
+            e.preventDefault();
+
+            Swal.fire({
+                icon: "warning",
+                title: "Hora requerida",
+                text: "Seleccione una hora."
+            });
+
+            return;
+        }
+
+        if (motivo.length < 10) {
+
+            e.preventDefault();
+
+            Swal.fire({
+                icon: "warning",
+                title: "Motivo inválido",
+                text: "El motivo debe tener al menos 10 caracteres."
+            });
+
+            return;
+        }
+
+        if (motivo.length > 300) {
+
+            e.preventDefault();
+
+            Swal.fire({
+                icon: "warning",
+                title: "Motivo demasiado largo",
+                text: "El motivo no puede superar los 300 caracteres."
+            });
+
+            return;
+        }
+
+        const regexMotivo =
+                /^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\s.,()\-]+$/;
+
+        if (!regexMotivo.test(motivo)) {
+
+            e.preventDefault();
+
+            Swal.fire({
+                icon: "warning",
+                title: "Caracteres inválidos",
+                text: "El motivo contiene caracteres no permitidos."
+            });
+
+        }
+
+    });
+
+});
+document.addEventListener("DOMContentLoaded", function () {
+
+    const formulariosEditar =
+            document.querySelectorAll(".formEditarCita");
+
+    formulariosEditar.forEach(form => {
+
+        form.addEventListener("submit", function (e) {
+
+            const mascota =
+                    form.querySelector(
+                            "select[name='txtIdMascota']"
+                            ).value;
+
+            const tipo =
+                    form.querySelector(
+                            "select[name='txtIdTipo']"
+                            ).value;
+
+            const fecha =
+                    form.querySelector(
+                            "input[name='txtFecha']"
+                            ).value;
+
+            const hora =
+                    form.querySelector(
+                            "select[name='txtHora']"
+                            ).value;
+
+            const motivo =
+                    form.querySelector(
+                            "textarea[name='txtMotivo']"
+                            ).value.trim();
+
+            if (mascota === "") {
+
+                e.preventDefault();
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Mascota requerida",
+                    text: "Seleccione una mascota."
+                });
+
+                return;
+            }
+
+            if (tipo === "") {
+
+                e.preventDefault();
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Tipo requerido",
+                    text: "Seleccione un tipo de atención."
+                });
+
+                return;
+            }
+
+            if (fecha === "") {
+
+                e.preventDefault();
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Fecha requerida",
+                    text: "Seleccione una fecha."
+                });
+
+                return;
+            }
+
+            if (hora === "") {
+
+                e.preventDefault();
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Hora requerida",
+                    text: "Seleccione una hora."
+                });
+
+                return;
+            }
+
+            if (motivo.length < 10) {
+
+                e.preventDefault();
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Motivo inválido",
+                    text: "Debe ingresar al menos 10 caracteres."
+                });
+
+                return;
+            }
+
+            if (motivo.length > 300) {
+
+                e.preventDefault();
+
+                Swal.fire({
+                    icon: "warning",
+                    title: "Motivo demasiado largo",
+                    text: "Máximo 300 caracteres."
+                });
+
+                return;
+            }
+
+        });
+
+    });
+
+});
 </script>
+
     </body>
 </html>

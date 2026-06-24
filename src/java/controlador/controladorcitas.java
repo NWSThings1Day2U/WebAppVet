@@ -180,8 +180,35 @@ public class controladorcitas extends HttpServlet {
         try {
 
             int idCliente = Integer.parseInt(request.getParameter("txtIdCliente"));
-            int idMascota = Integer.parseInt(request.getParameter("txtIdMascota"));
+            if (idCliente <= 0) {
 
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Cliente inválido."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
+            int idMascota = Integer.parseInt(request.getParameter("txtIdMascota"));
+            if (idMascota <= 0) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Mascota inválida."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
             boolean pertenece = dao.mascotaPerteneceCliente(idMascota, idCliente);
 
             if (!pertenece) {
@@ -193,6 +220,20 @@ public class controladorcitas extends HttpServlet {
                 return;
             }
             int idTipo = Integer.parseInt(request.getParameter("txtIdTipo"));
+            if (idTipo < 1 || idTipo > 3) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Tipo de atención inválido."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
             String fecha = request.getParameter("txtFecha");
             LocalDate fechaSeleccionada = LocalDate.parse(request.getParameter("txtFecha"));
 
@@ -221,16 +262,64 @@ public class controladorcitas extends HttpServlet {
                 }
             }
             String motivo = request.getParameter("txtMotivo");
-            if (motivo == null || motivo.trim().length() < 10) {
+            if (motivo == null) {
 
                 request.getSession().setAttribute(
-                    "mensajeError",
-                    "El motivo de la visita debe tener al menos 10 caracteres."
+                        "mensajeError",
+                        "Debe ingresar un motivo."
                 );
 
                 response.sendRedirect(
-                    request.getContextPath()
-                    + "/controladorcitas?accion=listar"
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
+
+            motivo = motivo.trim();
+
+            if (motivo.length() < 10) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "El motivo debe tener mínimo 10 caracteres."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
+
+            if (motivo.length() > 300) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "El motivo no puede superar los 300 caracteres."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
+
+            if (!motivo.matches(
+                    "^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\\s.,()\\-]+$")) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "El motivo contiene caracteres inválidos."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
                 );
 
                 return;
@@ -287,10 +376,96 @@ public class controladorcitas extends HttpServlet {
         try {
             int idCita = Integer.parseInt(request.getParameter("txtIdCita"));
             int idMascota = Integer.parseInt(request.getParameter("txtIdMascota"));
+            if (idMascota <= 0) {
+
+                request.getSession().setAttribute("mensajeError","Mascota inválida."
+                );
+
+                response.sendRedirect( request.getContextPath() + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
             int idTipo = Integer.parseInt(request.getParameter("txtIdTipo"));
+            if (idTipo < 1 || idTipo > 3) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Tipo de atención inválido."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
             String fecha = request.getParameter("txtFecha");
             String hora = request.getParameter("txtHora");
             String motivo = request.getParameter("txtMotivo");
+            if (motivo == null) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "Debe ingresar un motivo."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
+
+            motivo = motivo.trim();
+
+            if (motivo.length() < 10) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "El motivo debe tener mínimo 10 caracteres."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
+
+            if (motivo.length() > 300) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "El motivo no puede superar los 300 caracteres."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
+
+            if (!motivo.matches(
+                    "^[a-zA-ZáéíóúÁÉÍÓÚñÑ0-9\\s.,()\\-]+$")) {
+
+                request.getSession().setAttribute(
+                        "mensajeError",
+                        "El motivo contiene caracteres inválidos."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath()
+                        + "/controladorcitas?accion=listar"
+                );
+
+                return;
+            }
             String estado = request.getParameter("txtEstado");
             LocalDate fechaSeleccionada
                     = LocalDate.parse(fecha);
