@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import dao.citadao;
 import dao.clientedao;
 import dao.mascotadao;
+import dao.Notificacionesdao;
 import java.io.IOException;
 import java.util.List;
 import jakarta.servlet.ServletException;
@@ -30,7 +31,7 @@ public class controladorcitas extends HttpServlet {
     private final String pagCitas = "/vista/gcitas.jsp";
     private final String pagagendarcitas = "/vista/agendarcitas.jsp";
     private final String pagmiscitas = "/vista/miscitas.jsp";
-
+    private Notificacionesdao daoNot = new Notificacionesdao();
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String accion = request.getParameter("accion");
@@ -331,6 +332,8 @@ public class controladorcitas extends HttpServlet {
             c.setFecha(fecha);
             c.setHora(hora);
             c.setMotivo(motivo);
+            System.out.println("Fecha: " + fecha);
+            System.out.println("Hora: " + hora);
             boolean disponible = dao.horaDisponible(fecha, hora);
 
             if (!disponible) {
@@ -351,7 +354,26 @@ public class controladorcitas extends HttpServlet {
                 return;
             }
             boolean exito = dao.insertarCita(c);
-
+             /*añadido de notis admin*/
+            if (exito) {
+                Notificacionesdao daoNot = new Notificacionesdao();
+                int idAdmin
+                        = daoNot.obtenerAdministradorPrincipal();
+                String cliente  = dao.obtenerNombreCliente(idCliente);
+                String mascota  = dao.obtenerNombreMascota(idMascota);
+                daoNot.registrarNotificacion(
+                        idAdmin,
+                        "Nueva cita pendiente",
+                        cliente + " registró una cita para "
+                        + mascota
+                        + " el "
+                        + fecha
+                        + " a las "
+                        + hora,
+                        "CITA",
+                        0
+                );
+            }
             if (exito) {
                 request.getSession().setAttribute("mensajeExito", "Cita registrada correctamente.");
             } else {
@@ -598,7 +620,37 @@ public class controladorcitas extends HttpServlet {
                     case "CONFIRMADA":
 
                     citas cita = dao.obtenerCitaCompleta(idCita);
+                    //registro notis 22-06-26
+                        int idUsuario
+                                = daoNot.obtenerUsuarioPorCliente(
+                                        cita.getIdCliente()
+                                );
 
+                        System.out.println("ID Cliente: " + cita.getIdCliente());
+                        System.out.println("ID Usuario encontrado: " + idUsuario);
+                        
+                        if (idUsuario > 0) {
+
+                            daoNot.registrarNotificacion(
+                                    idUsuario,
+                                    "Cita Confirmada",
+                                    "Tu cita para "
+                                    + cita.getMascota()
+                                    + " fue confirmada para el "
+                                    + cita.getFecha()
+                                    + " a las "
+                                    + cita.getHora(),
+                                    "CITA",
+                                    cita.getIdCita()
+                            );
+
+                        } else {
+
+                            System.out.println(
+                                    "No se encontró usuario para el cliente "
+                                    + cita.getIdCliente()
+                            );
+                        }
                     boolean correoEnviado = emailservicio.enviarConfirmacionCita(
                                     cita.getCorreoCliente(),
                                     cita.getCliente(),

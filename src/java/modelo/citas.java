@@ -4,6 +4,7 @@ public class citas {
     //atributos
     private int idCita;
     private int idCliente;
+    private int idUsuario;
     private int idMascota;
     private int idTipo;
 
@@ -21,6 +22,14 @@ public class citas {
     public citas() {
     }
     // GETTERS Y SETTERS
+
+    public int getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
+    }
 
     public String getFechaRegistro() {
         return fechaRegistro;

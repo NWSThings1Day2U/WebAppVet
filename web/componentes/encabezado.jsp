@@ -29,7 +29,17 @@
                         <div class="btn-notificaciones" data-bs-toggle="offcanvas" data-bs-target="#panelNotificaciones">
                             <span class="position-relative">
                                 <i class="fa-solid fa-bell"></i>
-                                <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                                <c:if test="${totalNoLeidas > 0}">
+                                    <span class="position-absolute
+                                          top-0
+                                          start-100
+                                          translate-middle
+                                          badge
+                                          rounded-pill
+                                          bg-danger">
+                                        ${totalNoLeidas}
+                                    </span>
+                                </c:if>
                             </span>
                         </div>
 
@@ -135,7 +145,17 @@
                     <div class="btn-notificaciones ms-2 me-4" data-bs-toggle="offcanvas" data-bs-target="#panelNotificaciones">
                         <span class="position-relative">
                             <i class="fa-solid fa-bell"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle"></span>
+                            <c:if test="${totalNoLeidas > 0}">
+                                    <span class="position-absolute
+                                          top-0
+                                          start-100
+                                          translate-middle
+                                          badge
+                                          rounded-pill
+                                          bg-danger">
+                                        ${totalNoLeidas}
+                                    </span>
+                                </c:if>
                         </span>
                     </div>
 
@@ -190,6 +210,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
                 </div>
                 <div class="offcanvas-body p-0">
+                     <p>
+                        Cantidad:
+                        ${totalNoLeidas}
+                    </p>
                     <jsp:include page="/componentes/notificaciones.jsp" />
                 </div>
             </div>

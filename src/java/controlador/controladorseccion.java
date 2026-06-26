@@ -4,11 +4,7 @@ import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import dao.citadao;
-import dao.clientedao;
-import dao.mascotadao;
-import dao.productodao;
-import dao.ventasdao;
+import dao.*;
 import java.time.LocalDate;
 import java.util.List;
 import modelo.citas;
@@ -205,11 +201,32 @@ public class controladorseccion extends HttpServlet {
                 "agendaSemana",
                 agendaSemana
         );
+        
+        Notificacionesdao daoNot
+                = new Notificacionesdao();
+        int pendientes
+                = cdao.contarCitasPendientes();
+        if (pendientes > 0
+                && !daoNot.existeNotificacionPendientesHoy()) {
+            int idAdmin
+                    = daoNot.obtenerAdministradorPrincipal();
+            daoNot.registrarNotificacion(
+                    idAdmin,
+                    "Citas Pendientes",
+                    "Tienes "
+                    + pendientes
+                    + " citas pendientes por confirmar.",
+                    "CITA",
+                    0
+            );
+        }
+        cargarNotificaciones(request);
         request.getRequestDispatcher(paginicio).forward(request, response);
     }
 
     private void inventario(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        cargarNotificaciones(request);
         request.getRequestDispatcher("/controladorinventario?accion=listar").forward(request, response);
     }
 
@@ -217,40 +234,69 @@ public class controladorseccion extends HttpServlet {
 
     private void perfil(HttpServletRequest request, HttpServletResponse response)              
             throws ServletException, IOException {
+        cargarNotificaciones(request);
         request.getRequestDispatcher("controladorperfil").forward(request, response);
     }
 
     private void citas(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        
+        cargarNotificaciones(request);
         request.getRequestDispatcher("/controladorcitas?accion=listar").forward(request, response);
     }
 
     private void ventas(HttpServletRequest request, HttpServletResponse response)  
             throws ServletException, IOException {
         request.setAttribute("paginaActual", "ventas");
-
+        cargarNotificaciones(request);
         request.getRequestDispatcher(pagventas).forward(request, response);
     }
 
     private void clientes(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        cargarNotificaciones(request);
         request.getRequestDispatcher("/controladorcliente?accion=listar").forward(request, response);
     }
 
     private void mascotas(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        cargarNotificaciones(request);
         request.getRequestDispatcher("/controladormascota?accion=listar").forward(request, response);
     }
 
     private void usuarios(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        cargarNotificaciones(request);
         request.getRequestDispatcher("/controladorusuarios?accion=listar").forward(request, response);
     }
     private void horarios(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        cargarNotificaciones(request);
         request.getRequestDispatcher("/controladorhorario?accion=listar").forward(request, response);
     }
-
+    private void cargarNotificaciones(HttpServletRequest request) {
+        try {
+            Integer idUsuario
+                    = (Integer) request.getSession()
+                            .getAttribute("id");
+            System.out.println("ADMIN ID: " + idUsuario);
+            if (idUsuario != null) {
+                Notificacionesdao daoNot
+                        = new Notificacionesdao();
+                request.setAttribute(
+                        "notificaciones",
+                        daoNot.listarPorUsuario(idUsuario)
+                );
+                request.setAttribute(
+                        "totalNoLeidas",
+                        daoNot.contarNoLeidas(idUsuario)
+                );
+                System.out.println(
+                        "Notificaciones Admin: "
+                        + daoNot.contarNoLeidas(idUsuario)
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

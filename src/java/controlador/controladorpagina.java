@@ -10,7 +10,7 @@ import jakarta.servlet.http.*;
 import java.time.LocalDate;
 import java.util.List;
 import modelo.citas;
-
+import dao.Notificacionesdao;
 /**
  *
  * @author USUARIO
@@ -45,6 +45,7 @@ public class controladorpagina extends HttpServlet {
                 miscitas(request, response);
                 break;
             case "miperfil":
+                cargarNotificaciones(request);
                 request.getRequestDispatcher("controladorperfil").forward(request, response);
                 break;
             default:
@@ -96,6 +97,7 @@ public class controladorpagina extends HttpServlet {
             throws ServletException, IOException {
 
         request.setAttribute("paginaActual", "inicio");
+        cargarNotificaciones(request);
         HttpSession session = request.getSession();
         Integer idUsuario = (Integer) session.getAttribute("id");
         citadao dao = new citadao();
@@ -164,25 +166,46 @@ public class controladorpagina extends HttpServlet {
         dao.obtenerHistorialInicio(idUsuario);
 
         request.setAttribute(  "historialCitas",historial);
+        int totalSemana = agendaSemana.size();
+        int totalConfirmadas = 0;
+        int totalPendientes = 0;
+        int totalAtendidas = 0;
+        for (citas c : agendaSemana) {
+            if ("CONFIRMADA".equals(c.getEstado())) {
+                totalConfirmadas++;
+            }
+            if ("PENDIENTE".equals(c.getEstado())) {
+                totalPendientes++;
+            }
+            if ("ATENDIDA".equals(c.getEstado())) {
+                totalAtendidas++;
+            }
+        }
+        request.setAttribute("totalSemana", totalSemana);
+        request.setAttribute("totalConfirmadas", totalConfirmadas);
+        request.setAttribute("totalPendientes", totalPendientes);
+        request.setAttribute("totalAtendidas", totalAtendidas);
         // FORWARD
         request.getRequestDispatcher( paginicio).forward(request, response);
     }
 
     private void agendarcitas(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        cargarNotificaciones(request);
          request.getRequestDispatcher("/controladorcitas?accion=agendarcitasCliente").forward(request, response);
          
     }
 
     private void miscitas(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        cargarNotificaciones(request);
         request.getRequestDispatcher("/controladorcitas?accion=listarcitasCliente").forward(request, response);
     }
 
     private void perfil(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         request.setAttribute("paginaActual", "miperfil");
-
+        cargarNotificaciones(request);
         request.getRequestDispatcher(pagpmiperfil).forward(request, response);
     }
 
@@ -192,6 +215,39 @@ public class controladorpagina extends HttpServlet {
         request.getRequestDispatcher(paglogin).forward(request, response);    
     }
 
-    
+    private void cargarNotificaciones(
+            HttpServletRequest request) {
+
+        try {
+
+            Integer idUsuario
+                    = (Integer) request.getSession()
+                            .getAttribute("id");
+            System.out.println("ID Usuario sesión: " + idUsuario);
+            if (idUsuario != null) {
+
+                Notificacionesdao daoNot
+                        = new Notificacionesdao();
+                System.out.println(
+                        "Notificaciones encontradas: "
+                        + daoNot.listarPorUsuario(idUsuario).size()
+                );
+                request.setAttribute(
+                        "notificaciones",
+                        daoNot.listarPorUsuario(idUsuario)
+                );
+
+                request.setAttribute(
+                        "totalNoLeidas",
+                        daoNot.contarNoLeidas(idUsuario)
+                );
+            }
+ 
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        }
+    }
 
 }

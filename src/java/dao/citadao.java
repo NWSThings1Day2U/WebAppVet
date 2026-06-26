@@ -717,6 +717,8 @@ public class citadao {
                 c = new citas();
 
                 c.setIdCita(rs.getInt("id_cita"));
+                c.setIdCliente(rs.getInt("id_cliente"));
+                c.setIdUsuario(rs.getInt("id_usuario"));
                 c.setCliente(rs.getString("cliente"));
                 c.setCorreoCliente(rs.getString("correo"));
                 c.setMascota(rs.getString("mascota"));
@@ -840,6 +842,71 @@ public class citadao {
 
         return lista;
     }
+    
+     /*ad notis admin*/
+    public String obtenerNombreCliente(int idCliente) {
+        String nombre = "";
+        try {
+
+            cn = conexionvet_bd.probarConexion();
+            ps = cn.prepareStatement(
+                    "SELECT nombre_completo "
+                    + "FROM clientes "
+                    + "WHERE id_cliente=?"
+            );
+        ps.setInt(1, idCliente);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                nombre = rs.getString("nombre_completo");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            closeResources();
+        }
+        return nombre;
+    }
+    public String obtenerNombreMascota(int idMascota) {
+        String nombre = "";
+        try {cn = conexionvet_bd.probarConexion();
+            ps = cn.prepareStatement(
+                    "SELECT nombre "
+                    + "FROM mascotas "
+                    + "WHERE id_mascota=?"
+            );
+
+            ps.setInt(1, idMascota);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                nombre = rs.getString("nombre");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            closeResources();
+        }
+        return nombre;
+    }
+    
+     public int contarCitasPendientes() {
+        int total = 0;
+        try {
+             cn = conexionvet_bd.probarConexion();
+            ps = cn.prepareStatement(
+                    "SELECT COUNT(*) total "
+                    + "FROM citas "
+                    + "WHERE estado='PENDIENTE'"
+            );
+         rs = ps.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt("total"); }} catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            closeResources();
+        }
+        return total;
+    }
+    
     private void closeResources() {
         try {
             if (rs != null) {
