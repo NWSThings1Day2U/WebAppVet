@@ -119,27 +119,35 @@ public class Notificacionesdao {
     }
     
     public int obtenerUsuarioPorCliente(int idCliente) {
+
         int idUsuario = 0;
 
         try {
+
             cn = conexionvet_bd.probarConexion();
 
-            ps = cn.prepareStatement(
-                    "SELECT id_usuario "
-                    + "FROM clientes "
-                    + "WHERE id_cliente=?"
-            );
+            String sql =
+            "SELECT " +
+            "COALESCE(c.id_usuario, cr.id_usuario) AS id_usuario " +
+            "FROM clientes c " +
+            "LEFT JOIN clientes cr " +
+            "ON c.id_cliente_responsable = cr.id_cliente " +
+            "WHERE c.id_cliente = ?";
+
+            ps = cn.prepareStatement(sql);
 
             ps.setInt(1, idCliente);
 
             rs = ps.executeQuery();
 
-            if (rs.next()) {
+            if(rs.next()){
                 idUsuario = rs.getInt("id_usuario");
             }
 
-        } catch (Exception e) {
+        } catch(Exception e){
             e.printStackTrace();
+        } finally{
+            closeResources();
         }
 
         return idUsuario;
