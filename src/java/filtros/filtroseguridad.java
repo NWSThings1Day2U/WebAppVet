@@ -36,14 +36,36 @@ public class filtroseguridad implements Filter {
         res.setHeader("Pragma", "no-cache");
         res.setDateHeader("Expires", 0);
 
-        // 3. LÓGICA DE SESIÓN
+        // 3. LÓGICA DE SESIÓN Y AUTENTICACIÓN
         HttpSession sesion = req.getSession(false);
         boolean logueado = (sesion != null && sesion.getAttribute("usuario") != null);
-
+        
         if (logueado) {
+            // --- 3.1. LÓGICA DE AUTORIZACIÓN (ROLES) ---
+            String rol = (String) sesion.getAttribute("rol"); 
+            
+            // Validar si un cliente intenta acceder a áreas de administrador
+            if (uri.contains("controladorseccion") || uri.contains("/vista/paneladmin")) {
+                if (!"admin".equals(rol)) {
+                    sesion.setAttribute("error", "Acceso no autorizado: Área exclusiva para administradores.");
+                    res.sendRedirect(req.getContextPath() + "/controladorpagina?pagina=inicio");
+                    return; 
+                }
+            }
+
+            // Validar si un administrador intenta acceder a áreas exclusivas de cliente
+            if (uri.contains("controladorpagina")) {
+                if (!"cliente".equals(rol)) {
+                    sesion.setAttribute("error", "Acceso no autorizado: Esta vista es solo para clientes.");
+                    res.sendRedirect(req.getContextPath() + "/controladorseccion?seccion=inicio");
+                    return; 
+                }
+            }
+
             chain.doFilter(request, response);
+            
         } else {
-            // 4. DETECCIÓN DE INACTIVIDAD
+            // 4. DETECCIÓN DE INACTIVIDAD (Si no está logueado)
             boolean esPorInactividad = false;
             if (sesion != null) {
                 try {
@@ -61,7 +83,7 @@ public class filtroseguridad implements Filter {
                 esPorInactividad = true;
             }
 
-            // 5. ASIGNAR MENSAJE Y REDIRIGIR
+            // 5. ASIGNAR MENSAJE Y REDIRIGIR AL LOGIN
             HttpSession sesionNueva = req.getSession(true);
             if (esPorInactividad) {
                 sesionNueva.setAttribute("error", "Su sesión ha expirado por inactividad. Por favor, ingrese de nuevo.");
