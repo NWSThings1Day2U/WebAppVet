@@ -145,7 +145,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% for (ventas v : lista) {%>
+                                <%  if (lista != null && !lista.isEmpty()) {
+                                        for (ventas v : lista) {%>
                                 <tr>
                                     <td>#<%= v.getIdVenta()%></td>
                                     <td>
@@ -236,8 +237,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <% }%>
-
+                            <% 
+                                        }
+                                    } else { 
+                                %>
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">No se encontraron ventas cargadas. .</td>
+                                </tr>
+                                
+                                
+                                <% } %>
                             <!-- js carrito demo -->                                   
 
                             <!-- js carrito demo -->
