@@ -181,7 +181,7 @@ public class controladorpagina extends HttpServlet {
             throws ServletException, IOException {
         request.setAttribute("paginaActual", "miperfil");
         cargarNotificaciones(request);
-        request.getRequestDispatcher(pagpmiperfil).forward(request, response);
+                request.getRequestDispatcher("controladorperfil").forward(request, response);
     }
 
     private void login(HttpServletRequest request, HttpServletResponse response)
