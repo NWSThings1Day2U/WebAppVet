@@ -45,25 +45,24 @@ public class controladorusuario extends HttpServlet {
     }
 
     private void handleLogin(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+        throws ServletException, IOException {
 
         HttpSession sesion = request.getSession();
-        
-        // 1. VERIFICACIÓN DE BLOQUEO TEMPORAL
+
+        // 1. VERIFICACIÓN DE BLOQUEO TEMPORAL (Se mantiene intacto al inicio)
         Long horaBloqueo = (Long) sesion.getAttribute("horaBloqueo");
         if (horaBloqueo != null) {
             long tiempoTranscurrido = System.currentTimeMillis() - horaBloqueo;
-            
+
             if (tiempoTranscurrido < TIEMPO_BLOQUEO_MS) {
                 long minutosRestantes = ((TIEMPO_BLOQUEO_MS - tiempoTranscurrido) / 1000) / 60;
                 long segundosRestantes = ((TIEMPO_BLOQUEO_MS - tiempoTranscurrido) / 1000) % 60;
-                
+
                 sesion.setAttribute("error", "Demasiados intentos fallidos. Su ingreso está bloqueado. Intente de nuevo en " 
                         + minutosRestantes + " min y " + segundosRestantes + " seg.");
                 response.sendRedirect("index.jsp");
                 return;
             } else {
-                // El tiempo de bloqueo ya expiró, limpiamos las variables de control
                 sesion.removeAttribute("horaBloqueo");
                 sesion.removeAttribute("intentosFallidos");
             }
@@ -81,40 +80,57 @@ public class controladorusuario extends HttpServlet {
                 response.sendRedirect("index.jsp");
                 return;
             }
-            
-            // LOGIN EXITOSO: Limpiamos cualquier rastro de intentos fallidos previos en la sesión
-            sesion.removeAttribute("intentosFallidos");
-            sesion.removeAttribute("horaBloqueo");
 
+            // Conservamos temporalmente los datos del usuario autenticado
+            usuarios usuarioAutenticado = usu;
+
+            // Invalidamos la sesión vieja que contenía los intentos fallidos
+            sesion.invalidate();
+
+            // Creamos una sesión completamente nueva y limpia con un nuevo SessionID
+            HttpSession nuevaSesion = request.getSession(true);
+            // ----------------------------------------
+
+            // --- MEJORA: COOKIE SEGURA ---
             Cookie cUsuario = new Cookie("user_vet", nombreusu);
-            cUsuario.setPath("/");
+            // Define la ruta exacta de la app
+            cUsuario.setPath(request.getContextPath().isEmpty() ? "/" : request.getContextPath());
+            cUsuario.setHttpOnly(true); // Protege contra robos de JS
+
+            // true en producción (HTTPS), false para pruebas en localhost (HTTP)
+            cUsuario.setSecure(request.isSecure()); 
+
             if (recordar != null && recordar.equals("on")) {
-                cUsuario.setMaxAge(60 * 60 * 24 * 30);
+                cUsuario.setMaxAge(60 * 60 * 24 * 30); // 30 días
             } else {
-                cUsuario.setMaxAge(0);
+                cUsuario.setMaxAge(0); // Eliminar si no se marca
             }
             response.addCookie(cUsuario);
-            String fotoPerfil = (usu.getImagen() != null && !usu.getImagen().isEmpty())
-                    ? usu.getImagen()
+            // ------------------------------
+
+            String fotoPerfil = (usuarioAutenticado.getImagen() != null && !usuarioAutenticado.getImagen().isEmpty())
+                    ? usuarioAutenticado.getImagen()
                     : "gaa2.jpg";
 
-            sesion.setAttribute("usuario", usu.getNombreusuario());
-            sesion.setAttribute("rol", usu.getRol());
-            sesion.setAttribute("id", usu.getIdUsuario());
-            sesion.setAttribute("imagen", fotoPerfil);
-            sesion.setAttribute("dni", usu.getDni());
-            sesion.setAttribute("nombrecompleto", usu.getNombrecompleto());
-            sesion.setAttribute("telefono", usu.getTelefono());
-            sesion.setAttribute("correo", usu.getCorreo());
-            sesion.setAttribute("success", "Bienvenido " + usu.getNombreusuario());
-            sesion.setAttribute("fecha", usu.getFechaRegistro());
-            if ("admin".equals(usu.getRol())) {
+            // Registramos los atributos en la NUEVA sesión segura
+            nuevaSesion.setAttribute("usuario", usuarioAutenticado.getNombreusuario());
+            nuevaSesion.setAttribute("rol", usuarioAutenticado.getRol());
+            nuevaSesion.setAttribute("id", usuarioAutenticado.getIdUsuario());
+            nuevaSesion.setAttribute("imagen", fotoPerfil);
+            nuevaSesion.setAttribute("dni", usuarioAutenticado.getDni());
+            nuevaSesion.setAttribute("nombrecompleto", usuarioAutenticado.getNombrecompleto());
+            nuevaSesion.setAttribute("telefono", usuarioAutenticado.getTelefono());
+            nuevaSesion.setAttribute("correo", usuarioAutenticado.getCorreo());
+            nuevaSesion.setAttribute("success", "Bienvenido " + usuarioAutenticado.getNombreusuario());
+            nuevaSesion.setAttribute("fecha", usuarioAutenticado.getFechaRegistro());
+
+            if ("admin".equals(usuarioAutenticado.getRol())) {
                 response.sendRedirect("controladorseccion?seccion=inicio");
             } else {
                 response.sendRedirect("controladorpagina?pagina=inicio");
             }
         } else {
-            // LOGIN FALLIDO: Incrementar el contador de la sesión
+            // LOGIN FALLIDO: Se mantiene en la sesión actual para no perder el conteo
             Integer intentos = (Integer) sesion.getAttribute("intentosFallidos");
             if (intentos == null) {
                 intentos = 0;
@@ -123,14 +139,13 @@ public class controladorusuario extends HttpServlet {
             sesion.setAttribute("intentosFallidos", intentos);
 
             if (intentos >= MAX_INTENTOS) {
-                // Se alcanza el límite: registramos el momento exacto del bloqueo
                 sesion.setAttribute("horaBloqueo", System.currentTimeMillis());
                 sesion.setAttribute("error", "Has alcanzado el límite de 5 intentos fallidos. Acceso bloqueado por 5 minutos.");
             } else {
                 int intentosRestantes = MAX_INTENTOS - intentos;
                 sesion.setAttribute("error", "Usuario o contraseña incorrectos. Te quedan " + intentosRestantes + " intentos.");
             }
-            
+
             response.sendRedirect("index.jsp");
         }
     }
