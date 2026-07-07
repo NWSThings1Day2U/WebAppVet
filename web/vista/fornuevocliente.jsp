@@ -157,11 +157,16 @@
                                 </div>
                             </div>
                             <div class="col-12 mb-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="checkTerms" required>
-                                    <label class="form-check-label" for="checkTerms">Acepto los términos y condiciones</label>
-                                </div>
-                            </div>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="checkTerms">
+        <label class="form-check-label" for="checkTerms">
+            Acepto los términos y condiciones
+        </label>
+        <div class="invalid-feedback">
+            Debes aceptar los términos y condiciones.
+        </div>
+    </div>
+</div>
                             <div class="cliente-antiguo-info col-12">
                                 <p>
                                     <strong> <i class="fa-solid fa-circle-exclamation me-1"></i> Nota: </strong> 
@@ -184,17 +189,19 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-
+document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formClienteNuevo');
-    const steps = Array.from(document.querySelectorAll('.stepper-step'));
+    if (!form) return;
+
+    // IMPORTANTE: todo se busca DENTRO del formulario
+    const steps = Array.from(form.querySelectorAll('.stepper-step'));
+    const btnEnviar = form.querySelector('#btnEnviarFormulario');
+    const checkTerms = form.querySelector('#checkTerms');
 
     let currentStep = 0;
 
     function updateStepper(targetIndex) {
-
         steps.forEach((step, index) => {
-
             step.classList.remove('active', 'completed');
 
             if (index < targetIndex) {
@@ -210,62 +217,43 @@
     }
 
     function validarPaso(stepIndex) {
-
         const step = steps[stepIndex];
-        const fields = step.querySelectorAll('input, select, textarea');
+        if (!step) return false;
 
+        // solo campos de ESTE paso
+        const fields = step.querySelectorAll('input, select, textarea');
         let valido = true;
 
         fields.forEach(field => {
+            // el checkbox de términos NO se valida aquí
+            if (field.type === 'checkbox') return;
 
-            // checkbox obligatorio (caso especial)
-            if (field.type === "checkbox") {
-                if (!field.checked) {
-                    field.classList.add("is-invalid");
-                    valido = false;
-                } else {
-                    field.classList.remove("is-invalid");
-                }
-                return;
-            }
-
-            // validación HTML5
             if (!field.checkValidity()) {
-                field.classList.add("is-invalid");
-                field.classList.remove("is-valid");
+                field.classList.add('is-invalid');
+                field.classList.remove('is-valid');
                 valido = false;
             } else {
-                field.classList.remove("is-invalid");
-                field.classList.add("is-valid");
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
             }
         });
 
         return valido;
     }
 
-    document.querySelectorAll('.btn-next-step').forEach((btn) => {
-
+    // siguiente
+    form.querySelectorAll('.btn-next-step').forEach((btn) => {
         btn.addEventListener('click', () => {
-
             const stepIndex = currentStep;
 
             if (!validarPaso(stepIndex)) {
-
                 Swal.fire({
                     icon: 'warning',
                     title: 'Campos incompletos',
                     text: 'Completa correctamente todos los campos antes de continuar.'
                 });
-
                 return;
             }
-
-            Swal.fire({
-                icon: 'success',
-                title: 'Paso completado',
-                timer: 1200,
-                showConfirmButton: false
-            });
 
             if (stepIndex < steps.length - 1) {
                 updateStepper(stepIndex + 1);
@@ -273,136 +261,140 @@
         });
     });
 
-    document.querySelectorAll('.btn-prev-step').forEach((btn) => {
-
+    // anterior
+    form.querySelectorAll('.btn-prev-step').forEach((btn) => {
         btn.addEventListener('click', () => {
-
             if (currentStep > 0) {
                 updateStepper(currentStep - 1);
             }
         });
     });
 
-    document.getElementById('btnEnviarFormulario').addEventListener('click', (e) => {
-
-        e.preventDefault();
-
-        let todoValido = true;
-        let pasoError = -1;
-
-        // validar TODOS los pasos
-        steps.forEach((_, index) => {
-            if (!validarPaso(index)) {
-                todoValido = false;
-                if (pasoError === -1) pasoError = index;
+    // limpiar error visual del checkbox al marcarlo
+    if (checkTerms) {
+        checkTerms.addEventListener('change', function () {
+            if (this.checked) {
+                this.classList.remove('is-invalid');
             }
         });
+    }
 
-        // validación extra checkbox términos
-        const terms = document.getElementById("checkTerms");
-        if (!terms.checked) {
-            todoValido = false;
-            pasoError = 2;
+    // enviar
+    if (btnEnviar) {
+        btnEnviar.addEventListener('click', (e) => {
+            e.preventDefault();
 
-            Swal.fire({
-                icon: 'error',
-                title: 'Términos no aceptados',
-                text: 'Debes aceptar los términos y condiciones.'
+            let todoValido = true;
+            let pasoError = -1;
+
+            // validar pasos 1, 2 y 3 (sin checkbox)
+            steps.forEach((_, index) => {
+                if (!validarPaso(index)) {
+                    todoValido = false;
+                    if (pasoError === -1) pasoError = index;
+                }
             });
 
-            return;
-        }
+            // si hay campos inválidos, primero mostrar ese error
+            if (!todoValido) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Formulario incompleto',
+                    text: 'Revisa los campos en todos los pasos.'
+                });
 
-        if (!todoValido) {
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Formulario incompleto',
-                text: 'Revisa los campos en todos los pasos.'
-            });
-
-            updateStepper(pasoError);
-            return;
-        }
-
-        // confirmación final
-        Swal.fire({
-            title: '¿Confirmar registro?',
-            text: "Se registrará cliente, mascota y cita",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, registrar',
-            cancelButtonText: 'Revisar'
-        }).then((result) => {
-
-            if (result.isConfirmed) {
-                form.submit();
+                updateStepper(pasoError);
+                return;
             }
-        });
-    });
 
-    // inicial
+            // recién aquí validar checkbox
+            if (!checkTerms || !checkTerms.checked) {
+                if (checkTerms) {
+                    checkTerms.classList.add('is-invalid');
+                }
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Términos no aceptados',
+                    text: 'Debes aceptar los términos y condiciones.'
+                });
+
+                updateStepper(2);
+                return;
+            }
+
+            // confirmación final
+            Swal.fire({
+                title: '¿Confirmar registro?',
+                text: 'Se registrará cliente, mascota y cita',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, registrar',
+                cancelButtonText: 'Revisar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    }
+
     updateStepper(0);
 });
 </script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Buscamos los elementos estrictamente dentro del contenedor 'formClienteNuevo'
-        const contenedorForm = document.getElementById('formClienteNuevo');
-        if (!contenedorForm) return;
+document.addEventListener('DOMContentLoaded', () => {
+    const contenedorForm = document.getElementById('formClienteNuevo');
+    if (!contenedorForm) return;
 
-        const inputFecha = contenedorForm.querySelector("#txtFecha");
-        const comboHora = contenedorForm.querySelector("#txtHora");
+    const inputFecha = contenedorForm.querySelector('#txtFecha');
+    const comboHora = contenedorForm.querySelector('#txtHora');
 
-        if (inputFecha && comboHora) {
-            ['input', 'change'].forEach(eventType => {
-                inputFecha.addEventListener(eventType, function () {
-                    let fecha = this.value;
-                    
-                    
-                    if (!fecha || fecha.trim() === "" || fecha.length < 10) {
-                        console.log("Fecha incompleta o vacía. No se enviará petición al servidor.");
-                        comboHora.innerHTML = '<option value="">Selecciona hora</option>';
+    if (inputFecha && comboHora) {
+        const cargarHoras = () => {
+            const fecha = inputFecha.value;
+
+            if (!fecha || fecha.trim() === '' || fecha.length < 10) {
+                comboHora.innerHTML = '<option value="">Selecciona hora</option>';
+                return;
+            }
+
+            fetch("${pageContext.request.contextPath}/controladorcitas?accion=horasDisponibles&fecha=" + encodeURIComponent(fecha))
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Error en respuesta del servidor: " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    comboHora.innerHTML = '<option value="">Selecciona hora</option>';
+
+                    if (!data || data.length === 0) {
+                        const option = document.createElement('option');
+                        option.value = '';
+                        option.textContent = 'No hay horas disponibles';
+                        comboHora.appendChild(option);
                         return;
                     }
 
-                    console.log("Enviando fecha válida al controlador:", fecha);
-
-                    fetch("${pageContext.request.contextPath}/controladorcitas?accion=horasDisponibles&fecha=" + fecha)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error("Error en respuesta del servidor: " + response.status);
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log("Horas devueltas por el controlador:", data);
-                            
-                            comboHora.innerHTML = '<option value="">Selecciona hora</option>';
-                            
-                            if (!data || data.length === 0) {
-                                let option = document.createElement("option");
-                                option.value = "";
-                                option.textContent = "No hay horas disponibles";
-                                comboHora.appendChild(option);
-                                return;
-                            }
-
-                            data.forEach(function (hora) {
-                                let option = document.createElement("option");
-                                option.value = hora;
-                                option.textContent = hora;
-                                comboHora.appendChild(option);
-                            });
-                        })
-                        .catch(error => {
-                            console.error("ERROR AJAX EN CITAS:", error);
-                        });
+                    data.forEach(hora => {
+                        const option = document.createElement('option');
+                        option.value = hora;
+                        option.textContent = hora;
+                        comboHora.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('ERROR AJAX EN CITAS:', error);
+                    comboHora.innerHTML = '<option value="">Selecciona hora</option>';
                 });
-            });
-        }
-    });
+        };
+
+        inputFecha.addEventListener('change', cargarHoras);
+        inputFecha.addEventListener('input', cargarHoras);
+    }
+});
 </script>
 
 <c:if test="${not empty sessionScope.mensajeExito}">
